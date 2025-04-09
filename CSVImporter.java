@@ -93,9 +93,8 @@ public class CSVImporter {
                     }
                 }
 
-                Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2,
-                        openDate, closeDate, manager, officerSlots, officers);
-                Database.projectList.add(project);
+                Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2, openDate, closeDate, manager, officerSlots, officers);
+                db.projectList.add(project);
             }
         } catch (Exception e) {
             e.printStackTrace();
