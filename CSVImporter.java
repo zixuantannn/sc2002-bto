@@ -1,9 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.StringTokenizer;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CSVImporter {
 
@@ -85,12 +84,10 @@ public class CSVImporter {
                 Date closeDate = sdf.parse(tokens[9]);
                 String manager = tokens[10];
                 int officerSlots = Integer.parseInt(tokens[11]);
-
-                String[] officers = new String[10];
-                if (tokens.length > 10) {
-                    for (int i = 10; i < tokens.length && i - 10 < 10; i++) {
-                        officers[i - 10] = tokens[i];
-                    }
+                
+                String[] officers = new String[tokens.length - 12];
+                for (int i = 12; i < tokens.length; i++) {
+                    officers[i - 12] = tokens[i].trim();
                 }
 
                 Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2, openDate, closeDate, manager, officerSlots, officers);
