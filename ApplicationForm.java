@@ -65,10 +65,10 @@ public class ApplicationForm {
     }
 
     public WithdrawalRequest getWithdrawalRequest() {
-        return this.withdrawRequest;
+        return this.withdrawalRequest;
     }
 
     public void createWithdrawalRequest(String reason) {
-        this.withdrawRequest = new WithdrawalRequest(reason, this);
+        this.withdrawalRequest = new WithdrawalRequest(reason, this);
     }
 }
