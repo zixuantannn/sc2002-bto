@@ -192,7 +192,7 @@ public class Project {
         if (!hasOfficer) {
             assignedOfficers = "None";
         }
-    
+        assignedOfficers = assignedOfficers.replace("\"", "").trim();
         System.out.printf("| %-20s : %-26s |\n", "Assigned Officers", assignedOfficers.trim());
         System.out.printf("| %-20s : %-26s |\n", "Visibility", (visibility != null ? visibility : "Not Set"));
         System.out.println(line);
