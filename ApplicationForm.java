@@ -6,44 +6,21 @@ public class ApplicationForm {
     private static int index_application_form = 1;
 
     private int applicationID = -1;
-    private String applicantName;
-    private String applicantNRIC;
-    private int applicantAge;
-    private String maritalStatus;
+    private Applicant applicant;
     private String appliedProjectName;
     private String registrationStatus;
 
-    private Enquiry withdrawEnquiry = new Enquiry();
+    private WithdrawalRequest withdrawalRequest = null;
 
-    public ApplicationForm(String applicantName, String applicantNRIC, int applicantAge, String maritalStatus,
-                           String appliedProjectName, String registrationStatus) {
+    public ApplicationForm(Applicant applicant, String appliedProjectName, String registrationStatus) {
         this.applicationID = index_application_form++;
-        this.applicantName = applicantName;
-        this.applicantNRIC = applicantNRIC;
-        this.applicantAge = applicantAge;
-        this.maritalStatus = maritalStatus;
+        this.applicant = applicant;
         this.appliedProjectName = appliedProjectName;
         this.registrationStatus = registrationStatus;
     }
 
     public int getApplicationID() {
         return this.applicationID;
-    }
-
-    public String getApplicantName() {
-        return applicantName;
-    }
-
-    public String getApplicantNRIC() {
-        return applicantNRIC;
-    }
-
-    public int getApplicantAge() {
-        return applicantAge;
-    }
-
-    public String getMaritalStatus() {
-        return maritalStatus;
     }
 
     public String getAppliedProjectName() {
@@ -54,22 +31,6 @@ public class ApplicationForm {
         return registrationStatus;
     }
 
-    public void setApplicantName(String applicantName) {
-        this.applicantName = applicantName;
-    }
-
-    public void setApplicantNRIC(String applicantNRIC) {
-        this.applicantNRIC = applicantNRIC;
-    }
-
-    public void setApplicantAge(int applicantAge) {
-        this.applicantAge = applicantAge;
-    }
-
-    public void setMaritalStatus(String maritalStatus) {
-        this.maritalStatus = maritalStatus;
-    }
-
     public void setAppliedProjectName(String appliedProjectName) {
         this.appliedProjectName = appliedProjectName;
     }
@@ -78,27 +39,36 @@ public class ApplicationForm {
         this.registrationStatus = registrationStatus;
     }
 
-    public void answerWithdrawalEnquiry(String response){
-        this.withdrawEnquiry.updateResponse(response);
-    }
-
-    public void setWithdrawalEnquiry(String content){
-        this.withdrawEnquiry.updateContent(content);
-    }
-
-    public Enquiry getWithdrawalEnquiry(){
-        return this.withdrawEnquiry;
-    }
-
     public void viewDetails() {
         System.out.println("===== Application Details =====");
         System.out.println("Application ID: " + applicationID);
-        System.out.println("Applicant Name: " + applicantName);
-        System.out.println("Applicant NRIC: " + applicantNRIC);
-        System.out.println("Applicant Age: " + applicantAge);
-        System.out.println("Marital Status: " + maritalStatus);
+        System.out.println("Applicant Name: " + applicant.getName());
+        System.out.println("Applicant NRIC: " + applicant.getNRIC());
+        System.out.println("Applicant Age: " + applicant.getAge());
+        System.out.println("Marital Status: " + applicant.getMaritalStatus());
         System.out.println("Applied Project Name: " + appliedProjectName);
         System.out.println("Registration Status: " + registrationStatus);
         System.out.println("================================");
+    }
+
+    public static void deleteApplication(ApplicationForm form) {
+        // need the code to access db
+        System.out.println("Your application have been cancelled.");
+    }
+
+    public String getApplicantName() {
+        return applicant.getName();
+    }
+
+    public String getApplicantNRIC() {
+        return applicant.getNRIC();
+    }
+
+    public WithdrawalRequest getWithdrawalRequest() {
+        return this.withdrawRequest;
+    }
+
+    public void createWithdrawalRequest(String reason) {
+        this.withdrawRequest = new WithdrawalRequest(reason, this);
     }
 }

@@ -5,24 +5,27 @@ public class Enquiry {
     private String senderNRIC;
     private String content;
     private String response;
-    public Enquiry(){
+
+    public Enquiry() {
         enquiryID = count_enquiry++;
     }
+
     public Enquiry(String senderNRIC, String content) {
         this.senderNRIC = senderNRIC;
         this.enquiryID = count_enquiry++;
         this.content = content;
+        this.response = null;
     }
 
     public int getID() {
         return enquiryID;
     }
 
-    public String getSenderNRIC(){
+    public String getSenderNRIC() {
         return this.senderNRIC;
     }
 
-    public void setSenderNRIC(String newSender){
+    public void setSenderNRIC(String newSender) {
         this.senderNRIC = newSender;
     }
 
@@ -45,21 +48,24 @@ public class Enquiry {
     public void viewDetails() {
         // Define a format string for the table rows
         String rowFormat = "| %-10s | %-15s | %-40s | %-40s |%n";
-        
+
         // Print the table header
-        System.out.format("+------------+-----------------+------------------------------------------+------------------------------------------+%n");
+        System.out.format(
+                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
         System.out.format(rowFormat, "Enquiry ID", "Sender NRIC", "Content", "Response");
-        System.out.format("+------------+-----------------+------------------------------------------+------------------------------------------+%n");
-        
+        System.out.format(
+                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
+
         // Print the enquiry details in a row
-        System.out.format(rowFormat, 
-                          enquiryID, 
-                          senderNRIC, 
-                          (content != null ? content : "No content provided"), 
-                          (response != null ? response : "No response yet"));
-        
+        System.out.format(rowFormat,
+                enquiryID,
+                senderNRIC,
+                (content != null ? content : "No content provided"),
+                (response != null ? response : "No response yet"));
+
         // Print the closing border
-        System.out.format("+------------+-----------------+------------------------------------------+------------------------------------------+%n");
+        System.out.format(
+                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
     }
 
 }

@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Date;
 
-public class Manager extends UserAccount{
+public class Manager extends UserAccount {
     private Project handledProject = null;
 
-    public Manager(String name, String NRIC, int age, String maritalStatus){
+    public Manager(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
     }
 
-    public Manager(String name, String NRIC, int age, String maritalStatus, String password){
+    public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-    }      
+    }
+
     public void setHandledProject(Project p) {
-    this.handledProject = p;
-}
+        this.handledProject = p;
+    }
 
     public Project getHandledProject() {
         return this.handledProject;
@@ -28,37 +29,37 @@ public class Manager extends UserAccount{
         try {
             System.out.print("Enter project name: ");
             String name = sc.nextLine();
-    
+
             System.out.print("Enter neighborhood: ");
             String neighborhood = sc.nextLine();
-    
+
             System.out.print("Enter number of 2-Room flats: ");
             int numType1 = sc.nextInt();
-            sc.nextLine(); 
-    
+            sc.nextLine();
+
             System.out.print("Enter selling price for 2-Room flats: ");
             int sellPriceType1 = sc.nextInt();
             sc.nextLine();
-    
+
             System.out.print("Enter number of 3-Room flats: ");
             int numType2 = sc.nextInt();
             sc.nextLine();
-    
+
             System.out.print("Enter selling price for 3-Room flats: ");
             int sellPriceType2 = sc.nextInt();
             sc.nextLine();
-    
+
             System.out.print("Enter application opening date (yyyy-MM-dd): ");
             String openDateStr = sc.nextLine();
             System.out.print("Enter application closing date (yyyy-MM-dd): ");
             String closeDateStr = sc.nextLine();
-    
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date openDate = sdf.parse(openDateStr);
             Date closeDate = sdf.parse(closeDateStr);
-    
+
             String manager = this.getName();
-    
+
             System.out.print("Enter available officer slots (max 10): ");
             int officerSlots = sc.nextInt();
             sc.nextLine();
@@ -66,23 +67,22 @@ public class Manager extends UserAccount{
                 System.out.println("Officer slots cannot exceed 10. Setting to 10.");
                 officerSlots = 10;
             }
-    
+
             String[] officers = new String[10];
-    
+
             Project newProject = new Project(
-                name,
-                neighborhood,
-                numType1,
-                sellPriceType1,
-                numType2,
-                sellPriceType2,
-                openDate,
-                closeDate,
-                manager,
-                officerSlots,
-                officers
-            );
-    
+                    name,
+                    neighborhood,
+                    numType1,
+                    sellPriceType1,
+                    numType2,
+                    sellPriceType2,
+                    openDate,
+                    closeDate,
+                    manager,
+                    officerSlots,
+                    officers);
+
             db.projectList.add(newProject);
             System.out.println("Project listing created successfully.");
         } catch (ParseException e) {
@@ -94,19 +94,19 @@ public class Manager extends UserAccount{
         System.out.println("Enter the name of the project to edit: ");
         String projectName = sc.nextLine();
         Project target = null;
-    
+
         for (Project p : db.projectList) {
             if (p.getName().equalsIgnoreCase(projectName) && p.getManager().equals(this.getName())) {
                 target = p;
                 break;
             }
         }
-    
+
         if (target == null) {
             System.out.println("Project not found or you do not have permission to edit this project.");
             return;
         }
-    
+
         System.out.println("Select field to edit:");
         System.out.println("1. Name");
         System.out.println("2. Neighborhood");
@@ -117,10 +117,10 @@ public class Manager extends UserAccount{
         System.out.println("7. Application Opening Date");
         System.out.println("8. Application Closing Date");
         System.out.println("9. Available Officer Slots");
-    
+
         int choice = sc.nextInt();
         sc.nextLine();
-    
+
         switch (choice) {
             case 1:
                 System.out.println("Enter new project name: ");
@@ -142,7 +142,7 @@ public class Manager extends UserAccount{
                 System.out.println("Enter new selling price for 2-Room flats: ");
                 int newSellPriceType1 = sc.nextInt();
                 sc.nextLine();
-                
+
                 System.out.println("Edit selling price not implemented. Please add a setter in Project class.");
                 break;
             case 5:
@@ -192,42 +192,42 @@ public class Manager extends UserAccount{
                 System.out.println("Invalid choice.");
                 return;
         }
-    
+
         System.out.println("Project listing updated successfully.");
     }
-    
+
     public void deleteProjectListing(Scanner sc, Database db) {
         System.out.println("Enter the name of the project to delete: ");
         String projectName = sc.nextLine();
         Project target = null;
-    
+
         for (Project p : db.projectList) {
             if (p.getName().equalsIgnoreCase(projectName) && p.getManager().equals(this.getName())) {
                 target = p;
                 break;
             }
         }
-    
+
         if (target == null) {
             System.out.println("Project not found or you do not have permission to delete this project.");
             return;
         }
-    
+
         db.projectList.remove(target);
         System.out.println("Project listing deleted successfully.");
     }
 
-    public void setVisibility(Scanner sc, Database database){
+    public void setVisibility(Scanner sc, Database database) {
         Project target = null;
         System.out.print("Enter the project name you want to toggle its visibility: ");
         String targetName = sc.nextLine();
-        for(Project project : database.projectList){
-            if(targetName.equalsIgnoreCase(project.getName())){
+        for (Project project : database.projectList) {
+            if (targetName.equalsIgnoreCase(project.getName())) {
                 target = project;
                 break;
             }
         }
-        if(target == null){
+        if (target == null) {
             System.out.println("Your project you are finding is not available.");
             return;
         }
@@ -236,7 +236,7 @@ public class Manager extends UserAccount{
             String visibilityInput = sc.nextLine().trim().toLowerCase();
 
             if (visibilityInput.equals("on")) {
-                target.setVisibility(visibilityInput);     
+                target.setVisibility(visibilityInput);
                 System.out.println("Project visibility set to ON.");
                 break;
             } else if (visibilityInput.equals("off")) {
@@ -250,143 +250,153 @@ public class Manager extends UserAccount{
 
     }
 
-    public void  viewAllProject(Database db){
+    public void viewAllProject(Database db) {
         System.out.println("View all projects: ");
-        for(int i=0;i<db.projectList.size();i++){
-            db.projectList.get(i).viewProjectDetails();   // new function for class Project
+        for (int i = 0; i < db.projectList.size(); i++) {
+            db.projectList.get(i).viewProjectDetails(); // new function for class Project
         }
     }
 
-    public void viewMyProject(){
+    public void viewMyProject() {
         System.out.println("View the details of your handled project:");
         handledProject.viewProjectDetails();
     }
 
-    public void viewFilteredProjects(Scanner scanner, Database db){
-        if(!db.projectList.isEmpty()){
+    public void viewFilteredProjects(Scanner scanner, Database db) {
+        if (!db.projectList.isEmpty()) {
             db.projectList.get(0).displayProjectsWithFilters(scanner, db);
-        }else{
+        } else {
             System.out.println("No projects available.");
         }
     }
-    public void viewRegistration(){
-        handledProject.viewListOfRegistration();  // new function for class Project
-    }
-    public void viewApplication(){
-        handledProject.viewListOfApplication();  // new function for class Project
+
+    public void viewRegistration() {
+        handledProject.viewListOfRegistration(); // new function for class Project
     }
 
-    public void assignOfficerToProject(Scanner sc, Database db){
+    public void viewApplication() {
+        handledProject.viewListOfApplication(); // new function for class Project
+    }
+
+    public void assignOfficerToProject(Scanner sc, Database db) {
         System.out.print("Enter registration form ID: ");
-        int ID = sc.nextInt();  
-        sc.nextLine();                        // create ID for registration form
+        int ID = sc.nextInt();
+        sc.nextLine(); // create ID for registration form
         RegistrationForm registerForm = null;
-        List<RegistrationForm> registerList = handledProject.getListOfRegisterForm();   // new function for class Project
-        for(int i=0;i<registerList.size();i++){
-            if(ID == registerList.get(i).getRegistrationID()){
-                registerForm =  registerList.get(i);
+        List<RegistrationForm> registerList = handledProject.getListOfRegisterForm(); // new function for class Project
+        for (int i = 0; i < registerList.size(); i++) {
+            if (ID == registerList.get(i).getRegistrationID()) {
+                registerForm = registerList.get(i);
                 break;
             }
         }
 
-        if(registerForm == null){
+        if (registerForm == null) {
             System.out.println("Your ID you enter is invalid!");
-        }else{
-            System.out.print("Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ");
-            while(true){
+        } else {
+            System.out.print(
+                    "Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ");
+            while (true) {
                 String assign = sc.nextLine();
 
-                if(assign.equals("approve")){
-                    if(handledProject.getNumOfficerSlots()<=0){
+                if (assign.equals("approve")) {
+                    if (handledProject.getNumOfficerSlots() <= 0) {
                         System.out.println("No available officer slot.");
                         break;
                     }
                     registerForm.setRegistrationStatus("approved");
-                    handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots()-1);
+                    handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
                     String officerName = registerForm.getOfficerName();
                     String NRICofficer = registerForm.getOfficerNRIC();
                     String[] currentOfficers = handledProject.getOfficers();
-    
+
                     // Expand and update officer list
                     for (int i = 0; i < currentOfficers.length; i++) {
                         if (currentOfficers[i] == null || currentOfficers[i].isEmpty()) {
-                        
-                                currentOfficers[i] = officerName;
-                                for (Officer o : db.officerList) {
-                                    if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create function in Officer
-                                        o.setAssignedProject(handledProject);
-                                        System.out.println(" Officer " + officerName + " approved and assigned to project " + handledProject.getName());
-                                        break;
-                                    }
+
+                            currentOfficers[i] = officerName;
+                            for (Officer o : db.officerList) {
+                                if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create function in
+                                                                                              // Officer
+                                    o.setAssignedProject(handledProject);
+                                    System.out.println(" Officer " + officerName + " approved and assigned to project "
+                                            + handledProject.getName());
+                                    break;
                                 }
-                                break;
-                            } else {
-                                System.out.println("Officer slots are full for this project.");
-                                return;
                             }
+                            break;
+                        } else {
+                            System.out.println("Officer slots are full for this project.");
+                            return;
                         }
+                    }
                     break;
-                }else if(assign.equals("reject")){
+                } else if (assign.equals("reject")) {
                     registerForm.setRegistrationStatus("rejected");
 
-                }else{
+                } else {
                     System.out.println("Invalid input.Please try again!");
-                }                
+                }
             }
 
         }
     }
 
-    public void manageApplicationForm(Scanner sc){
+    public void manageApplicationForm(Scanner sc) {
         System.out.print("Enter application form ID: ");
-        int ID = sc.nextInt(); 
-        sc.nextLine();                         // create ID for registration form
+        int ID = sc.nextInt();
+        sc.nextLine(); // create ID for registration form
         ApplicationForm applyForm = null;
-        List<ApplicationForm> applyList = handledProject.getListOfApplyForm();   
-        for(int i=0;i<applyList.size();i++){
-            if(ID == applyList.get(i).getApplicationID()){
-                applyForm =  applyList.get(i);
+        List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
+        for (int i = 0; i < applyList.size(); i++) {
+            if (ID == applyList.get(i).getApplicationID()) {
+                applyForm = applyList.get(i);
                 break;
             }
         }
 
-        if(applyForm == null){
+        if (applyForm == null) {
             System.out.println("Your ID you enter is invalid!");
-        }else{
-            System.out.print("Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
-            while(true){
+        } else {
+            System.out.print(
+                    "Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
+            while (true) {
                 String assign = sc.nextLine();
 
-                if(assign.equals("approve")){
+                if (assign.equals("approve")) {
                     applyForm.updateStatus("successful");
 
-                    System.out.println(" Applicant " + applyForm.getApplicantName() + " approved to project " + handledProject.getName());
+                    System.out.println(" Applicant " + applyForm.getApplicantName() + " approved to project "
+                            + handledProject.getName());
                     break;
-                }else if(assign.equals("reject")){
+                } else if (assign.equals("reject")) {
                     applyForm.updateStatus("unsuccessful");
 
-                    System.out.println(" Applicant " + applyForm.getApplicantName() + " rejected to project " + handledProject.getName());                    
-                }else{
+                    System.out.println(" Applicant " + applyForm.getApplicantName() + " rejected to project "
+                            + handledProject.getName());
+                } else {
                     System.out.println("Invalid input.Please try again!");
-                }                
+                }
             }
 
         }
-    }  
-    public void viewWithdrawalRequest(){
+    }
+
+    public void viewWithdrawalRequest() {
         this.handledProject.viewRequestWithdrawal();
     }
-    public void manageWithdrawalRequest(Scanner sc){
+
+    public void manageWithdrawalRequest(Scanner sc) {
 
         System.out.println("Enter application ID with withdrawal request: ");
-        int ID = sc.nextInt();  
+        int ID = sc.nextInt();
         sc.nextLine();
 
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
         ApplicationForm targetForm = null;
 
         for (ApplicationForm form : applyList) {
-            if (form != null && form.getApplicationID() == ID && form.getWithdrawalEnquiry() != null) {
+            if (form != null && form.getApplicationID() == ID && form.getWithdrawalRequest() != null) {
                 targetForm = form;
                 break;
             }
@@ -398,7 +408,7 @@ public class Manager extends UserAccount{
         }
 
         System.out.println("Withdrawal request found for Applicant: " + targetForm.getApplicantName());
-        System.out.println("Message: " + targetForm.getWithdrawalEnquiry());
+        System.out.println("Message: " + targetForm.getWithdrawalRequest());
         System.out.print("Approve withdrawal? (yes/no): ");
         String input = sc.nextLine().trim().toLowerCase();
 
@@ -410,15 +420,15 @@ public class Manager extends UserAccount{
         }
     }
 
-    public void viewAllEnquiries(Database db){
-        for(Project pro : db.projectList){
+    public void viewAllEnquiries(Database db) {
+        for (Project pro : db.projectList) {
             pro.viewEnquiryList();
             System.out.println("\n");
         }
     }
 
     public void viewAndReplyEnquiries(Database db) {
-        for(Project pro : db.projectList){
+        for (Project pro : db.projectList) {
             System.out.println("The list of enquiries in the project " + pro.getName());
             List<Enquiry> lis = pro.getEnquiryList();
             for (Enquiry enquiry : lis) {
@@ -431,6 +441,5 @@ public class Manager extends UserAccount{
             }
         }
     }
-
 
 }

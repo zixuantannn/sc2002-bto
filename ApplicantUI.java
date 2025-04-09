@@ -2,21 +2,20 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ApplicantUI implements ApplicantMenu{
+public class ApplicantUI implements ApplicantMenu {
     Applicant applicant = null;
     Database database = null;
     Scanner scanner = null;
 
-    public ApplicantUI(Applicant applicant, Database database, Scanner scanner){
+    public ApplicantUI(Applicant applicant, Database database, Scanner scanner) {
         this.applicant = applicant;
         this.database = database;
         this.scanner = scanner;
     }
 
-    public void logout(){
+    public void logout() {
         System.out.println("You have successfully logged out.");
     }
-
 
     public void displayMenu() {
         int choice = 0;
@@ -34,18 +33,17 @@ public class ApplicantUI implements ApplicantMenu{
             System.out.println("9. Remove Enquiry...");
             System.out.println("10. Logout\n");
             System.out.print("Choose an option: ");
-            
-            
+
             try {
                 System.out.print("\nEnter your choice: ");
                 choice = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine(); 
-                continue; 
+                scanner.nextLine();
+                continue;
             }
-            
+
             switch (choice) {
                 case 1:
                     viewAllAvailableProjects();
@@ -84,17 +82,18 @@ public class ApplicantUI implements ApplicantMenu{
         System.out.println("\n");
     }
 
-    public void viewAllAvailableProjects(){
+    public void viewAllAvailableProjects() {
         System.out.println("Displaying all available BTO projects based on your user group and visibility...");
         this.applicant.viewAvailableProjects(this.database, false);
     }
 
     public void applyForBTOProject() {
         System.out.println("Applying for a BTO project...");
-        this.applicant.applyForProject(this.database, this.scanner);;
+        this.applicant.applyForProject(this.database, this.scanner);
+        ;
     }
 
-    public void viewApplyFormStatus(){
+    public void viewApplyFormStatus() {
         this.applicant.viewApplicationStatus();
     }
 
@@ -105,27 +104,27 @@ public class ApplicantUI implements ApplicantMenu{
 
     public void withdrawalApplyForm() {
         System.out.println("Withdrawing the application form...");
-        this.applicant.withdrawalApplication();
+        this.applicant.withdrawalApplication(this.scanner);
     }
 
     public void submitEnquiry() {
         System.out.println("Submitting an enquiry...");
-        this.applicant.sendEnquiry(this.database, this.scanner);
+        this.applicant.sendEnquiry(this.scanner);
     }
 
-    public void displayEnquiries(){
+    public void displayEnquiries() {
         System.out.println("Displaying all enquiries...");
-        this.applicant.displayMyEnquiries(this.database);
+        this.applicant.displayMyEnquiries();
     }
 
-    public void editEnquiries(){
+    public void editEnquiries() {
         System.out.println("Modify enquiry...");
-        this.applicant.modifyEnquiry(this.database, this.scanner);
+        this.applicant.modifyEnquiry();
     }
 
-    public void removeEnquiries(){
+    public void removeEnquiries() {
         System.out.println("Remove enquiry...");
-        this.applicant.removeEnquiry(this.database, this.scanner);
+        this.applicant.removeEnquiry();
     }
 
 }
