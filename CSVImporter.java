@@ -77,14 +77,14 @@ public class CSVImporter {
                 String[] tokens = line.split(",");
                 String name = tokens[0];
                 String neighborhood = tokens[1];
-                int numType1 = Integer.parseInt(tokens[2]);
-                int sellPriceType1 = Integer.parseInt(tokens[3]);
-                int numType2 = Integer.parseInt(tokens[4]);
-                int sellPriceType2 = Integer.parseInt(tokens[5]);
-                Date openDate = sdf.parse(tokens[6]);
-                Date closeDate = sdf.parse(tokens[7]);
-                String manager = tokens[8];
-                int officerSlots = Integer.parseInt(tokens[9]);
+                int numType1 = Integer.parseInt(tokens[3]);
+                int sellPriceType1 = Integer.parseInt(tokens[4]);
+                int numType2 = Integer.parseInt(tokens[6]);
+                int sellPriceType2 = Integer.parseInt(tokens[7]);
+                Date openDate = sdf.parse(tokens[8]);
+                Date closeDate = sdf.parse(tokens[9]);
+                String manager = tokens[10];
+                int officerSlots = Integer.parseInt(tokens[11]);
 
                 String[] officers = new String[10];
                 if (tokens.length > 10) {
@@ -93,8 +93,9 @@ public class CSVImporter {
                     }
                 }
 
-                Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2, openDate, closeDate, manager, officerSlots, officers);
-                db.projectList.add(project);
+                Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2,
+                        openDate, closeDate, manager, officerSlots, officers);
+                Database.projectList.add(project);
             }
         } catch (Exception e) {
             e.printStackTrace();
