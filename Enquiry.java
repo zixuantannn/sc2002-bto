@@ -1,3 +1,4 @@
+import java.util.Date;
 
 public class Enquiry {
     private static int count_enquiry = 1;
@@ -5,6 +6,7 @@ public class Enquiry {
     private String senderNRIC;
     private String content;
     private String response;
+    private Date date;
 
     public Enquiry() {
         enquiryID = count_enquiry++;
@@ -15,6 +17,7 @@ public class Enquiry {
         this.enquiryID = count_enquiry++;
         this.content = content;
         this.response = null;
+        this.date = new Date(); // record current date and time
     }
 
     public int getID() {
@@ -52,14 +55,14 @@ public class Enquiry {
         // Print the table header
         System.out.format(
                 "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
-        System.out.format(rowFormat, "Enquiry ID", "Sender NRIC", "Content", "Response");
+        System.out.format(rowFormat, "Enquiry ID", "Created On", "Content", "Response");
         System.out.format(
                 "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
 
         // Print the enquiry details in a row
         System.out.format(rowFormat,
                 enquiryID,
-                senderNRIC,
+                date.toString(),
                 (content != null ? content : "No content provided"),
                 (response != null ? response : "No response yet"));
 

@@ -33,7 +33,6 @@ public class Applicant extends UserAccount {
     }
 
     public List<Project> viewAvailableProjects(Database db, boolean ok) {
-        System.out.println("Displaying available projects...");
         List<Project> allProjects = db.projectList;
         List<Project> filteredProjects = new ArrayList<>();
 
@@ -74,30 +73,31 @@ public class Applicant extends UserAccount {
     }
 
     public void applyForProject(Database db, Scanner sc) {
-        if (!appliedForProject) {
-            System.out.print("Enter your project name you want to apply: ");
-            String appliedProject = sc.nextLine();
-            List<Project> filteredProjects = this.viewAvailableProjects(db, true);
-
-            boolean found = false;
-            for (int i = 0; i < filteredProjects.size(); i++) {
-                if (appliedProject.equalsIgnoreCase(filteredProjects.get(i).getName())) {
-                    found = true;
-                    this.applyForm = new ApplicationForm(this,
-                            appliedProject,
-                            "Pending");
-
-                    System.out.println(" Application submitted successfully!");
-                    this.appliedForProject = true;
-                    filteredProjects.get(i).getListOfApplyForm().add(this.applyForm);
-                    break;
-                }
-            }
-            if (!found) {
-                System.out.println("Not found!!!");
-            }
-        } else {
+        if (appliedForProject) {
             System.out.println("Cannot apply for multiple projects.");
+            return;
+        }
+        List<Project> filteredProjects = this.viewAvailableProjects(db, true);
+        if (filteredProjects.isEmpty()) {
+            System.out.println("No available project to apply!");
+        }
+        System.out.print("Enter your project name you want to apply: ");
+        String appliedProject = sc.nextLine();
+
+        Project project = filteredProjects.stream()
+                .filter(p -> appliedProject.equalsIgnoreCase(p.getName())) // filter for project that name matches with
+                                                                           // appliedProject
+                .findFirst() // find the first match and return as an Optional
+                .orElse(null); // if optional is empty (no match), return null
+
+        if (project == null) {
+            System.out.println("Project not found !");
+        } else {
+            this.applyForm = new ApplicationForm(this, appliedProject, "Pending");
+            this.appliedForProject = true;
+            project.getListOfApplyForm().add(this.applyForm);
+            this.projectApplied.add(applyForm);
+            System.out.println("Application submitted successfully !");
         }
     }
 
@@ -122,7 +122,7 @@ public class Applicant extends UserAccount {
             System.out.println("Project Name: " + projectApplied.get(0).getAppliedProjectName() +
                     " | Application Status: " + projectApplied.get(0).getApplicationStatus());
         } else {
-            System.out.println("You have no applied project.");
+            System.out.println("You have no latest project.");
         }
     }
 
@@ -169,6 +169,7 @@ public class Applicant extends UserAccount {
 
         System.out.print("Please enter the Enquiry ID to edit: ");
         int id = sc.nextInt();
+        sc.nextLine();
         boolean found = false;
         for (Enquiry enquiry : enquiryList) {
             if (enquiry.getID() == id) {
@@ -196,41 +197,50 @@ public class Applicant extends UserAccount {
             System.out.println("You have no enquiries to edit.");
             return;
         }
+
         // Display all enquiries
         displayMyEnquiries();
 
         System.out.print("Please enter the Enquiry ID to delete: ");
         int id = sc.nextInt();
-        sc.nextLine();
+        sc.nextLine(); // To remove newline character left by nextInt()
 
         boolean found = false;
-        for (Enquiry enquiry : enquiryList) {
-            if (enquiry.getID() == id) {
-                found = true;
-                if (enquiry.getResponse() == null) {
-                    System.out.println("Chosen Enquiry: \n Enquiry ID:" + enquiry.getID() + "|| Content: "
-                            + enquiry.getContent() + " || Response: " + enquiry.getResponse());
-                    String choice;
-                    do {
-                        System.out.print("Are you sure want to delete this enquiry (yes/no):");
-                        choice = sc.next().toLowerCase();
-                    } while (!choice.equals("yes") && !choice.equals("no"));
+        Enquiry enquiryToRemove = findEnquiryByID(id, enquiryList);
+        if (enquiryToRemove != null) {
+            if (enquiryToRemove.getResponse() == null) {
+                System.out.println("Chosen Enquiry: \nEnquiry ID:" + enquiryToRemove.getID() + " | Content: "
+                        + enquiryToRemove.getContent() + "  | Response: " + enquiryToRemove.getResponse());
+                String choice;
+                do {
+                    System.out.print("Are you sure want to delete this enquiry (yes/no):");
+                    choice = sc.next().toLowerCase();
+                } while (!choice.equals("yes") && !choice.equals("no"));
 
-                    if (choice.equals("yes")) {
-                        enquiryList.remove(enquiry);
-                        System.out.println("Enquiry have been removed.");
-                    } else {
-                        System.out.println("No changes have been done");
-                    }
+                if (choice.equals("yes")) {
+                    enquiryList.remove(enquiryToRemove);
+                    System.out.println("Enquiry have been removed.");
                 } else {
-                    System.out.println("Enquiry has been answered. No further changes available.");
+                    System.out.println("No changes have been done");
                 }
-                break;
+            } else {
+                System.out.println("Enquiry has been answered. No further changes available.");
             }
-            if (!found) {
-                System.out.println("Enquiry ID not found. Please check again.");
-            }
+
+        } else {
+            System.out.println("Enquiry ID not found. Please check again.");
         }
+
+    }
+
+    public Enquiry findEnquiryByID(int id, List<Enquiry> list) { // can move it to EnquiryManager class
+        for (Enquiry enquiry : list) {
+            if (enquiry.getID() == id) {
+                return enquiry;
+            }
+
+        }
+        return null;
     }
 
 }

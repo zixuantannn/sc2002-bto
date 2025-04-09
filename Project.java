@@ -298,7 +298,7 @@ public class Project {
 
     public void viewRequestWithdrawal() {
         for (ApplicationForm app : listOfApplyForm) {
-            Enquiry requestWithdrawal = app.getWithdrawalRequest();
+            WithdrawalRequest requestWithdrawal = app.getWithdrawalRequest();
             System.out.println("Applicant " + app.getApplicantName() + " : ");
             requestWithdrawal.viewDetails();
         }
