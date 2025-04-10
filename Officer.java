@@ -3,20 +3,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-
-public class Officer extends Applicant{
+public class Officer extends Applicant {
 
     private Project assignedProject = null;
-    private List<RegistrationForm> registrationForms = new ArrayList<>(); 
+    private List<RegistrationForm> registrationForms = new ArrayList<>();
+    private EnquiryManager eManager;
 
-    public Officer(String name, String NRIC, int age, String maritalStatus){
+    public Officer(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
+        this.eManager = new EnquiryManager();
     }
 
-    public Officer(String name, String NRIC, int age, String maritalStatus, String password){
+    public Officer(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-    }   
-    
+        this.eManager = new EnquiryManager();
+    }
+
     public void setAssignedProject(Project project) {
         this.assignedProject = project;
     }
@@ -25,7 +27,7 @@ public class Officer extends Applicant{
         return assignedProject;
     }
 
-    public List<RegistrationForm> getRegistrationForms(){
+    public List<RegistrationForm> getRegistrationForms() {
         return this.registrationForms;
     }
 
@@ -37,7 +39,7 @@ public class Officer extends Applicant{
             return;
         }
 
-        if (assignedProject != null){
+        if (assignedProject != null) {
             System.out.println("Cannot register as an officer when handling a project as an officer.");
         }
 
@@ -47,17 +49,18 @@ public class Officer extends Applicant{
             return;
         }
 
-        RegistrationForm newForm = new RegistrationForm(this.getName(), this.getNRIC(), this.getAge(), this.getMaritalStatus(), project);
+        RegistrationForm newForm = new RegistrationForm(this.getName(), this.getNRIC(), this.getAge(),
+                this.getMaritalStatus(), project);
         Project registeredProject = null;
-        for(Project tmp : db.projectList){
-            if(project.equals(tmp.getName())){
+        for (Project tmp : db.projectList) {
+            if (project.equals(tmp.getName())) {
                 registeredProject = tmp;
             }
         }
-        if(registeredProject == null){
+        if (registeredProject == null) {
             System.out.println("Your project you are registering is not available!");
             return;
-        }else{
+        } else {
             registeredProject.getListOfRegisterForm().add(newForm);
             registrationForms.add(newForm);
         }
@@ -65,15 +68,17 @@ public class Officer extends Applicant{
     }
 
     public void viewRegistrationStatus() {
-        if(registrationForms.size() == 0){
+        if (registrationForms.size() == 0) {
             System.out.println("You have no registration form.");
-            return ;
+            return;
         }
         for (RegistrationForm reg : this.registrationForms) {
-            System.out.println("The registration status of " + "your registered project " + reg.getRegisteredProjectName() + " : " + reg.getRegistrationStatus());
+            System.out.println("The registration status of " + "your registered project "
+                    + reg.getRegisteredProjectName() + " : " + reg.getRegistrationStatus());
         }
 
     }
+
     public void viewHandledProjectDetails() {
         if (assignedProject != null) {
             assignedProject.viewProjectDetails();
@@ -84,7 +89,9 @@ public class Officer extends Applicant{
 
     public void viewAndReplyEnquiries() {
         if (assignedProject != null) {
-            for (Enquiry enquiry : assignedProject.getEnquiryList()) {
+            eManager.viewProjectEnquiries(assignedProject.getName());
+            List<Enquiry> enqList = eManager.getProjectEnquiries(assignedProject.getName());
+            for (Enquiry enquiry : enqList) {
                 System.out.println("Enquiry: " + enquiry.getContent());
                 System.out.print("Enter your reply: ");
                 Scanner sc = new Scanner(System.in);
@@ -92,7 +99,7 @@ public class Officer extends Applicant{
                 enquiry.updateResponse(reply);
                 System.out.println("Response saved.");
             }
-        }else{
+        } else {
             System.out.println("You have no handled project!");
         }
     }
@@ -102,27 +109,27 @@ public class Officer extends Applicant{
             System.out.println("No project is currently assigned to you.");
             return;
         }
-        
+
         System.out.print("Enter applicant NRIC: ");
         String applicantNRIC = scanner.nextLine().trim();
-        
+
         ApplicationForm targetApplication = null;
         for (ApplicationForm app : assignedProject.getListOfApplyForm()) {
             if (app.getApplicantNRIC().equals(applicantNRIC) &&
-                app.getApplicationStatus().equalsIgnoreCase("successful")) {
+                    app.getApplicationStatus().equalsIgnoreCase("successful")) {
                 targetApplication = app;
                 break;
             }
         }
-        
+
         if (targetApplication == null) {
             System.out.println("No matching successful application found for NRIC: " + applicantNRIC);
             return;
         }
-        
+
         System.out.print("Enter flat type to book (2-Room / 3-Room): ");
         String flatType = scanner.nextLine().trim();
-        
+
         if (flatType.equalsIgnoreCase("2-Room")) {
             if (assignedProject.getNumType1() <= 0) {
                 System.out.println("No available 2-Room flats.");
@@ -139,9 +146,9 @@ public class Officer extends Applicant{
             System.out.println("Invalid flat type specified.");
             return;
         }
-        
+
         targetApplication.updateStatus("booked");
-        
+
         Applicant applicant = null;
         for (Applicant a : db.applicantList) {
             if (a.getNRIC().equalsIgnoreCase(applicantNRIC)) {
@@ -153,13 +160,14 @@ public class Officer extends Applicant{
             System.out.println("Applicant record not found.");
             return;
         }
-        
+
         System.out.println("Flat booking successful for applicant: " + applicant.getName());
-        FlatBooking flatBooking = new FlatBooking(applicant.getName(), applicant.getNRIC(), applicant.getAge(), applicant.getMaritalStatus(), assignedProject.getName(), flatType);
+        FlatBooking flatBooking = new FlatBooking(applicant.getName(), applicant.getNRIC(), applicant.getAge(),
+                applicant.getMaritalStatus(), assignedProject.getName(), flatType);
         generateReceipt(flatBooking);
     }
 
-    public void generateReceipt(FlatBooking flatBooking){
+    public void generateReceipt(FlatBooking flatBooking) {
         flatBooking.viewFlatBookingDetails();
     }
 
