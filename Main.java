@@ -1,8 +1,6 @@
 import java.util.InputMismatchException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Scanner;
+
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
@@ -223,15 +221,15 @@ public class Main {
         if (password.equals(user.getPassword())) {
             System.out.println("\nLogin successful! Welcome, " + role + " " + user.getName() + "!");
             if ("password".equals(user.getPassword())) {
-                System.out.println("You are logging in with a default password, please change your password.");
-                System.out.print("Enter your new password:");
-                String newPassword = scanner.nextLine();
+                System.out.println("You are logging in with a default password, please change your password to a strong one (Alphanumeric and 8+ characters).");
+                String newPassword = InputValidation.getPassword("Enter your new password: ", "Password must be alphanumeric and at least 8 characters long.");
                 user.changePassword(newPassword);
                 System.out.println("You have changed your password successfully.");
             }
             System.out.println("\nWelcome, " + user.getName() + "! You are logged in as " + role + ".");
         } else {
             System.out.println("Incorrect password.");
+            return false;
         }
         return true;
     }
