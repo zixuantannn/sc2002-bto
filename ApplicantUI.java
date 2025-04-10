@@ -84,7 +84,7 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void viewAllAvailableProjects() {
         System.out.println("Displaying all available BTO projects based on your user group and visibility...");
-        this.applicant.viewAvailableProjects(this.database, false);
+        this.applicant.viewAvailableProjects(this.database);
     }
 
     public void applyForBTOProject() {
@@ -109,22 +109,22 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void submitEnquiry() {
         System.out.println("Submitting an enquiry...");
-        this.applicant.sendEnquiry(this.scanner);
+        this.applicant.sendEnquiry(this.scanner, this.database);
     }
 
     public void displayEnquiries() {
         System.out.println("Displaying all enquiries...");
-        this.applicant.displayMyEnquiries();
+        this.applicant.displayEnquiry();
     }
 
     public void editEnquiries() {
         System.out.println("Modify enquiry...");
-        this.applicant.modifyEnquiry();
+        this.applicant.modifyEnquiry(this.scanner);
     }
 
     public void removeEnquiries() {
         System.out.println("Remove enquiry...");
-        this.applicant.removeEnquiry();
+        this.applicant.removeEnquiry(this.scanner);
     }
 
 }

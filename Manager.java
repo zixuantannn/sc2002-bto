@@ -371,7 +371,8 @@ public class Manager extends UserAccount {
                     break;
                 } else if (assign.equals("reject")) {
                     applyForm.updateStatus("unsuccessful");
-
+                    applyForm.getApplicant().setApplyForm(null);
+                    applyForm.getApplicant().setAvailablilty();
                     System.out.println(" Applicant " + applyForm.getApplicantName() + " rejected to project "
                             + handledProject.getName());
                 } else {

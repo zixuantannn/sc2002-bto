@@ -39,6 +39,10 @@ public class ApplicationForm {
         this.registrationStatus = registrationStatus;
     }
 
+    public Applicant getApplicant() {
+        return applicant;
+    }
+
     public void viewDetails() {
         System.out.println("===== Application Details =====");
         System.out.println("Application ID: " + applicationID);

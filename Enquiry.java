@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class Enquiry {
     private static int count_enquiry = 1;
@@ -7,9 +8,15 @@ public class Enquiry {
     private String content;
     private String response;
     private Date date;
+    private String projectName;
 
-    public Enquiry() {
-        enquiryID = count_enquiry++;
+    public Enquiry(String senderNRIC, String content, String projectName) {
+        this.senderNRIC = senderNRIC;
+        this.enquiryID = count_enquiry++;
+        this.content = content;
+        this.response = null;
+        this.date = new Date();
+        this.projectName = projectName;
     }
 
     public Enquiry(String senderNRIC, String content) {
@@ -49,26 +56,26 @@ public class Enquiry {
     }
 
     public void viewDetails() {
-        // Define a format string for the table rows
-        String rowFormat = "| %-10s | %-15s | %-40s | %-40s |%n";
-
-        // Print the table header
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        // Define a format string for the table rows with the new "Project Name" column
+        String rowFormat = "| %-10s | %-10s | %-21s | %-35s | %-15s |%n";
+        // Print the table header with a more defined border
         System.out.format(
-                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
-        System.out.format(rowFormat, "Enquiry ID", "Created On", "Content", "Response");
+                "+------------+------------+--------------------+-----------------------------------+-----------------+%n");
+        System.out.format(rowFormat, "Enquiry ID", "Created On", "Project Name", "Content", "Response");
         System.out.format(
-                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
+                "+------------+------------+--------------------+-----------------------------------+-----------------+%n");
 
         // Print the enquiry details in a row
         System.out.format(rowFormat,
                 enquiryID,
-                date.toString(),
-                (content != null ? content : "No content provided"),
+                dateFormat.format(date),
+                (projectName != null ? projectName : "-"),
+                content,
                 (response != null ? response : "No response yet"));
 
-        // Print the closing border
+        // Print the closing border with a clear end line
         System.out.format(
-                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
+                "+------------+------------+--------------------+-----------------------------------+-----------------+%n");
     }
-
 }

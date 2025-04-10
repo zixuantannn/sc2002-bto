@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,20 +9,21 @@ public class Applicant extends UserAccount {
     private int applicantId;
     private boolean appliedForProject;
     private ApplicationForm applyForm = null;
+    private EnquiryManager manager;
 
     private List<ApplicationForm> projectApplied;
-    private List<Enquiry> enquiryList;
 
     public Applicant(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
         this.appliedForProject = false;
+        this.manager = new EnquiryManager();
     }
 
     public Applicant(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
         this.appliedForProject = false;
         this.projectApplied = new ArrayList<>(); // need read from excel
-        this.enquiryList = new ArrayList<>(); // need read from excel
+        this.manager = new EnquiryManager();
     }
 
     public ApplicationForm getApplyForm() {
@@ -32,7 +34,11 @@ public class Applicant extends UserAccount {
         this.applyForm = form;
     }
 
-    public List<Project> viewAvailableProjects(Database db, boolean ok) {
+    public void setAvailablilty() {
+        this.appliedForProject = false;
+    }
+
+    public List<Project> filterAvailableProject(Database db) {
         List<Project> allProjects = db.projectList;
         List<Project> filteredProjects = new ArrayList<>();
 
@@ -52,12 +58,14 @@ public class Applicant extends UserAccount {
         }
 
         filteredProjects.sort(Comparator.comparing(Project::getName));
+        return filteredProjects;
+    }
+
+    public void viewAvailableProjects(List<Project> filteredProjects) {
+
         if (filteredProjects.isEmpty()) {
             System.out.println("No projects available.");
         } else {
-            if (ok)
-                return filteredProjects;
-            System.out.println("List of Projects: ");
             boolean check = false;
             for (Project project : filteredProjects) {
                 if (project.getVisibility().equals("on")) {
@@ -69,7 +77,6 @@ public class Applicant extends UserAccount {
                 System.out.println("No available project to apply!");
             }
         }
-        return filteredProjects;
     }
 
     public void applyForProject(Database db, Scanner sc) {
@@ -77,7 +84,8 @@ public class Applicant extends UserAccount {
             System.out.println("Cannot apply for multiple projects.");
             return;
         }
-        List<Project> filteredProjects = this.viewAvailableProjects(db, true);
+        List<Project> filteredProjects = this.filterAvailableProject(db);
+        this.viewAvailableProjects(filteredProjects);
         if (filteredProjects.isEmpty()) {
             System.out.println("No available project to apply!");
         }
@@ -142,105 +150,72 @@ public class Applicant extends UserAccount {
         }
     }
 
-    public void sendEnquiry(Scanner sc) {
-        System.out.println("Please enter your enquiry details: ");
-        String content = sc.nextLine();
-        Enquiry newEnquiry = new Enquiry(this.getNRIC(), content);
-        enquiryList.add(newEnquiry);
-        System.out.println("New Enquiry submitted.");
-    }
+    public void sendEnquiry(Scanner sc, Database db) {
+        String content;
+        int choice = -1;
+        do {
+            System.out.println("----- Enquiry Type -----");
+            System.out.println("1. General Enquiry");
+            System.out.println("2. Project Related Enquiry");
 
-    public void displayMyEnquiries() {
-        for (Enquiry each : enquiryList) {
-            each.viewDetails();
-        }
-    }
+            try {
+                System.out.print("What type of enquiry do you want to submit (1/2): ");
+                choice = sc.nextInt();
+                sc.nextLine(); // consume newline
 
-    public void modifyEnquiry() {
-        Scanner sc = new Scanner(System.in);
-
-        if (enquiryList.isEmpty()) {
-            System.out.println("You have no enquiries to edit.");
-            return;
-        }
-
-        // Display all enquiries
-        displayMyEnquiries();
-
-        System.out.print("Please enter the Enquiry ID to edit: ");
-        int id = sc.nextInt();
-        sc.nextLine();
-        boolean found = false;
-        for (Enquiry enquiry : enquiryList) {
-            if (enquiry.getID() == id) {
-                found = true;
-                if (enquiry.getResponse() == null) { // Enquiry have not been answered
-                    System.out.println("Please enter the new enquiry: ");
-                    String newContent = sc.nextLine();
-                    enquiry.updateContent(newContent);
-                    System.out.println("Enquiry content updated successfully.");
-                } else { // Enquiry have been answered
-                    System.out.println("Enquiry has been answered. No further changes available.");
+                if (choice != 1 && choice != 2) {
+                    System.out.println("Invalid choice. Please enter 1 or 2 only.");
                 }
-                break;
+
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine(); // consume invalid input
             }
+
+        } while (choice != 1 && choice != 2);
+
+        if (choice == 1) {
+            // General enquiry
+            System.out.print("Enter your enquiry content: ");
+            content = sc.nextLine();
+            manager.createEnquiry(this.getNRIC(), content);
+
+        } else if (choice == 2) {
+            // Project-related enquiry
+            List<Project> availableProjects = this.filterAvailableProject(db);
+            if (availableProjects.isEmpty()) {
+                System.out.println("No available projects to make an enquiry about.");
+                return;
+            }
+
+            System.out.print("Enter the project name: ");
+            String projectName = sc.nextLine();
+
+            boolean found = availableProjects.stream()
+                    .anyMatch(p -> p.getName().equalsIgnoreCase(projectName));
+
             if (!found) {
-                System.out.println("Enquiry ID not found. Please check again.");
+                System.out.println("Project not found in available list. Enquiry not submitted.");
+                return;
             }
-
-        }
-    }
-
-    public void removeEnquiry() {
-        Scanner sc = new Scanner(System.in);
-        if (enquiryList.isEmpty()) {
-            System.out.println("You have no enquiries to edit.");
-            return;
-        }
-
-        // Display all enquiries
-        displayMyEnquiries();
-
-        System.out.print("Please enter the Enquiry ID to delete: ");
-        int id = sc.nextInt();
-        sc.nextLine(); // To remove newline character left by nextInt()
-
-        boolean found = false;
-        Enquiry enquiryToRemove = findEnquiryByID(id, enquiryList);
-        if (enquiryToRemove != null) {
-            if (enquiryToRemove.getResponse() == null) {
-                System.out.println("Chosen Enquiry: \nEnquiry ID:" + enquiryToRemove.getID() + " | Content: "
-                        + enquiryToRemove.getContent() + "  | Response: " + enquiryToRemove.getResponse());
-                String choice;
-                do {
-                    System.out.print("Are you sure want to delete this enquiry (yes/no):");
-                    choice = sc.next().toLowerCase();
-                } while (!choice.equals("yes") && !choice.equals("no"));
-
-                if (choice.equals("yes")) {
-                    enquiryList.remove(enquiryToRemove);
-                    System.out.println("Enquiry have been removed.");
-                } else {
-                    System.out.println("No changes have been done");
-                }
-            } else {
-                System.out.println("Enquiry has been answered. No further changes available.");
-            }
-
-        } else {
-            System.out.println("Enquiry ID not found. Please check again.");
+            System.out.print("Enter your enquiry content: ");
+            content = sc.nextLine();
+            manager.createEnquiry(this.getNRIC(), content, projectName);
         }
 
     }
 
-    public Enquiry findEnquiryByID(int id, List<Enquiry> list) { // can move it to EnquiryManager class
-        for (Enquiry enquiry : list) {
-            if (enquiry.getID() == id) {
-                return enquiry;
-            }
+    public void displayEnquiry() {
+        manager.displayMyEnquiries();
+    }
 
-        }
-        return null;
+    public void modifyEnquiry(Scanner sc) {
+        manager.modifyEnquiry(sc);
+    }
+
+    public void removeEnquiry(Scanner sc) {
+        manager.removeEnquriy(sc);
+
     }
 
 }
