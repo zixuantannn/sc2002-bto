@@ -87,8 +87,12 @@ public class Project {
         this.numType1 = numType1;
     }
 
-    public int getSellPriceType1() {
+    public int getSellPriceType1(){
         return sellPriceType1;
+    }
+
+    public void setSellPriceType1(int sellPriceType1) {
+        this.sellPriceType1 = sellPriceType1;
     }
 
     public int getNumType2() {
@@ -99,10 +103,14 @@ public class Project {
         this.numType2 = numType2;
     }
 
-    public int getSellPriceType2() {
+    public int getSellPriceType2(){
         return sellPriceType2;
     }
 
+    public void setSellPriceType2(int sellPriceType2) {
+        this.sellPriceType2 = sellPriceType2;
+    }
+    
     public Date getOpenDate() {
         return openDate;
     }
