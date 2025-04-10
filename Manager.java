@@ -1,27 +1,23 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Date;
 
-public class Manager extends UserAccount {
+
+public class Manager extends UserAccount{
     private Project handledProject = null;
     private EnquiryManager manager;
-
-    public Manager(String name, String NRIC, int age, String maritalStatus) {
+    public Manager(String name, String NRIC, int age, String maritalStatus){
         super(name, NRIC, age, maritalStatus);
     }
 
-    public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
+    public Manager(String name, String NRIC, int age, String maritalStatus, String password){
         super(name, NRIC, age, maritalStatus, password);
         this.manager = new EnquiryManager();
-    }
-
+    }      
     public void setHandledProject(Project p) {
-        this.handledProject = p;
-    }
+    this.handledProject = p;
+}
 
     public Project getHandledProject() {
         return this.handledProject;
@@ -29,207 +25,215 @@ public class Manager extends UserAccount {
 
     public void createProjectListing(Scanner sc, Database db) {
         try {
-            System.out.print("Enter project name: ");
-            String name = sc.nextLine();
-
-            System.out.print("Enter neighborhood: ");
-            String neighborhood = sc.nextLine();
-
-            System.out.print("Enter number of 2-Room flats: ");
-            int numType1 = sc.nextInt();
-            sc.nextLine();
-
-            System.out.print("Enter selling price for 2-Room flats: ");
-            int sellPriceType1 = sc.nextInt();
-            sc.nextLine();
-
-            System.out.print("Enter number of 3-Room flats: ");
-            int numType2 = sc.nextInt();
-            sc.nextLine();
-
-            System.out.print("Enter selling price for 3-Room flats: ");
-            int sellPriceType2 = sc.nextInt();
-            sc.nextLine();
-
-            System.out.print("Enter application opening date (yyyy-MM-dd): ");
-            String openDateStr = sc.nextLine();
-            System.out.print("Enter application closing date (yyyy-MM-dd): ");
-            String closeDateStr = sc.nextLine();
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date openDate = sdf.parse(openDateStr);
-            Date closeDate = sdf.parse(closeDateStr);
-
-            String manager = this.getName();
-
-            System.out.print("Enter available officer slots (max 10): ");
-            int officerSlots = sc.nextInt();
-            sc.nextLine();
-            if (officerSlots > 10) {
-                System.out.println("Officer slots cannot exceed 10. Setting to 10.");
-                officerSlots = 10;
+            String name = InputValidation.getString("Enter project name: ", s -> !s.isEmpty(), "Project name cannot be empty.");
+            String neighborhood = InputValidation.getString("Enter neighborhood: ", s -> !s.isEmpty(), "Neighborhood cannot be empty.");
+    
+            // Number of 2-Room flats (with automatic price setting to 0 if number is 0)
+            int numType1 = InputValidation.getInt("Enter number of 2-Room flats: ", n -> n >= 0, "Number must be zero or positive.");
+            int sellPriceType1 = 0;
+            if (numType1 > 0) {
+                sellPriceType1 = InputValidation.getInt("Enter selling price for 2-Room flats (positive price): ", p -> p > 0, "Price must be positive.");
             }
+    
+            // Number of 3-Room flats (with automatic price setting to 0 if number is 0)
+            int numType2 = InputValidation.getInt("Enter number of 3-Room flats: ", n -> n >= 0, "Number must be zero or positive.");
+            int sellPriceType2 = 0;
+            if (numType2 > 0) {
+                sellPriceType2 = InputValidation.getInt("Enter selling price for 3-Room flats (positive price): ", p -> p > 0, "Price must be positive.");
+            }
+    
+            Date openDate = InputValidation.getDate("Enter new opening date (yyyy-MM-dd): ", "yyyy-MM-dd", "Invalid date format. Please use yyyy-MM-dd.");
 
+            Date closeDate = null;
+            while (closeDate == null || closeDate.before(openDate)) {
+                closeDate = InputValidation.getDate("Enter new closing date (yyyy-MM-dd): ", "yyyy-MM-dd", "Invalid date format. Please use yyyy-MM-dd.");
+                if (closeDate.before(openDate)) {
+                    System.out.println("Closing date must be after or equal to the opening date. Please try again.");
+                }
+            }
+            String manager = this.getName();
+    
+            int officerSlots = InputValidation.getInt("Enter available officer slots (max 10): ", n -> n >= 0 && n <= 10, "Officer slots must be between 0 and 10.");
+    
             String[] officers = new String[10];
-
+    
             Project newProject = new Project(
-                    name,
-                    neighborhood,
-                    numType1,
-                    sellPriceType1,
-                    numType2,
-                    sellPriceType2,
-                    openDate,
-                    closeDate,
-                    manager,
-                    officerSlots,
-                    officers);
-
+                name,
+                neighborhood,
+                numType1,
+                sellPriceType1,
+                numType2,
+                sellPriceType2,
+                openDate,
+                closeDate,
+                manager,
+                officerSlots,
+                officers
+            );
+    
             db.projectList.add(newProject);
             System.out.println("Project listing created successfully.");
-        } catch (ParseException e) {
-            System.out.println("Invalid date format. Project creation failed.");
+        } catch (Exception e) {
+            System.out.println("An error occurred during project creation.");
         }
     }
+    
+    
 
     public void editProjectListing(Scanner sc, Database db) {
-        System.out.println("Enter the name of the project to edit: ");
-        String projectName = sc.nextLine();
+        String projectName = InputValidation.getString("Enter the name of the project to edit: ", s -> !s.isEmpty(), "Project name cannot be empty.");
         Project target = null;
-
+    
         for (Project p : db.projectList) {
             if (p.getName().equalsIgnoreCase(projectName) && p.getManager().equals(this.getName())) {
                 target = p;
                 break;
             }
         }
-
+    
         if (target == null) {
             System.out.println("Project not found or you do not have permission to edit this project.");
             return;
         }
-
-        System.out.println("Select field to edit:");
-        System.out.println("1. Name");
-        System.out.println("2. Neighborhood");
-        System.out.println("3. Number of 2-Room flats");
-        System.out.println("4. Selling Price for 2-Room flats");
-        System.out.println("5. Number of 3-Room flats");
-        System.out.println("6. Selling Price for 3-Room flats");
-        System.out.println("7. Application Opening Date");
-        System.out.println("8. Application Closing Date");
-        System.out.println("9. Available Officer Slots");
-
-        int choice = sc.nextInt();
-        sc.nextLine();
-
-        switch (choice) {
-            case 1:
-                System.out.println("Enter new project name: ");
-                String newName = sc.nextLine();
-                target.setName(newName);
-                break;
-            case 2:
-                System.out.println("Enter new neighborhood: ");
-                String newNeighborhood = sc.nextLine();
-                target.setNeighborhood(newNeighborhood);
-                break;
-            case 3:
-                System.out.println("Enter new number of 2-Room flats: ");
-                int newNumType1 = sc.nextInt();
-                sc.nextLine();
-                target.setNumType1(newNumType1);
-                break;
-            case 4:
-                System.out.println("Enter new selling price for 2-Room flats: ");
-                int newSellPriceType1 = sc.nextInt();
-                sc.nextLine();
-
-                System.out.println("Edit selling price not implemented. Please add a setter in Project class.");
-                break;
-            case 5:
-                System.out.println("Enter new number of 3-Room flats: ");
-                int newNumType2 = sc.nextInt();
-                sc.nextLine();
-                target.setNumType2(newNumType2);
-                break;
-            case 6:
-                System.out.println("Enter new selling price for 3-Room flats: ");
-                int newSellPriceType2 = sc.nextInt();
-                sc.nextLine();
-
-                System.out.println("Edit selling price not implemented. Please add a setter in Project class.");
-                break;
-            case 7:
-                System.out.println("Enter new opening date (yyyy-MM-dd): ");
-                String newOpenDateStr = sc.nextLine();
-                try {
-                    Date newOpenDate = new SimpleDateFormat("yyyy-MM-dd").parse(newOpenDateStr);
+    
+        // Start the loop to allow multiple edits
+        boolean editing = true;
+        while (editing) {
+            System.out.println("Select field to edit:");
+            System.out.println("1. Name\n2. Neighborhood\n3. Number of 2-Room flats\n4. Selling Price for 2-Room flats\n5. Number of 3-Room flats\n6. Selling Price for 3-Room flats\n7. Application Opening Date\n8. Application Closing Date\n9. Available Officer Slots\n0. Stop editing");
+    
+            int choice = InputValidation.getInt("Enter your choice: ", n -> n >= 0 && n <= 9, "Invalid choice. Enter a number between 0 and 9.");
+    
+            switch (choice) {
+                case 1:
+                    System.out.println("Current project name: " + target.getName());
+                    target.setName(InputValidation.getString("Enter new project name: ", s -> !s.isEmpty(), "Name cannot be empty."));
+                    break;
+                case 2:
+                    System.out.println("Current neighborhood: " + target.getNeighborhood());
+                    target.setNeighborhood(InputValidation.getString("Enter new neighborhood: ", s -> !s.isEmpty(), "Neighborhood cannot be empty."));
+                    break;
+                case 3:
+                    System.out.println("Current number of 2-Room flats: " + target.getNumType1());
+                    int originalNumType1 = target.getNumType1();  // Store the original number of 2-Room flats
+    
+                    // Get the new number of 2-Room flats
+                    int newNumType1 = InputValidation.getInt("Enter new number of 2-Room flats: ", n -> n >= 0, "Must be zero or positive.");
+                    target.setNumType1(newNumType1);
+    
+                    // Check if the number of flats has changed from 0 to greater than 0
+                    if (originalNumType1 == 0 && newNumType1 > 0) {
+                        // Ask for a non-zero price only if the number of flats is being changed from 0 to > 0
+                        int newSellPriceType1 = InputValidation.getInt("Enter selling price for 2-Room flats (positive price): ", p -> p > 0, "Price must be positive.");
+                        target.setSellPriceType1(newSellPriceType1);
+                    } else if (newNumType1 == 0) {
+                        // If number of 2-Room flats is 0, set price to 0
+                        target.setSellPriceType1(0);
+                    }
+                    break;
+                case 4:
+                    System.out.println("Current selling price for 2-Room flats: " + target.getSellPriceType1());
+                    target.setSellPriceType1(InputValidation.getInt("Enter selling price for 2-Room flats (positive price): ", p -> p > 0, "Price must be positive."));
+                    break;
+                case 5:
+                    System.out.println("Current number of 3-Room flats: " + target.getNumType2());
+                    int originalNumType2 = target.getNumType2();  // Store the original number of 3-Room flats
+    
+                    // Get the new number of 3-Room flats
+                    int newNumType2 = InputValidation.getInt("Enter new number of 3-Room flats: ", n -> n >= 0, "Must be zero or positive.");
+                    target.setNumType2(newNumType2);
+    
+                    // Check if the number of flats has changed from 0 to greater than 0
+                    if (originalNumType2 == 0 && newNumType2 > 0) {
+                        // Ask for a non-zero price only if the number of flats is being changed from 0 to > 0
+                        int newSellPriceType2 = InputValidation.getInt("Enter selling price for 3-Room flats (positive price): ", p -> p > 0, "Price must be positive.");
+                        target.setSellPriceType2(newSellPriceType2);
+                    } else if (newNumType2 == 0) {
+                        // If number of 3-Room flats is 0, set price to 0
+                        target.setSellPriceType2(0);
+                    }
+                    break;
+                case 6:
+                    System.out.println("Current selling price for 3-Room flats: " + target.getSellPriceType2());
+                    target.setSellPriceType2(InputValidation.getInt("Enter selling price for 3-Room flats (positive price): ", p -> p > 0, "Price must be positive."));
+                    break;
+                case 7:
+                    System.out.println("Current opening date: " + target.getOpenDate());
+                    System.out.println("Current closing date: " + target.getCloseDate());
+                    Date newOpenDate = null;
+                    while (newOpenDate == null || newOpenDate.after(target.getCloseDate())) {
+                        newOpenDate = InputValidation.getDate("Enter new opening date (yyyy-MM-dd): ", "yyyy-MM-dd", "Invalid date format. Please use yyyy-MM-dd.");
+                        if (newOpenDate.after(target.getCloseDate())) {
+                            System.out.println("Opening date cannot be after the closing date. Please try again.");
+                        }
+                    }
                     target.setOpenDate(newOpenDate);
-                } catch (ParseException e) {
-                    System.out.println("Invalid date format.");
-                }
-                break;
-            case 8:
-                System.out.println("Enter new closing date (yyyy-MM-dd): ");
-                String newCloseDateStr = sc.nextLine();
-                try {
-                    Date newCloseDate = new SimpleDateFormat("yyyy-MM-dd").parse(newCloseDateStr);
+                    break;
+                case 8:
+                    System.out.println("Current opening date: " + target.getOpenDate());
+                    System.out.println("Current closing date: " + target.getCloseDate());
+                    Date newCloseDate = null;
+                    while (newCloseDate == null || newCloseDate.before(target.getOpenDate())) {
+                        newCloseDate = InputValidation.getDate("Enter new closing date (yyyy-MM-dd): ", "yyyy-MM-dd", "Invalid date format. Please use yyyy-MM-dd.");
+                        if (newCloseDate.before(target.getOpenDate())) {
+                            System.out.println("Closing date must be after or equal to the opening date. Please try again.");
+                        }
+                    }
                     target.setCloseDate(newCloseDate);
-                } catch (ParseException e) {
-                    System.out.println("Invalid date format.");
-                }
-                break;
-            case 9:
-                System.out.println("Enter new available officer slots (max 10): ");
-                int newSlots = sc.nextInt();
-                sc.nextLine();
-                if (newSlots > 10) {
-                    System.out.println("Officer slots cannot exceed 10. Setting to 10.");
-                    newSlots = 10;
-                }
-                target.setNumOfficerSlots(newSlots);
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                return;
+                    break;
+                case 9:
+                    System.out.println("Current available officer slots: " + target.getNumOfficerSlots());
+                    target.setNumOfficerSlots(InputValidation.getInt("Enter new available officer slots (max 10): ", n -> n >= 0 && n <= 10, "Officer slots must be between 0 and 10."));
+                    break;
+                case 0:
+                    // Stop editing and exit the loop
+                    editing = false;
+                    System.out.println("Stopping editing. Returning to previous menu...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please select a valid option.");
+                    break;
+            }
         }
-
+    
         System.out.println("Project listing updated successfully.");
     }
-
+    
+    
+    
+    
     public void deleteProjectListing(Scanner sc, Database db) {
         System.out.println("Enter the name of the project to delete: ");
         String projectName = sc.nextLine();
         Project target = null;
-
+    
         for (Project p : db.projectList) {
             if (p.getName().equalsIgnoreCase(projectName) && p.getManager().equals(this.getName())) {
                 target = p;
                 break;
             }
         }
-
+    
         if (target == null) {
             System.out.println("Project not found or you do not have permission to delete this project.");
             return;
         }
-
+    
         db.projectList.remove(target);
         System.out.println("Project listing deleted successfully.");
     }
 
-    public void setVisibility(Scanner sc, Database database) {
+    public void setVisibility(Scanner sc, Database database){
         Project target = null;
         System.out.print("Enter the project name you want to toggle its visibility: ");
         String targetName = sc.nextLine();
-        for (Project project : database.projectList) {
-            if (targetName.equalsIgnoreCase(project.getName())) {
+        for(Project project : database.projectList){
+            if(targetName.equalsIgnoreCase(project.getName())){
                 target = project;
                 break;
             }
         }
-        if (target == null) {
+        if(target == null){
             System.out.println("Your project you are finding is not available.");
             return;
         }
@@ -238,7 +242,7 @@ public class Manager extends UserAccount {
             String visibilityInput = sc.nextLine().trim().toLowerCase();
 
             if (visibilityInput.equals("on")) {
-                target.setVisibility(visibilityInput);
+                target.setVisibility(visibilityInput);     
                 System.out.println("Project visibility set to ON.");
                 break;
             } else if (visibilityInput.equals("off")) {
@@ -252,147 +256,137 @@ public class Manager extends UserAccount {
 
     }
 
-    public void viewAllProject(Database db) {
+    public void  viewAllProject(Database db){
         System.out.println("View all projects: ");
-        for (int i = 0; i < db.projectList.size(); i++) {
-            db.projectList.get(i).viewProjectDetails(); // new function for class Project
+        for(int i=0;i<db.projectList.size();i++){
+            db.projectList.get(i).viewProjectDetails();   // new function for class Project
         }
     }
 
-    public void viewMyProject() {
+    public void viewMyProject(){
         System.out.println("View the details of your handled project:");
         handledProject.viewProjectDetails();
     }
 
-    public void viewFilteredProjects(Scanner scanner, Database db) {
-        if (!db.projectList.isEmpty()) {
+    public void viewFilteredProjects(Scanner scanner, Database db){
+        if(!db.projectList.isEmpty()){
             db.projectList.get(0).displayProjectsWithFilters(scanner, db);
-        } else {
+        }else{
             System.out.println("No projects available.");
         }
     }
-
-    public void viewRegistration() {
-        handledProject.viewListOfRegistration(); // new function for class Project
+    public void viewRegistration(){
+        handledProject.viewListOfRegistration();  // new function for class Project
+    }
+    public void viewApplication(){
+        handledProject.viewListOfApplication();  // new function for class Project
     }
 
-    public void viewApplication() {
-        handledProject.viewListOfApplication(); // new function for class Project
-    }
-
-    public void assignOfficerToProject(Scanner sc, Database db) {
+    public void assignOfficerToProject(Scanner sc, Database db){
         System.out.print("Enter registration form ID: ");
-        int ID = sc.nextInt();
-        sc.nextLine(); // create ID for registration form
+        int ID = sc.nextInt();  
+        sc.nextLine();                        // create ID for registration form
         RegistrationForm registerForm = null;
-        List<RegistrationForm> registerList = handledProject.getListOfRegisterForm(); // new function for class Project
-        for (int i = 0; i < registerList.size(); i++) {
-            if (ID == registerList.get(i).getRegistrationID()) {
-                registerForm = registerList.get(i);
+        List<RegistrationForm> registerList = handledProject.getListOfRegisterForm();   // new function for class Project
+        for(int i=0;i<registerList.size();i++){
+            if(ID == registerList.get(i).getRegistrationID()){
+                registerForm =  registerList.get(i);
                 break;
             }
         }
 
-        if (registerForm == null) {
+        if(registerForm == null){
             System.out.println("Your ID you enter is invalid!");
-        } else {
-            System.out.print(
-                    "Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ");
-            while (true) {
+        }else{
+            System.out.print("Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ");
+            while(true){
                 String assign = sc.nextLine();
 
-                if (assign.equals("approve")) {
-                    if (handledProject.getNumOfficerSlots() <= 0) {
+                if(assign.equals("approve")){
+                    if(handledProject.getNumOfficerSlots()<=0){
                         System.out.println("No available officer slot.");
                         break;
                     }
                     registerForm.setRegistrationStatus("approved");
-                    handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
+                    handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots()-1);
                     String officerName = registerForm.getOfficerName();
                     String NRICofficer = registerForm.getOfficerNRIC();
                     String[] currentOfficers = handledProject.getOfficers();
-
+    
                     // Expand and update officer list
                     for (int i = 0; i < currentOfficers.length; i++) {
                         if (currentOfficers[i] == null || currentOfficers[i].isEmpty()) {
-
-                            currentOfficers[i] = officerName;
-                            for (Officer o : db.officerList) {
-                                if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create function in
-                                                                                              // Officer
-                                    o.setAssignedProject(handledProject);
-                                    System.out.println(" Officer " + officerName + " approved and assigned to project "
-                                            + handledProject.getName());
-                                    break;
+                        
+                                currentOfficers[i] = officerName;
+                                for (Officer o : db.officerList) {
+                                    if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create function in Officer
+                                        o.setAssignedProject(handledProject);
+                                        System.out.println(" Officer " + officerName + " approved and assigned to project " + handledProject.getName());
+                                        break;
+                                    }
                                 }
+                                break;
+                            } else {
+                                System.out.println("Officer slots are full for this project.");
+                                return;
                             }
-                            break;
-                        } else {
-                            System.out.println("Officer slots are full for this project.");
-                            return;
                         }
-                    }
                     break;
-                } else if (assign.equals("reject")) {
+                }else if(assign.equals("reject")){
                     registerForm.setRegistrationStatus("rejected");
 
-                } else {
+                }else{
                     System.out.println("Invalid input.Please try again!");
-                }
+                }                
             }
 
         }
     }
 
-    public void manageApplicationForm(Scanner sc) {
+    public void manageApplicationForm(Scanner sc){
         System.out.print("Enter application form ID: ");
-        int ID = sc.nextInt();
-        sc.nextLine(); // create ID for registration form
+        int ID = sc.nextInt(); 
+        sc.nextLine();                         // create ID for registration form
         ApplicationForm applyForm = null;
-        List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
-        for (int i = 0; i < applyList.size(); i++) {
-            if (ID == applyList.get(i).getApplicationID()) {
-                applyForm = applyList.get(i);
+        List<ApplicationForm> applyList = handledProject.getListOfApplyForm();   
+        for(int i=0;i<applyList.size();i++){
+            if(ID == applyList.get(i).getApplicationID()){
+                applyForm =  applyList.get(i);
                 break;
             }
         }
 
-        if (applyForm == null) {
+        if(applyForm == null){
             System.out.println("Your ID you enter is invalid!");
-        } else {
-            System.out.print(
-                    "Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
-            while (true) {
+        }else{
+            System.out.print("Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
+            while(true){
                 String assign = sc.nextLine();
 
-                if (assign.equals("approve")) {
+                if(assign.equals("approve")){
                     applyForm.updateStatus("successful");
 
-                    System.out.println(" Applicant " + applyForm.getApplicantName() + " approved to project "
-                            + handledProject.getName());
+                    System.out.println(" Applicant " + applyForm.getApplicantName() + " approved to project " + handledProject.getName());
                     break;
-                } else if (assign.equals("reject")) {
+                }else if(assign.equals("reject")){
                     applyForm.updateStatus("unsuccessful");
                     applyForm.getApplicant().setApplyForm(null);
                     applyForm.getApplicant().resetAvailablilty();
-                    System.out.println(" Applicant " + applyForm.getApplicantName() + " rejected to project "
-                            + handledProject.getName());
-                } else {
+                    System.out.println(" Applicant " + applyForm.getApplicantName() + " rejected to project " + handledProject.getName());                    
+                }else{
                     System.out.println("Invalid input.Please try again!");
-                }
+                }                
             }
 
         }
-    }
-
-    public void viewWithdrawalRequest() {
+    }  
+    public void viewWithdrawalRequest(){
         this.handledProject.viewRequestWithdrawal();
     }
-
-    public void manageWithdrawalRequest(Scanner sc) {
+    public void manageWithdrawalRequest(Scanner sc){
 
         System.out.println("Enter application ID with withdrawal request: ");
-        int ID = sc.nextInt();
+        int ID = sc.nextInt();  
         sc.nextLine();
 
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
@@ -423,15 +417,15 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void viewAllEnquiries(Database db) {
-        for (Project pro : db.projectList) { // have not test yet
+    public void viewAllEnquiries(Database db){
+        for(Project pro : db.projectList){
             manager.viewProjectEnquiries(pro.getName());
             System.out.println("\n");
         }
     }
 
     public void viewAndReplyEnquiries(Database db) {
-        for (Project pro : db.projectList) { // have not test yet
+        for(Project pro : db.projectList){
             System.out.println("The list of enquiries in the project " + pro.getName());
             manager.viewProjectEnquiries(pro.getName());
             List<Enquiry> lis = manager.getProjectEnquiries(pro.getName());
@@ -445,5 +439,6 @@ public class Manager extends UserAccount {
             }
         }
     }
+
 
 }
