@@ -49,7 +49,7 @@ public class Applicant extends UserAccount {
                 if (project.getNumType1() > 0) {
                     filteredProjects.add(project);
                 }
-            } else if (super.getAge() > 20 && super.getMaritalStatus().equals("Married")) {
+            } else if (this.getAge() > 20 && this.getMaritalStatus().equals("Married")) {
                 // If either 2-room or 3-room is available and visibility is on
                 if ((project.getNumType1() > 0 || project.getNumType2() > 0)) {
                     filteredProjects.add(project);
