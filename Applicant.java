@@ -34,7 +34,7 @@ public class Applicant extends UserAccount {
         this.applyForm = form;
     }
 
-    public void setAvailablilty() {
+    public void resetAvailablilty() {
         this.appliedForProject = false;
     }
 
