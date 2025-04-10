@@ -8,6 +8,7 @@ import java.util.Date;
 
 public class Manager extends UserAccount {
     private Project handledProject = null;
+    private EnquiryManager manager;
 
     public Manager(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
@@ -15,6 +16,7 @@ public class Manager extends UserAccount {
 
     public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
+        this.manager = new EnquiryManager();
     }
 
     public void setHandledProject(Project p) {
@@ -422,16 +424,17 @@ public class Manager extends UserAccount {
     }
 
     public void viewAllEnquiries(Database db) {
-        for (Project pro : db.projectList) {
-            pro.viewEnquiryList();
+        for (Project pro : db.projectList) { // have not test yet
+            manager.viewProjectEnquiries(pro.getName());
             System.out.println("\n");
         }
     }
 
     public void viewAndReplyEnquiries(Database db) {
-        for (Project pro : db.projectList) {
+        for (Project pro : db.projectList) { // have not test yet
             System.out.println("The list of enquiries in the project " + pro.getName());
-            List<Enquiry> lis = pro.getEnquiryList();
+            manager.viewProjectEnquiries(pro.getName());
+            List<Enquiry> lis = manager.getProjectEnquiries(pro.getName());
             for (Enquiry enquiry : lis) {
                 System.out.println("Enquiry: " + enquiry.getContent());
                 System.out.print("Enter your reply: ");

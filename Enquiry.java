@@ -25,6 +25,11 @@ public class Enquiry {
         this.content = content;
         this.response = null;
         this.date = new Date(); // record current date and time
+        this.projectName = null;
+    }
+
+    public String getProjectName() {
+        return projectName;
     }
 
     public int getID() {

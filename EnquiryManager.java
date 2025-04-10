@@ -116,4 +116,27 @@ public class EnquiryManager {
         }
         return null;
     }
+
+    public void viewProjectEnquiries(String projectName) {
+        List<Enquiry> projectEnquiries = getProjectEnquiries(projectName);
+        if (projectEnquiries.isEmpty()) {
+            System.out.println("No enquiries for the project: " + projectName);
+        } else {
+            for (Enquiry enquiry : projectEnquiries) {
+                enquiry.viewDetails();
+            }
+        }
+    }
+
+    public List<Enquiry> getProjectEnquiries(String projectName) {
+        List<Enquiry> projectEnquiries = new ArrayList<>();
+
+        // Filter enquiries by project name
+        for (Enquiry enquiry : allEnquries) {
+            if (enquiry.getProjectName().equalsIgnoreCase(projectName)) {
+                projectEnquiries.add(enquiry);
+            }
+        }
+        return projectEnquiries;
+    }
 }
