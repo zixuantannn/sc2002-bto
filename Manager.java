@@ -28,6 +28,13 @@ public class Manager extends UserAccount {
         try {
             String name = InputValidation.getString("Enter project name: ", s -> !s.isEmpty(),
                     "Project name cannot be empty.");
+
+            for (Project p : db.projectList) {
+                if (p.getName().equalsIgnoreCase(name)) {
+                    System.out.println("Error: A project with this name already exists. Please choose a unique name.");
+                    return; // Exit the method as the project name is not unique
+                }
+            }
             String neighborhood = InputValidation.getString("Enter neighborhood: ", s -> !s.isEmpty(),
                     "Neighborhood cannot be empty.");
 
@@ -117,8 +124,17 @@ public class Manager extends UserAccount {
             switch (choice) {
                 case 1:
                     System.out.println("Current project name: " + target.getName());
-                    target.setName(InputValidation.getString("Enter new project name: ", s -> !s.isEmpty(),
-                            "Name cannot be empty."));
+                    String newName = InputValidation.getString("Enter new project name: ", s -> !s.isEmpty(),
+                            "Name cannot be empty.");
+
+                    // Check for unique project name (excluding the current project)
+                    for (Project p : db.projectList) {
+                        if (p.getName().equalsIgnoreCase(newName) && !p.getName().equalsIgnoreCase(target.getName())) {
+                            System.out.println("Error: A project with this name already exists. Please choose a unique name.");
+                            return; // Exit if name is not unique
+                        }
+                    }
+                    target.setName(newName);
                     break;
                 case 2:
                     System.out.println("Current neighborhood: " + target.getNeighborhood());
