@@ -68,7 +68,6 @@ public class Manager extends UserAccount {
                 }
             }
             String manager = this.getName();
-
             int officerSlots = InputValidation.getInt("Enter available officer slots (max 10): ",
                     n -> n >= 0 && n <= 10, "Officer slots must be between 0 and 10.");
 
@@ -89,6 +88,7 @@ public class Manager extends UserAccount {
 
             db.projectList.add(newProject);
             System.out.println("Project listing created successfully.");
+            CSVWriter.saveProject(newProject, "ProjectList.csv");
         } catch (Exception e) {
             System.out.println("An error occurred during project creation.");
         }
@@ -130,7 +130,8 @@ public class Manager extends UserAccount {
                     // Check for unique project name (excluding the current project)
                     for (Project p : db.projectList) {
                         if (p.getName().equalsIgnoreCase(newName) && !p.getName().equalsIgnoreCase(target.getName())) {
-                            System.out.println("Error: A project with this name already exists. Please choose a unique name.");
+                            System.out.println(
+                                    "Error: A project with this name already exists. Please choose a unique name.");
                             return; // Exit if name is not unique
                         }
                     }
@@ -239,7 +240,7 @@ public class Manager extends UserAccount {
                     break;
             }
         }
-
+        CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
         System.out.println("Project listing updated successfully.");
     }
 
@@ -261,6 +262,7 @@ public class Manager extends UserAccount {
         }
 
         db.projectList.remove(target);
+        CSVWriter.deleteProject(projectName);
         System.out.println("Project listing deleted successfully.");
     }
 
