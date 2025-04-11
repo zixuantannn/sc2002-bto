@@ -1,10 +1,10 @@
 import java.util.List;
 import java.util.ArrayList;
 
-public class ProjectHandler {
+public class ProjectManager {
     private List<Project> projectList;
 
-    public ProjectHandler(List<Project> projectList) {
+    public ProjectManager(List<Project> projectList) {
         this.projectList = projectList;
     }
 

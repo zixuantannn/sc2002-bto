@@ -4,19 +4,33 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Officer extends Applicant {
-
     private Project assignedProject = null;
     private List<RegistrationForm> registrationForms = new ArrayList<>();
-    private EnquiryHandler eManager;
+    private EnquiryHandler enqHandler;
 
     public Officer(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
-        this.eManager = new EnquiryHandler();
+        if (assignedProject != null) {
+            this.enqHandler = new EnquiryHandler(assignedProject.getName(), Database.enquiryList,
+                    EnquiryHandler.FILTER_BY_PROJECT);
+        } else {
+            this.enqHandler = new EnquiryHandler(null);
+        }
+
     }
 
     public Officer(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-        this.eManager = new EnquiryHandler();
+        if (assignedProject != null) {
+            this.enqHandler = new EnquiryHandler(assignedProject.getName(), Database.enquiryList,
+                    EnquiryHandler.FILTER_BY_PROJECT);
+        } else {
+            this.enqHandler = new EnquiryHandler(null);
+        }
+    }
+
+    public void setEnqHandler(String projectName) {
+        this.enqHandler = new EnquiryHandler(projectName, Database.enquiryList, EnquiryHandler.FILTER_BY_PROJECT);
     }
 
     public void setAssignedProject(Project project) {
@@ -88,17 +102,28 @@ public class Officer extends Applicant {
     }
 
     public void viewAndReplyEnquiries() {
+
+        Scanner sc = new Scanner(System.in);
         if (assignedProject != null) {
-            eManager.viewProjectEnquiries(assignedProject.getName());
-            List<Enquiry> enqList = eManager.getProjectEnquiries(assignedProject.getName());
-            for (Enquiry enquiry : enqList) {
-                System.out.println("Enquiry: " + enquiry.getContent());
-                System.out.print("Enter your reply: ");
-                Scanner sc = new Scanner(System.in);
-                String reply = sc.nextLine();
-                enquiry.updateResponse(reply);
-                System.out.println("Response saved.");
+            enqHandler.viewProjectEnquiries(assignedProject.getName());
+            List<Enquiry> enqList = enqHandler.getProjectEnquiries(assignedProject.getName());
+            if (!enqList.isEmpty()) {
+                System.out.println("=== Project " + assignedProject.getName() + " ===");
+                for (Enquiry enquiry : enqList) {
+                    if (enquiry.getResponse() == null) {
+                        System.out.println("Enquiry: " + enquiry.getContent());
+                        System.out.print("Enter your reply: ");
+                        String reply = sc.nextLine();
+                        enquiry.updateResponse(reply);
+                        System.out.println("Response saved.");
+                        System.out.println();
+                    }
+
+                }
+            } else {
+                System.out.println("You have no enquiries to answer");
             }
+
         } else {
             System.out.println("You have no handled project!");
         }

@@ -7,7 +7,7 @@ import java.time.ZoneId;
 
 public class Manager extends UserAccount {
     private Project handledProject = null;
-    private EnquiryHandler manager;
+    private EnquiryHandler enqHandler;
 
     public Manager(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
@@ -15,7 +15,7 @@ public class Manager extends UserAccount {
 
     public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-        this.manager = new EnquiryHandler();
+        this.enqHandler = new EnquiryHandler(Database.enquiryList);
     }
 
     public void setHandledProject(Project p) {
@@ -532,25 +532,43 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void viewAllEnquiries(Database db) {
-        for (Project pro : db.projectList) {
-            manager.viewProjectEnquiries(pro.getName());
-            System.out.println("\n");
-        }
+    public void viewAllEnquiries() {
+        enqHandler.viewProjectEnquiries();
     }
 
     public void viewAndReplyEnquiries(Database db) {
+        Scanner sc = new Scanner(System.in);
+
+        List<Enquiry> generalEnquiries = enqHandler.getProjectEnquiries("-");
+        if (!generalEnquiries.isEmpty()) {
+            System.out.println("=== General Enquiry ===");
+            for (Enquiry enquiry : generalEnquiries) {
+                if (enquiry.getResponse() == null) {
+                    System.out.println("Enquiry: " + enquiry.getContent());
+                    System.out.print("Enter your reply: ");
+                    String reply = sc.nextLine();
+                    enquiry.updateResponse(reply);
+                    System.out.println("Response saved.");
+                }
+            }
+        }
         for (Project pro : db.projectList) {
             System.out.println("The list of enquiries in the project " + pro.getName());
-            manager.viewProjectEnquiries(pro.getName());
-            List<Enquiry> lis = manager.getProjectEnquiries(pro.getName());
-            for (Enquiry enquiry : lis) {
-                System.out.println("Enquiry: " + enquiry.getContent());
-                System.out.print("Enter your reply: ");
-                Scanner sc = new Scanner(System.in);
-                String reply = sc.nextLine();
-                enquiry.updateResponse(reply);
-                System.out.println("Response saved.");
+            enqHandler.viewProjectEnquiries(pro.getName());
+            List<Enquiry> projEnquiries = enqHandler.getProjectEnquiries(pro.getName());
+            if (!projEnquiries.isEmpty()) {
+                System.out.println("=== Project: " + pro.getName() + " ===");
+                for (Enquiry enquiry : projEnquiries) {
+                    if (enquiry.getResponse() == null) {
+                        System.out.println("Enquiry: " + enquiry.getContent());
+                        System.out.print("Enter your reply: ");
+                        String reply = sc.nextLine();
+                        enquiry.updateResponse(reply);
+                        System.out.println("Response saved.");
+                        System.out.println();
+                    }
+                }
+
             }
         }
     }

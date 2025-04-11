@@ -207,7 +207,7 @@ public class ManagerUI implements ManagerMenu {
 
     public void viewAllEnquiry() {
         System.out.println("View all enquiries...");
-        this.manager.viewAllEnquiries(this.database);
+        this.manager.viewAllEnquiries();
     }
 
     public void viewAndReplyAllEnquiry() {
