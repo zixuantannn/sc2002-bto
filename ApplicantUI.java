@@ -84,7 +84,7 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void viewAllAvailableProjects() {
         System.out.println("Displaying all available BTO projects based on your user group and visibility...");
-        this.applicant.viewAvailableProjects(this.applicant.filterAvailableProject(database));
+        this.applicant.viewAvailableProjects(database);
     }
 
     public void applyForBTOProject() {

@@ -10,6 +10,7 @@ public class Applicant extends UserAccount {
     private boolean appliedForProject;
     private ApplicationForm applyForm = null;
     private EnquiryManager manager;
+    private ApplicantProjectManager pm;
 
     private List<ApplicationForm> projectApplied;
 
@@ -17,6 +18,7 @@ public class Applicant extends UserAccount {
         super(name, NRIC, age, maritalStatus);
         this.appliedForProject = false;
         this.manager = new EnquiryManager();
+        this.pm = new ApplicantProjectManager(Database.projectList);
     }
 
     public Applicant(String name, String NRIC, int age, String maritalStatus, String password) {
@@ -24,6 +26,7 @@ public class Applicant extends UserAccount {
         this.appliedForProject = false;
         this.projectApplied = new ArrayList<>(); // need read from excel
         this.manager = new EnquiryManager();
+        this.pm = new ApplicantProjectManager(Database.projectList);
     }
 
     public ApplicationForm getApplyForm() {
@@ -34,120 +37,48 @@ public class Applicant extends UserAccount {
         this.applyForm = form;
     }
 
+    public List<ApplicationForm> getProjectAppliedList() {
+        return projectApplied;
+    }
+
+    public boolean getAvailability() {
+        return appliedForProject;
+    }
+
+    public void setAvailability() {
+        this.appliedForProject = true;
+    }
+
     public void resetAvailablilty() {
         this.appliedForProject = false;
     }
 
-    public List<Project> filterAvailableProject(Database db) {
-        List<Project> allProjects = db.projectList;
-        List<Project> filteredProjects = new ArrayList<>();
-
-        for (Project project : allProjects) {
-            // Singles, 35 years old and above, can only view and apply 2-room
-            if (this.getAge() > 34 && this.getMaritalStatus().equals("Single")) {
-                // If at least 1 2-room is available and visibility is on
-                if (project.getNumType1() > 0) {
-                    filteredProjects.add(project);
-                }
-            } else if (this.getAge() > 20 && this.getMaritalStatus().equals("Married")) {
-                // If either 2-room or 3-room is available and visibility is on
-                if ((project.getNumType1() > 0 || project.getNumType2() > 0)) {
-                    filteredProjects.add(project);
-                }
-            } // then how about people who fall out of this range
-        }
-
-        filteredProjects.sort(Comparator.comparing(Project::getName));
-        return filteredProjects;
+    public void addProjectList(ApplicationForm applicationForm) {
+        this.projectApplied.add(applicationForm);
     }
 
-    public void viewAvailableProjects(List<Project> filteredProjects) {
+    public void viewAvailableProjects(Database db) {
+        List<Project> filteredProject = pm.filterAvailableProject(db, this);
+        pm.viewAvailableProjects(filteredProject);
 
-        if (filteredProjects.isEmpty()) {
-            System.out.println("No projects available.");
-        } else {
-            boolean check = false;
-            for (Project project : filteredProjects) {
-                if (project.getVisibility().equals("on")) {
-                    project.viewProjectDetails();
-                    check = true;
-                }
-            }
-            if (!check) {
-                System.out.println("No available project to apply!");
-            }
-        }
     }
 
     public void applyForProject(Database db, Scanner sc) {
-        if (appliedForProject) {
-            System.out.println("Cannot apply for multiple projects.");
-            return;
-        }
-        List<Project> filteredProjects = this.filterAvailableProject(db);
-        this.viewAvailableProjects(filteredProjects);
-        if (filteredProjects.isEmpty()) {
-            System.out.println("No available project to apply!");
-        }
-        System.out.print("Enter your project name you want to apply: ");
-        String appliedProject = sc.nextLine();
-
-        Project project = filteredProjects.stream()
-                .filter(p -> appliedProject.equalsIgnoreCase(p.getName())) // filter for project that name matches with
-                                                                           // appliedProject
-                .findFirst() // find the first match and return as an Optional
-                .orElse(null); // if optional is empty (no match), return null
-
-        if (project == null) {
-            System.out.println("Project not found !");
-        } else {
-            this.applyForm = new ApplicationForm(this, appliedProject, "Pending");
-            this.appliedForProject = true;
-            project.getListOfApplyForm().add(this.applyForm);
-            this.projectApplied.add(applyForm);
-            System.out.println("Application submitted successfully !");
-        }
+        pm.applyForProject(db, sc, this);
     }
 
     // To display all the project applied
     public void viewAppliedProject() {
-        if (!projectApplied.isEmpty()) { // list is not empty
-            System.out.println("You applied for the following project: ");
-            for (ApplicationForm form : projectApplied) {
-                System.out.println("Project Name: " + form.getAppliedProjectName() + " | Application Status: "
-                        + form.getApplicationStatus());
-                // do we need display flat type
-            }
-        } else {
-            System.out.println("You have not applied for any project yet.");
-        }
+        pm.viewAppliedProject(this);
     }
 
     // To display only the lastest project
     public void viewApplicationStatus() {
-        if (!projectApplied.isEmpty()) {
-            System.out.println("Lastest Application:");
-            System.out.println("Project Name: " + projectApplied.get(0).getAppliedProjectName() +
-                    " | Application Status: " + projectApplied.get(0).getApplicationStatus());
-        } else {
-            System.out.println("You have no latest project.");
-        }
+        pm.viewApplicationStatus(this);
     }
 
     public void withdrawalApplication(Scanner sc) {
-        // If there are no projects
-        if (projectApplied.isEmpty()) {
-            System.out.println("You have not applied for any project. ");
-        }
-        // If no pending project in the list
-        else if (!(projectApplied.get(0)).getApplicationStatus().equals("Pending")) {
-            System.out.println("You have no pending projects. ");
-        } else {
-            System.out.println("What is the reason for withdrawal: ");
-            String reason = sc.nextLine();
-            this.applyForm.createWithdrawalRequest(reason);
-            System.out.println("You have requested withdrawal for your BTO application");
-        }
+        pm.withdrawalApplication(sc, this);
     }
 
     public void sendEnquiry(Scanner sc, Database db) {
@@ -182,7 +113,7 @@ public class Applicant extends UserAccount {
 
         } else if (choice == 2) {
             // Project-related enquiry
-            List<Project> availableProjects = this.filterAvailableProject(db);
+            List<Project> availableProjects = pm.filterAvailableProject(db, this);
             if (availableProjects.isEmpty()) {
                 System.out.println("No available projects to make an enquiry about.");
                 return;
