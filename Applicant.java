@@ -9,24 +9,24 @@ public class Applicant extends UserAccount {
     private int applicantId;
     private boolean appliedForProject;
     private ApplicationForm applyForm = null;
-    private EnquiryManager manager;
-    private ApplicantProjectManager pm;
+    private EnquiryHandler enqHandler;
+    private ApplicantProjectHandler applicantProjHandler;
 
     private List<ApplicationForm> projectApplied;
 
     public Applicant(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
         this.appliedForProject = false;
-        this.manager = new EnquiryManager();
-        this.pm = new ApplicantProjectManager(Database.projectList);
+        this.enqHandler = new EnquiryHandler();
+        this.applicantProjHandler = new ApplicantProjectHandler(Database.projectList);
     }
 
     public Applicant(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
         this.appliedForProject = false;
         this.projectApplied = new ArrayList<>(); // need read from excel
-        this.manager = new EnquiryManager();
-        this.pm = new ApplicantProjectManager(Database.projectList);
+        this.enqHandler = new EnquiryHandler();
+        this.applicantProjHandler = new ApplicantProjectHandler(Database.projectList);
     }
 
     public ApplicationForm getApplyForm() {
@@ -58,27 +58,27 @@ public class Applicant extends UserAccount {
     }
 
     public void viewAvailableProjects(Database db) {
-        List<Project> filteredProject = pm.filterAvailableProject(db, this);
-        pm.viewAvailableProjects(filteredProject);
+        List<Project> filteredProject = applicantProjHandler.filterAvailableProject(db, this);
+        applicantProjHandler.viewAvailableProjects(filteredProject);
 
     }
 
     public void applyForProject(Database db, Scanner sc) {
-        pm.applyForProject(db, sc, this);
+        applicantProjHandler.applyForProject(db, sc, this);
     }
 
     // To display all the project applied
     public void viewAppliedProject() {
-        pm.viewAppliedProject(this);
+        applicantProjHandler.viewAppliedProject(this);
     }
 
     // To display only the lastest project
     public void viewApplicationStatus() {
-        pm.viewApplicationStatus(this);
+        applicantProjHandler.viewApplicationStatus(this);
     }
 
     public void withdrawalApplication(Scanner sc) {
-        pm.withdrawalApplication(sc, this);
+        applicantProjHandler.withdrawalApplication(sc, this);
     }
 
     public void sendEnquiry(Scanner sc, Database db) {
@@ -109,11 +109,11 @@ public class Applicant extends UserAccount {
             // General enquiry
             System.out.print("Enter your enquiry content: ");
             content = sc.nextLine();
-            manager.createEnquiry(this.getNRIC(), content);
+            enqHandler.createEnquiry(this.getNRIC(), content);
 
         } else if (choice == 2) {
             // Project-related enquiry
-            List<Project> availableProjects = pm.filterAvailableProject(db, this);
+            List<Project> availableProjects = applicantProjHandler.filterAvailableProject(db, this);
             if (availableProjects.isEmpty()) {
                 System.out.println("No available projects to make an enquiry about.");
                 return;
@@ -131,21 +131,21 @@ public class Applicant extends UserAccount {
             }
             System.out.print("Enter your enquiry content: ");
             content = sc.nextLine();
-            manager.createEnquiry(this.getNRIC(), content, projectName);
+            enqHandler.createEnquiry(this.getNRIC(), content, projectName);
         }
 
     }
 
     public void displayEnquiry() {
-        manager.displayMyEnquiries();
+        enqHandler.displayMyEnquiries();
     }
 
     public void modifyEnquiry(Scanner sc) {
-        manager.modifyEnquiry(sc);
+        enqHandler.modifyEnquiry(sc);
     }
 
     public void removeEnquiry(Scanner sc) {
-        manager.removeEnquriy(sc);
+        enqHandler.removeEnquriy(sc);
 
     }
 

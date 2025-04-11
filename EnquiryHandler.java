@@ -2,10 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class EnquiryManager {
+public class EnquiryHandler {
     private List<Enquiry> allEnquries;
 
-    public EnquiryManager() {
+    public EnquiryHandler() {
         this.allEnquries = new ArrayList<>();
     }
 

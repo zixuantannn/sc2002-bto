@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Manager extends UserAccount {
     private Project handledProject = null;
-    private EnquiryManager manager;
+    private EnquiryHandler manager;
 
     public Manager(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
@@ -13,7 +13,7 @@ public class Manager extends UserAccount {
 
     public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-        this.manager = new EnquiryManager();
+        this.manager = new EnquiryHandler();
     }
 
     public void setHandledProject(Project p) {

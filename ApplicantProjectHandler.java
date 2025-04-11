@@ -3,8 +3,8 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class ApplicantProjectManager extends ProjectManager {
-    public ApplicantProjectManager(List<Project> projectList) {
+public class ApplicantProjectHandler extends ProjectManager {
+    public ApplicantProjectHandler(List<Project> projectList) {
         super(projectList);
     }
 

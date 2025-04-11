@@ -7,16 +7,16 @@ public class Officer extends Applicant {
 
     private Project assignedProject = null;
     private List<RegistrationForm> registrationForms = new ArrayList<>();
-    private EnquiryManager eManager;
+    private EnquiryHandler eManager;
 
     public Officer(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
-        this.eManager = new EnquiryManager();
+        this.eManager = new EnquiryHandler();
     }
 
     public Officer(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-        this.eManager = new EnquiryManager();
+        this.eManager = new EnquiryHandler();
     }
 
     public void setAssignedProject(Project project) {
