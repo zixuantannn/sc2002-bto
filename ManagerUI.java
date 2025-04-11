@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -19,22 +20,30 @@ public class ManagerUI implements ManagerMenu{
 
     public void displayMenu() {
         int choice = 0;
-
+        
         do {
+            setTheHandledProject();
+
             System.out.println("\n--- Manager Menu ---");
+
+            // Retrieve and display the current handled project (if any)
+            if (this.manager.getHandledProject() != null) {
+                System.out.println("Current Handled Project: " + this.manager.getHandledProject().getName());
+            } else {
+                System.out.println("Current Handled Project: NULL");
+            }
             System.out.println("1. Create BTO project listings");
             System.out.println("2. Modify Existing Project Details");
             System.out.println("3. Remove Project from the System");
             System.out.println("4. Toggle project visibility");
-            System.out.println("5. Choose your project you want to handle.");
-            System.out.println("6. View All and Filtered Project Listings");
-            System.out.println("7. Manage HDB Officer Registrations(Approve/Reject)");
-            System.out.println("8. Approve or Reject BTO Applications");
-            System.out.println("9. Approve or Reject BTO Withdrawal");
-            System.out.println("10. Generate and Filter Reports");
-            System.out.println("11. View all Enquiries of All Projects.");
-            System.out.println("12. View and Reply All Enquiries of All Projects.");
-            System.out.println("13. Log out");
+            System.out.println("5. View All and Filtered Project Listings");
+            System.out.println("6. Manage HDB Officer Registrations(Approve/Reject)");
+            System.out.println("7. Approve or Reject BTO Applications");
+            System.out.println("8. Approve or Reject BTO Withdrawal");
+            System.out.println("9. Generate and Filter Reports");
+            System.out.println("10. View all Enquiries of All Projects.");
+            System.out.println("11. View and Reply All Enquiries of All Projects.");
+            System.out.println("12. Log out");
 
             try {
                 System.out.print("\nEnter your choice: ");
@@ -60,36 +69,33 @@ public class ManagerUI implements ManagerMenu{
                     toggleVisibility();
                     break;
                 case 5:
-                    setTheHandledProject();
-                    break;
-                case 6:
                     viewAllOrFilteredProjectListings();
                     break;
-                case 7:
+                case 6:
                     manageOfficerRegistration();
                     break;
-                case 8:
+                case 7:
                     manageBTOApplication();
                     break;
-                case 9:
+                case 8:
                     manageBTOWithdrawal();
                     break;
-                case 10:
+                case 9:
                     break;
-                case 11:
+                case 10:
                     viewAllEnquiry();
                     break;
-                case 12:
+                case 11:
                     viewAndReplyAllEnquiry();
                     break;
-                case 13:
+                case 12:
                     logout();
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again...");
 
             }
-        } while (choice != 13);   
+        } while (choice != 12);   
         System.out.println("\n");
     }
 
@@ -113,28 +119,37 @@ public class ManagerUI implements ManagerMenu{
         this.manager.setVisibility(this.scanner, this.database);
     }
 
-    public void setTheHandledProject(){
-        System.out.println("Set the handled project...");
-        if(this.manager.getHandledProject() != null){
-            System.out.println("You have already handled the project!");
-            System.out.println("You are only able to manage a project during the period of application.");
-            return ;
-        }
-        System.out.print("Enter your project name you want to handle: ");
+    public void setTheHandledProject() {
+        System.out.println("Automatically setting the handled project...");
+    
+        // Get the current system date
+        Date currentDate = new Date();  // This will give us the current date and time
+    
+        // Iterate through the list of projects to check if any project is within the application period and visibility is "on"
         Project targetProject = null;
-        String target = scanner.nextLine();
-        for(Project project : this.database.projectList){
-            if(target.equals(project.getName())){
+        for (Project project : this.database.projectList) {
+            // Get the open and close dates from the project
+            Date openDate = project.getOpenDate();
+            Date closeDate = project.getCloseDate();
+            String visibility = project.getVisibility();
+    
+            // Check if the current date is within the application period and visibility is "on"
+            if ((currentDate.equals(openDate) || currentDate.after(openDate)) && 
+                (currentDate.equals(closeDate) || currentDate.before(closeDate)) && 
+                visibility.equalsIgnoreCase("on")) {
                 targetProject = project;
-                break;
+                break; // Set the first project found that satisfies both conditions
             }
         }
-        if(targetProject == null){
-            System.out.println("The project you are finding are not available.");
+    
+        if (targetProject == null) {
+            System.out.println("No projects are within the application period with visibility 'on'.");
             return;
         }
+    
+        // Set the project as the handled project
         this.manager.setHandledProject(targetProject);
-        System.out.println("Successfully");
+        System.out.println("Successfully set the project '" + targetProject.getName() + "' as the handled project.");
     }
 
     public void viewAllOrFilteredProjectListings(){
