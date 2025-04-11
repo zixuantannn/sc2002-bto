@@ -2,27 +2,26 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ManagerUI implements ManagerMenu{
+public class ManagerUI implements ManagerMenu {
     Manager manager = null;
     Database database = null;
     Scanner scanner = null;
 
-    public ManagerUI(Manager manager, Database db, Scanner scanner){
+    public ManagerUI(Manager manager, Database db, Scanner scanner) {
         this.manager = manager;
         this.database = db;
         this.scanner = scanner;
     }
 
-    
-    public void logout(){
+    public void logout() {
         System.out.println("You have successfully logged out.");
     }
 
     public void displayMenu() {
         int choice = 0;
-        
+
         do {
-            setTheHandledProject();
+            // setTheHandledProject();
 
             System.out.println("\n--- Manager Menu ---");
 
@@ -48,11 +47,11 @@ public class ManagerUI implements ManagerMenu{
             try {
                 System.out.print("\nEnter your choice: ");
                 choice = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine(); 
-                continue; 
+                scanner.nextLine();
+                continue;
             }
 
             switch (choice) {
@@ -95,121 +94,123 @@ public class ManagerUI implements ManagerMenu{
                     System.out.println("Invalid choice. Please try again...");
 
             }
-        } while (choice != 12);   
+        } while (choice != 12);
         System.out.println("\n");
     }
 
-    public void addNewProjects(){
+    public void addNewProjects() {
         System.out.println("Add new project to BTO listing...");
         this.manager.createProjectListing(this.scanner, this.database);
     }
 
-    public void modifyExistingProjectDetails(){
+    public void modifyExistingProjectDetails() {
         System.out.println("Modify existing project detail...");
         this.manager.editProjectListing(this.scanner, this.database);
     }
 
-    public void removeProjectFromSystem(){
+    public void removeProjectFromSystem() {
         System.out.println("Remove project from the system...");
         this.manager.deleteProjectListing(this.scanner, this.database);
     }
 
-    public void toggleVisibility(){
+    public void toggleVisibility() {
         System.out.println("Toggle visibility...");
         this.manager.setVisibility(this.scanner, this.database);
     }
 
     public void setTheHandledProject() {
         System.out.println("Automatically setting the handled project...");
-    
+
         // Get the current system date
-        Date currentDate = new Date();  // This will give us the current date and time
-    
-        // Iterate through the list of projects to check if any project is within the application period and visibility is "on"
+        Date currentDate = new Date(); // This will give us the current date and time
+
+        // Iterate through the list of projects to check if any project is within the
+        // application period and visibility is "on"
         Project targetProject = null;
         for (Project project : this.database.projectList) {
             // Get the open and close dates from the project
             Date openDate = project.getOpenDate();
             Date closeDate = project.getCloseDate();
             String visibility = project.getVisibility();
-    
-            // Check if the current date is within the application period and visibility is "on"
-            if ((currentDate.equals(openDate) || currentDate.after(openDate)) && 
-                (currentDate.equals(closeDate) || currentDate.before(closeDate)) && 
-                visibility.equalsIgnoreCase("on")) {
+
+            // Check if the current date is within the application period and visibility is
+            // "on"
+            if ((currentDate.equals(openDate) || currentDate.after(openDate)) &&
+                    (currentDate.equals(closeDate) || currentDate.before(closeDate)) &&
+                    visibility.equalsIgnoreCase("on")) {
                 targetProject = project;
                 break; // Set the first project found that satisfies both conditions
             }
         }
-    
+
         if (targetProject == null) {
             System.out.println("No projects are within the application period with visibility 'on'.");
             return;
         }
-    
+
         // Set the project as the handled project
         this.manager.setHandledProject(targetProject);
         System.out.println("Successfully set the project '" + targetProject.getName() + "' as the handled project.");
     }
 
-    public void viewAllOrFilteredProjectListings(){
+    public void viewAllOrFilteredProjectListings() {
         System.out.println("View projects...");
         System.out.println("Do you want to view all project listings?(yes/no)");
         String answer = scanner.nextLine();
-        if(answer.equalsIgnoreCase("yes")){
+        if (answer.equalsIgnoreCase("yes")) {
             this.manager.viewAllProject(this.database);
         }
 
         System.out.println("Do you want to view filtered project listings?(yes/no)");
         answer = scanner.nextLine();
-        if(answer.equalsIgnoreCase("yes")){
+        if (answer.equalsIgnoreCase("yes")) {
             this.manager.viewFilteredProjects(this.scanner, this.database);
         }
     }
 
-    public void manageOfficerRegistration(){
+    public void manageOfficerRegistration() {
         System.out.println("Manage officer registration...");
         System.out.println("Do you want to view all available officer registration forms?(yes/no)");
         String response = scanner.nextLine();
-        if(response.equalsIgnoreCase("yes")){
+        if (response.equalsIgnoreCase("yes")) {
             this.manager.viewRegistration();
         }
         System.out.println("Approve or reject officer registration form:");
         this.manager.assignOfficerToProject(this.scanner, this.database);
     }
 
-    public void manageBTOApplication(){
+    public void manageBTOApplication() {
         System.out.println("Manage BTO application form...");
         System.out.println("Do you want to view all available application forms?(yes/no)");
         String response = scanner.nextLine();
-        if(response.equalsIgnoreCase("yes")){
+        if (response.equalsIgnoreCase("yes")) {
             this.manager.viewApplication();
         }
         System.out.println("Approve or reject BTO application form:");
         this.manager.manageApplicationForm(this.scanner);
     }
 
-    public void manageBTOWithdrawal(){
+    public void manageBTOWithdrawal() {
         System.out.println("Manage withdrawal request...");
         System.out.println("Do you want to view all available withdrawal forms?(yes/no)");
         String response = scanner.nextLine();
-        if(response.equalsIgnoreCase("yes")){
+        if (response.equalsIgnoreCase("yes")) {
             this.manager.viewWithdrawalRequest();
         }
         System.out.println("Approve or reject officer registration form:");
         this.manager.manageWithdrawalRequest(this.scanner);
     }
 
-    public void generateAndFilterReport(){
+    public void generateAndFilterReport() {
 
     }
 
-    public void viewAllEnquiry(){
+    public void viewAllEnquiry() {
         System.out.println("View all enquiries...");
         this.manager.viewAllEnquiries(this.database);
     }
 
-    public void viewAndReplyAllEnquiry(){
+    public void viewAndReplyAllEnquiry() {
         System.out.println("View and reply all enquiries...");
         this.manager.viewAndReplyEnquiries(this.database);
     }

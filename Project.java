@@ -18,7 +18,8 @@ public class Project {
     private Date closeDate;
     private String manager;
     private int numOfficerSlots;
-    private String[] officers = new String[10];
+    private static final int MAX_OFFICER_SLOTS = 10; // Max slots is 10
+    private String[] officers = new String[MAX_OFFICER_SLOTS];
     private String visibility = "off";
 
     private List<Enquiry> enquiryList = new ArrayList<>();
@@ -26,14 +27,12 @@ public class Project {
     private List<RegistrationForm> listOfRegisterForm = new ArrayList<>();
     private List<ApplicationForm> listOfApplyForm = new ArrayList<>();
 
-    private static final int MAX_OFFICER_SLOTS = 10; // Max slots is 10
-
     private static String savedNeighborhoodFilter = "";
     private static Boolean savedType1Filter = null;
     private static Boolean savedType2Filter = null;
 
     public Project(String name, String neighborhood, int numType1, int sellPrice1, int numType2, int sellPrice2,
-            Date openDate, Date closeDate, String manager, int numOfficerSlots, String[] officers) {
+            Date openDate, Date closeDate, String manager, int numOfficerSlots, String[] officers, String visibility) {
         this.name = name;
         this.neighborhood = neighborhood;
         this.numType1 = numType1;
@@ -45,6 +44,7 @@ public class Project {
         this.manager = manager;
         this.numOfficerSlots = numOfficerSlots;
         this.officers = officers;
+        this.visibility = visibility;
     }
 
     public String getName() {
@@ -87,7 +87,7 @@ public class Project {
         this.numType1 = numType1;
     }
 
-    public int getSellPriceType1(){
+    public int getSellPriceType1() {
         return sellPriceType1;
     }
 
@@ -103,14 +103,14 @@ public class Project {
         this.numType2 = numType2;
     }
 
-    public int getSellPriceType2(){
+    public int getSellPriceType2() {
         return sellPriceType2;
     }
 
     public void setSellPriceType2(int sellPriceType2) {
         this.sellPriceType2 = sellPriceType2;
     }
-    
+
     public Date getOpenDate() {
         return openDate;
     }
@@ -191,19 +191,23 @@ public class Project {
         System.out.printf("| %-20s : %-26s |\n", "Manager", manager);
         System.out.printf("| %-20s : %-26s |\n", "Officer Slots", numOfficerSlots);
 
-        String assignedOfficers = "";
+        StringBuilder assignedOfficers = new StringBuilder();
         boolean hasOfficer = false;
+
         for (String officer : officers) {
             if (officer != null && !officer.isEmpty()) {
-                assignedOfficers += officer + " ";
+                if (hasOfficer) {
+                    assignedOfficers.append(" "); // to add spaces between Officers' names
+                }
+                assignedOfficers.append(officer);
                 hasOfficer = true;
             }
         }
+
         if (!hasOfficer) {
-            assignedOfficers = "None";
+            assignedOfficers.append("None");
         }
-        assignedOfficers = assignedOfficers.replace("\"", "").trim();
-        System.out.printf("| %-20s : %-26s |\n", "Assigned Officers", assignedOfficers.trim());
+        System.out.printf("| %-20s : %-26s |\n", "Assigned Officers", assignedOfficers.toString());
         System.out.printf("| %-20s : %-26s |\n", "Visibility", (visibility != null ? visibility : "Not Set"));
         System.out.println(line);
     }

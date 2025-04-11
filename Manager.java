@@ -2,6 +2,8 @@
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class Manager extends UserAccount {
     private Project handledProject = null;
@@ -26,6 +28,13 @@ public class Manager extends UserAccount {
 
     public void createProjectListing(Scanner sc, Database db) {
         try {
+
+            // Check if manager already handling a project
+            if (this.getHandledProject() != null) {
+                System.out.println("You are already handling a project, hence you cannot create any new projects.");
+                return;
+            }
+
             String name = InputValidation.getString("Enter project name: ", s -> !s.isEmpty(),
                     "Project name cannot be empty.");
 
@@ -35,6 +44,7 @@ public class Manager extends UserAccount {
                     return; // Exit the method as the project name is not unique
                 }
             }
+
             String neighborhood = InputValidation.getString("Enter neighborhood: ", s -> !s.isEmpty(),
                     "Neighborhood cannot be empty.");
 
@@ -71,7 +81,19 @@ public class Manager extends UserAccount {
             int officerSlots = InputValidation.getInt("Enter available officer slots (max 10): ",
                     n -> n >= 0 && n <= 10, "Officer slots must be between 0 and 10.");
 
-            String[] officers = new String[10];
+            String[] officers = new String[officerSlots];
+
+            // Check if current date is the application open date. If yes, then
+            // automatically set visibility as ON.
+            LocalDate today = LocalDate.now();
+            LocalDate projectOpenDate = openDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            String visibilityStatus;
+            if (!projectOpenDate.isAfter(today)) {
+                visibilityStatus = "on";
+            } else {
+                visibilityStatus = "off";
+            }
 
             Project newProject = new Project(
                     name,
@@ -84,11 +106,15 @@ public class Manager extends UserAccount {
                     closeDate,
                     manager,
                     officerSlots,
-                    officers);
+                    officers,
+                    visibilityStatus);
+
+            // Manager who created a project is automatically assigned to the project
+            this.setHandledProject(newProject);
 
             db.projectList.add(newProject);
-            System.out.println("Project listing created successfully.");
             CSVWriter.saveProject(newProject, "ProjectList.csv");
+            System.out.println("Project listing created successfully.");
         } catch (Exception e) {
             System.out.println("An error occurred during project creation.");
         }
@@ -266,11 +292,11 @@ public class Manager extends UserAccount {
         System.out.println("Project listing deleted successfully.");
     }
 
-    public void setVisibility(Scanner sc, Database database) {
+    public void setVisibility(Scanner sc, Database db) {
         Project target = null;
         System.out.print("Enter the project name you want to toggle its visibility: ");
         String targetName = sc.nextLine();
-        for (Project project : database.projectList) {
+        for (Project project : db.projectList) {
             if (targetName.equalsIgnoreCase(project.getName())) {
                 target = project;
                 break;
@@ -286,10 +312,12 @@ public class Manager extends UserAccount {
 
             if (visibilityInput.equals("on")) {
                 target.setVisibility(visibilityInput);
+                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
                 System.out.println("Project visibility set to ON.");
                 break;
             } else if (visibilityInput.equals("off")) {
                 target.setVisibility(visibilityInput);
+                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
                 System.out.println("Project visibility set to OFF.");
                 break;
             } else {
@@ -333,9 +361,10 @@ public class Manager extends UserAccount {
         sc.nextLine(); // create ID for registration form
         RegistrationForm registerForm = null;
         List<RegistrationForm> registerList = handledProject.getListOfRegisterForm(); // new function for class Project
-        for (int i = 0; i < registerList.size(); i++) {
-            if (ID == registerList.get(i).getRegistrationID()) {
-                registerForm = registerList.get(i);
+
+        for (RegistrationForm form : registerList) {
+            if (form.getRegistrationID() == ID) {
+                registerForm = form;
                 break;
             }
         }
@@ -359,30 +388,63 @@ public class Manager extends UserAccount {
                     String NRICofficer = registerForm.getOfficerNRIC();
                     String[] currentOfficers = handledProject.getOfficers();
 
-                    // Expand and update officer list
+                    boolean assigned = false;
+
                     for (int i = 0; i < currentOfficers.length; i++) {
                         if (currentOfficers[i] == null || currentOfficers[i].isEmpty()) {
-
                             currentOfficers[i] = officerName;
-                            for (Officer o : db.officerList) {
-                                if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create function in
-                                                                                              // Officer
-                                    o.setAssignedProject(handledProject);
-                                    System.out.println(" Officer " + officerName + " approved and assigned to project "
+
+                            // Find the officer and assign the project
+                            for (Officer officer : db.officerList) {
+                                if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
+                                    officer.setAssignedProject(handledProject);
+                                    CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                                    System.out.println("Officer " + officerName + " approved and assigned to project "
                                             + handledProject.getName());
+                                    assigned = true;
                                     break;
                                 }
                             }
-                            break;
-                        } else {
-                            System.out.println("Officer slots are full for this project.");
-                            return;
+
+                            if (assigned) {
+                                break;
+                            }
                         }
                     }
+
+                    if (!assigned) {
+                        System.out.println("Officer slots are full for this project.");
+                    }
                     break;
+
+                    // // Expand and update officer list
+                    // for (int i = 0; i < currentOfficers.length; i++) {
+                    // if (currentOfficers[i] == null || currentOfficers[i].isEmpty()) {
+
+                    // currentOfficers[i] = officerName;
+                    // for (Officer o : db.officerList) {
+                    // if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create
+                    // function in
+                    // // Officer
+                    // o.setAssignedProject(handledProject);
+                    // CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                    // System.out.println(" Officer " + officerName + " approved and assigned to
+                    // project "
+                    // + handledProject.getName());
+                    // break;
+                    // }
+                    // }
+                    // break;
+                    // } else {
+                    // System.out.println("Officer slots are full for this project.");
+                    // return;
+                    // }
+                    // }
+                    // break;
                 } else if (assign.equals("reject")) {
                     registerForm.setRegistrationStatus("rejected");
-
+                    System.out.println("Registration rejected.");
+                    break;
                 } else {
                     System.out.println("Invalid input.Please try again!");
                 }

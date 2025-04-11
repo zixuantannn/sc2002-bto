@@ -73,25 +73,34 @@ public class CSVImporter {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(",");
-                String name = tokens[0];
-                String neighborhood = tokens[1];
-                int numType1 = Integer.parseInt(tokens[3]);
-                int sellPriceType1 = Integer.parseInt(tokens[4]);
-                int numType2 = Integer.parseInt(tokens[6]);
-                int sellPriceType2 = Integer.parseInt(tokens[7]);
-                Date openDate = sdf.parse(tokens[8]);
-                Date closeDate = sdf.parse(tokens[9]);
-                String manager = tokens[10];
-                int officerSlots = Integer.parseInt(tokens[11]);
+                String[] tokens = line.split(",", -1);
 
-                String[] officers = new String[tokens.length - 12];
-                for (int i = 12; i < tokens.length; i++) {
-                    officers[i - 12] = tokens[i].trim();
+                String name = tokens[0].trim();
+                String neighborhood = tokens[1].trim();
+                int numType1 = Integer.parseInt(tokens[3].trim());
+                int sellPriceType1 = Integer.parseInt(tokens[4].trim());
+                int numType2 = Integer.parseInt(tokens[6].trim());
+                int sellPriceType2 = Integer.parseInt(tokens[7].trim());
+                Date openDate = sdf.parse(tokens[8].trim());
+                Date closeDate = sdf.parse(tokens[9].trim());
+                String manager = tokens[10].trim();
+                int officerSlots = Integer.parseInt(tokens[11].trim());
+
+                String officersString = tokens[12].trim();
+                String[] officers = {};
+
+                if (!officersString.isEmpty()) {
+                    officers = officersString.replace("\"", "").split(",");
+                }
+
+                String visibilityStatus = tokens[13].trim().toLowerCase();
+
+                if (!visibilityStatus.equals("on") && !visibilityStatus.equals("off")) {
+                    visibilityStatus = "off"; // default set as OFF
                 }
 
                 Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2,
-                        openDate, closeDate, manager, officerSlots, officers);
+                        openDate, closeDate, manager, officerSlots, officers, visibilityStatus);
                 db.projectList.add(project);
             }
         } catch (Exception e) {

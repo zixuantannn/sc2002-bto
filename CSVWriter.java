@@ -26,7 +26,16 @@ public class CSVWriter {
             sb.append(sdf.format(project.getCloseDate())).append(",");
             sb.append(project.getManager()).append(",");
             sb.append(project.getNumOfficerSlots()).append(",");
-            sb.append(","); // will add Officer names after approval
+
+            String[] officers = project.getOfficers();
+            if (officers != null && officers.length > 0) {
+                sb.append(String.join(",", officers)); // Join officers with commas
+            } else {
+                sb.append(""); // Empty field if no officers
+            }
+            sb.append(",");
+
+            sb.append(project.getVisibility()).append(",");
 
             bw.write(sb.toString());
             bw.newLine();
@@ -42,7 +51,7 @@ public class CSVWriter {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             bw.write(
-                    "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer");
+                    "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer,Visibility");
             bw.newLine();
 
             for (Project project : projects) {
@@ -59,7 +68,9 @@ public class CSVWriter {
                 sb.append(sdf.format(project.getCloseDate())).append(",");
                 sb.append(project.getManager()).append(",");
                 sb.append(project.getNumOfficerSlots()).append(",");
-                sb.append(",");
+                sb.append(String.join(",", project.getOfficers())).append(",");
+                sb.append(project.getVisibility()).append(",");
+
                 bw.write(sb.toString());
                 bw.newLine();
             }
@@ -114,5 +125,3 @@ public class CSVWriter {
         }
     }
 }
-
-
