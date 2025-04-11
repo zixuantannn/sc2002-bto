@@ -3,10 +3,25 @@ import java.util.List;
 import java.util.Scanner;
 
 public class EnquiryHandler {
+    public static final String FILTER_BY_NRIC = "by_nric";
+    public static final String FILTER_BY_PROJECT = "by_project_name";
+
     private List<Enquiry> allEnquries;
 
-    public EnquiryHandler() {
+    public EnquiryHandler(String filter, List<Enquiry> enquiryList, String filterType) {
         this.allEnquries = new ArrayList<>();
+        for (Enquiry enquiry : enquiryList) {
+            if (filterType.equals(FILTER_BY_NRIC) && enquiry.getNRIC().equalsIgnoreCase(filter)) {
+                this.allEnquries.add(enquiry);
+            } else if (filterType.equals(FILTER_BY_PROJECT) && enquiry.getProjectName().equalsIgnoreCase(filter)) {
+                this.allEnquries.add(enquiry);
+            }
+        }
+
+    }
+
+    public EnquiryHandler(List<Enquiry> enquiryList) {
+        this.allEnquries = enquiryList;
     }
 
     // project enquiries
@@ -138,5 +153,11 @@ public class EnquiryHandler {
             }
         }
         return projectEnquiries;
+    }
+
+    public void viewProjectEnquiries() {
+        for (Enquiry enquiry : allEnquries) {
+            enquiry.viewDetails();
+        }
     }
 }

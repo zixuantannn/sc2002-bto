@@ -4,19 +4,33 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Officer extends Applicant {
-
     private Project assignedProject = null;
     private List<RegistrationForm> registrationForms = new ArrayList<>();
-    private EnquiryHandler eManager;
+    private EnquiryHandler enqHandler;
 
     public Officer(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
-        this.eManager = new EnquiryHandler();
+        if (assignedProject != null) {
+            this.enqHandler = new EnquiryHandler(assignedProject.getName(), Database.enquiryList,
+                    EnquiryHandler.FILTER_BY_PROJECT);
+        } else {
+            this.enqHandler = new EnquiryHandler(null);
+        }
+
     }
 
     public Officer(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-        this.eManager = new EnquiryHandler();
+        if (assignedProject != null) {
+            this.enqHandler = new EnquiryHandler(assignedProject.getName(), Database.enquiryList,
+                    EnquiryHandler.FILTER_BY_PROJECT);
+        } else {
+            this.enqHandler = new EnquiryHandler(null);
+        }
+    }
+
+    public void setEnqHandler(String projectName) {
+        this.enqHandler = new EnquiryHandler(projectName, Database.enquiryList, EnquiryHandler.FILTER_BY_PROJECT);
     }
 
     public void setAssignedProject(Project project) {
@@ -89,8 +103,8 @@ public class Officer extends Applicant {
 
     public void viewAndReplyEnquiries() {
         if (assignedProject != null) {
-            eManager.viewProjectEnquiries(assignedProject.getName());
-            List<Enquiry> enqList = eManager.getProjectEnquiries(assignedProject.getName());
+            enqHandler.viewProjectEnquiries(assignedProject.getName());
+            List<Enquiry> enqList = enqHandler.getProjectEnquiries(assignedProject.getName());
             for (Enquiry enquiry : enqList) {
                 System.out.println("Enquiry: " + enquiry.getContent());
                 System.out.print("Enter your reply: ");

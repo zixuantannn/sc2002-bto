@@ -6,11 +6,11 @@ public class Main {
 
     public static void main(String[] args) {
         Database db = new Database();
+        CSVImporter.importEnquiry(db, "EnquiryList.csv");
         CSVImporter.importApplicants(db, "ApplicantList.csv");
         CSVImporter.importManagers(db, "ManagerList.csv");
         CSVImporter.importOfficers(db, "OfficerList.csv");
         CSVImporter.importProjects(db, "ProjectList.csv");
-        CSVImporter.importEnquiry(db, "EnquiryList.csv");
 
         System.out.println("Data loaded successfully.");
         System.out.println("=== Applicants ===");
@@ -54,7 +54,7 @@ public class Main {
             }
         }
         System.out.println("Total enquiry loaded: " + enquiryCount);
-        System.out.println("Next enquiry ID: " + nextid);
+        System.out.println("Next enquiry ID: " + Enquiry.getCount());
 
         System.out.println("\n \n");
 

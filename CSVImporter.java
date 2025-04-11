@@ -112,7 +112,7 @@ public class CSVImporter {
                 int enquiryId = Integer.parseInt(tokens[1]);
                 String content = tokens[2];
                 String response = tokens[3].isEmpty() ? null : tokens[3];
-                String projectName = tokens[4].isEmpty() ? null : tokens[4];
+                String projectName = tokens[4].isEmpty() ? "-" : tokens[4];
                 Date date = sdf.parse(tokens[5]);
 
                 Enquiry enquiry = new Enquiry(enquiryId, nric, content, response, date, projectName);
