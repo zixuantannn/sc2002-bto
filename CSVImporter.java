@@ -84,17 +84,47 @@ public class CSVImporter {
                 Date closeDate = sdf.parse(tokens[9]);
                 String manager = tokens[10];
                 int officerSlots = Integer.parseInt(tokens[11]);
-                
+
                 String[] officers = new String[tokens.length - 12];
                 for (int i = 12; i < tokens.length; i++) {
                     officers[i - 12] = tokens[i].trim();
                 }
 
-                Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2, openDate, closeDate, manager, officerSlots, officers);
+                Project project = new Project(name, neighborhood, numType1, sellPriceType1, numType2, sellPriceType2,
+                        openDate, closeDate, manager, officerSlots, officers);
                 db.projectList.add(project);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void importEnquiry(Database db, String filepath) {
+        int maxID = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            br.readLine();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(",");
+                String nric = tokens[0];
+                int enquiryId = Integer.parseInt(tokens[1]);
+                String content = tokens[2];
+                String response = tokens[3].isEmpty() ? null : tokens[3];
+                String projectName = tokens[4].isEmpty() ? null : tokens[4];
+                Date date = sdf.parse(tokens[5]);
+
+                Enquiry enquiry = new Enquiry(enquiryId, nric, content, response, date, projectName);
+                db.enquiryList.add(enquiry);
+
+                if (enquiryId > maxID) {
+                    maxID = enquiryId;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Enquiry.setCountEnquiry(maxID);
     }
 }

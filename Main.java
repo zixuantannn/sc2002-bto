@@ -1,7 +1,6 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
@@ -11,6 +10,7 @@ public class Main {
         CSVImporter.importManagers(db, "ManagerList.csv");
         CSVImporter.importOfficers(db, "OfficerList.csv");
         CSVImporter.importProjects(db, "ProjectList.csv");
+        CSVImporter.importEnquiry(db, "EnquiryList.csv");
 
         System.out.println("Data loaded successfully.");
         System.out.println("=== Applicants ===");
@@ -43,6 +43,18 @@ public class Main {
             }
         }
         System.out.println("Total projects loaded: " + projectCount);
+
+        int enquiryCount = 0;
+        int nextid = 0;
+        System.out.println("\n=== Enquiry Details ===");
+        for (Enquiry e : db.enquiryList) {
+            if (e != null) {
+                e.viewDetails();
+                enquiryCount++;
+            }
+        }
+        System.out.println("Total enquiry loaded: " + enquiryCount);
+        System.out.println("Next enquiry ID: " + nextid);
 
         System.out.println("\n \n");
 
@@ -221,8 +233,10 @@ public class Main {
         if (password.equals(user.getPassword())) {
             System.out.println("\nLogin successful! Welcome, " + role + " " + user.getName() + "!");
             if ("password".equals(user.getPassword())) {
-                System.out.println("You are logging in with a default password, please change your password to a strong one (Alphanumeric and 8+ characters).");
-                String newPassword = InputValidation.getPassword("Enter your new password: ", "Password must be alphanumeric and at least 8 characters long.");
+                System.out.println(
+                        "You are logging in with a default password, please change your password to a strong one (Alphanumeric and 8+ characters).");
+                String newPassword = InputValidation.getPassword("Enter your new password: ",
+                        "Password must be alphanumeric and at least 8 characters long.");
                 user.changePassword(newPassword);
                 System.out.println("You have changed your password successfully.");
             }

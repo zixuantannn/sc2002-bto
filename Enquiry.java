@@ -10,6 +10,15 @@ public class Enquiry {
     private Date date;
     private String projectName;
 
+    public Enquiry(int enquiryID, String senderNRIC, String content, String response, Date date, String projectName) {
+        this.enquiryID = enquiryID;
+        this.senderNRIC = senderNRIC;
+        this.content = content;
+        this.response = response;
+        this.date = date;
+        this.projectName = projectName;
+    }
+
     public Enquiry(String senderNRIC, String content, String projectName) {
         this.senderNRIC = senderNRIC;
         this.enquiryID = count_enquiry++;
@@ -26,6 +35,10 @@ public class Enquiry {
         this.response = null;
         this.date = new Date(); // record current date and time
         this.projectName = null;
+    }
+
+    public static void setCountEnquiry(int count) {
+        count_enquiry = count;
     }
 
     public String getProjectName() {
