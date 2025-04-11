@@ -504,6 +504,7 @@ public class Manager extends UserAccount {
                         String reply = sc.nextLine();
                         enquiry.updateResponse(reply);
                         System.out.println("Response saved.");
+                        System.out.println();
                     }
                 }
 

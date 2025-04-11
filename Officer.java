@@ -102,17 +102,28 @@ public class Officer extends Applicant {
     }
 
     public void viewAndReplyEnquiries() {
+
+        Scanner sc = new Scanner(System.in);
         if (assignedProject != null) {
             enqHandler.viewProjectEnquiries(assignedProject.getName());
             List<Enquiry> enqList = enqHandler.getProjectEnquiries(assignedProject.getName());
-            for (Enquiry enquiry : enqList) {
-                System.out.println("Enquiry: " + enquiry.getContent());
-                System.out.print("Enter your reply: ");
-                Scanner sc = new Scanner(System.in);
-                String reply = sc.nextLine();
-                enquiry.updateResponse(reply);
-                System.out.println("Response saved.");
+            if (!enqList.isEmpty()) {
+                System.out.println("=== Project " + assignedProject.getName() + " ===");
+                for (Enquiry enquiry : enqList) {
+                    if (enquiry.getResponse() == null) {
+                        System.out.println("Enquiry: " + enquiry.getContent());
+                        System.out.print("Enter your reply: ");
+                        String reply = sc.nextLine();
+                        enquiry.updateResponse(reply);
+                        System.out.println("Response saved.");
+                        System.out.println();
+                    }
+
+                }
+            } else {
+                System.out.println("You have no enquiries to answer");
             }
+
         } else {
             System.out.println("You have no handled project!");
         }
