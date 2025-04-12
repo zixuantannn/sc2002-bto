@@ -14,6 +14,8 @@ public class ManagerUI implements ManagerMenu {
     }
 
     public void logout() {
+        EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, manager.getEnquiryHandler().getEnquiryList());
+        CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
@@ -172,7 +174,7 @@ public class ManagerUI implements ManagerMenu {
         }
     }
 
-    public void viewProjectsManagerCreated(){
+    public void viewProjectsManagerCreated() {
         this.manager.viewProjectsCreatedByManager(this.database);
     }
 
@@ -184,7 +186,7 @@ public class ManagerUI implements ManagerMenu {
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewRegistration();
         }
-        if(!check){
+        if (!check) {
             return;
         }
         System.out.println("Approve or reject officer registration form:");
@@ -199,7 +201,7 @@ public class ManagerUI implements ManagerMenu {
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewApplication();
         }
-        if(!check){
+        if (!check) {
             return;
         }
         System.out.println("Approve or reject BTO application form:");
