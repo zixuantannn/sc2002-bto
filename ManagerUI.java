@@ -14,8 +14,6 @@ public class ManagerUI implements ManagerMenu {
     }
 
     public void logout() {
-        EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, manager.getEnquiryHandler().getEnquiryList());
-        CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
@@ -37,14 +35,15 @@ public class ManagerUI implements ManagerMenu {
             System.out.println("2. Modify Existing Project Details");
             System.out.println("3. Remove Project from the System");
             System.out.println("4. Toggle project visibility");
-            System.out.println("5. View All and Filtered Project Listings");
-            System.out.println("6. Manage HDB Officer Registrations(Approve/Reject)");
-            System.out.println("7. Approve or Reject BTO Applications");
-            System.out.println("8. Approve or Reject BTO Withdrawal");
-            System.out.println("9. Generate and Filter Reports");
-            System.out.println("10. View all Enquiries of All Projects.");
-            System.out.println("11. View and Reply All Enquiries of All Projects.");
-            System.out.println("12. Log out");
+            System.out.println("5. View All Project Listings");
+            System.out.println("6. View the list of projects that you have created only.");
+            System.out.println("7. Manage HDB Officer Registrations(Approve/Reject)");
+            System.out.println("8. Approve or Reject BTO Applications");
+            System.out.println("9. Approve or Reject BTO Withdrawal");
+            System.out.println("10. Generate and Filter Reports");
+            System.out.println("11. View all Enquiries of All Projects.");
+            System.out.println("12. View and Reply All Enquiries of All Projects.");
+            System.out.println("13. Log out");
 
             try {
                 System.out.print("\nEnter your choice: ");
@@ -73,30 +72,33 @@ public class ManagerUI implements ManagerMenu {
                     viewAllOrFilteredProjectListings();
                     break;
                 case 6:
-                    manageOfficerRegistration();
+                    viewProjectsManagerCreated();
                     break;
                 case 7:
-                    manageBTOApplication();
+                    manageOfficerRegistration();
                     break;
                 case 8:
-                    manageBTOWithdrawal();
+                    manageBTOApplication();
                     break;
                 case 9:
+                    manageBTOWithdrawal();
                     break;
                 case 10:
-                    viewAllEnquiry();
                     break;
                 case 11:
-                    viewAndReplyAllEnquiry();
+                    viewAllEnquiry();
                     break;
                 case 12:
+                    viewAndReplyAllEnquiry();
+                    break;
+                case 13:
                     logout();
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again...");
 
             }
-        } while (choice != 12);
+        } while (choice != 13);
         System.out.println("\n");
     }
 
@@ -170,23 +172,35 @@ public class ManagerUI implements ManagerMenu {
         }
     }
 
+    public void viewProjectsManagerCreated(){
+        this.manager.viewProjectsCreatedByManager(this.database);
+    }
+
     public void manageOfficerRegistration() {
         System.out.println("Manage officer registration...");
+        boolean check = false;
         System.out.println("Do you want to view all available officer registration forms?(yes/no)");
         String response = scanner.nextLine();
         if (response.equalsIgnoreCase("yes")) {
-            this.manager.viewRegistration();
+            check = this.manager.viewRegistration();
+        }
+        if(!check){
+            return;
         }
         System.out.println("Approve or reject officer registration form:");
         this.manager.assignOfficerToProject(this.scanner, this.database);
     }
 
     public void manageBTOApplication() {
+        boolean check = false;
         System.out.println("Manage BTO application form...");
         System.out.println("Do you want to view all available application forms?(yes/no)");
         String response = scanner.nextLine();
         if (response.equalsIgnoreCase("yes")) {
-            this.manager.viewApplication();
+            check = this.manager.viewApplication();
+        }
+        if(!check){
+            return;
         }
         System.out.println("Approve or reject BTO application form:");
         this.manager.manageApplicationForm(this.scanner);
