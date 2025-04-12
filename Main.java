@@ -64,7 +64,7 @@ public class Main {
                         break;
                     }
 
-                    Login login = new Login(scanner);
+                    Login login = new Login();
 
                     switch (roleChoice) {
                         case 1:
@@ -72,7 +72,7 @@ public class Main {
                             String input = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
                             if (input == null) break;
                     
-                            UserAccount user = login.authenticate(db, input, "applicant");
+                            UserAccount user = login.authenticate(db, input, "applicant", scanner);
                             if (user instanceof Applicant) {
                                 ApplicantUI applicantUI = new ApplicantUI((Applicant) user, db, scanner);
                                 applicantUI.displayMenu();
@@ -84,7 +84,7 @@ public class Main {
                             String input1 = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
                             if (input1 == null) break;
                     
-                            UserAccount user1 = login.authenticate(db, input1, "officer");
+                            UserAccount user1 = login.authenticate(db, input1, "officer", scanner);
                             if (user1 instanceof Officer){
                                 OfficerUI officerUI = new OfficerUI((Officer)user1, db, scanner);
                                 officerUI.displayMenu();
@@ -96,7 +96,7 @@ public class Main {
                             String input2 = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
                             if (input2 == null) break;
                     
-                            UserAccount user2 = login.authenticate(db, input2, "manager");
+                            UserAccount user2 = login.authenticate(db, input2, "manager", scanner);
                             if(user2 instanceof Manager){
                                 ManagerUI managerUI = new ManagerUI((Manager)user2, db, scanner);
                                 managerUI.displayMenu();
