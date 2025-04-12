@@ -358,6 +358,20 @@ public class Manager extends UserAccount {
     public boolean viewApplication() {
         return handledProject.viewListOfApplication(); // new function for class Project
     }
+    
+    public void viewProjectsCreatedByManager(Database database){
+        List<Project> lis = new ArrayList<>();
+        boolean check = false;
+        for (Project project : database.projectList) {
+            if (this.getName().equalsIgnoreCase(project.getManager())) {
+                project.viewProjectDetails();
+                check = true;
+            }
+        }
+        if(!check){
+            System.out.println("You have not created any project!");
+        }
+    }
 
     public void assignOfficerToProject(Scanner sc, Database db) {
         System.out.print("Enter registration form ID: ");
