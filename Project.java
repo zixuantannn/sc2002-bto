@@ -224,7 +224,6 @@ public class Project {
             System.out.println("No projects found for the specified manager.");
         }
     }
-
     public void displayProjectsWithFilters(Scanner scanner, Database db) {
         System.out.println("Would you like to filter by neighborhood? (yes/no)");
         if (scanner.nextLine().equalsIgnoreCase("yes")) {
@@ -246,17 +245,23 @@ public class Project {
 
         List<Project> filteredProjects = new ArrayList<>();
         for (Project project : db.projectList) {
-            if (!savedNeighborhoodFilter.isEmpty()
-                    && !project.getNeighborhood().equalsIgnoreCase(savedNeighborhoodFilter)) {
-                continue;
+            boolean matches = true;
+
+            if (savedType1Filter != null && savedType1Filter && project.getNumType1() <= 0) {
+                matches = false;
             }
-            if (savedType1Filter != null && project.getType1() != savedType1Filter) {
-                continue;
+            
+            if (savedType2Filter != null && savedType2Filter && project.getNumType2() <= 0) {
+                matches = false;
             }
-            if (savedType2Filter != null && project.getType2() != savedType2Filter) {
-                continue;
+            
+            if (!savedNeighborhoodFilter.isEmpty() && !project.getNeighborhood().equalsIgnoreCase(savedNeighborhoodFilter)) {
+                matches = false;
             }
-            filteredProjects.add(project);
+            
+            if (matches) {
+                filteredProjects.add(project);
+            }
         }
 
         filteredProjects.sort(Comparator.comparing(Project::getName));
