@@ -9,4 +9,5 @@ interface ManagerMenu extends CommonMenu{
     public void manageBTOWithdrawal();
     public void viewAllEnquiry();
     public void viewAndReplyAllEnquiry();
+    public void viewProjectsManagerCreated();
 }
