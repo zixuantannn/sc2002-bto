@@ -64,8 +64,9 @@ public class Main {
                     String role = getRoleFromChoice(roleChoice);
 
                     String inputNRIC = InputValidation.getString("Enter your NRIC: ",
-                            s -> !s.trim().isEmpty(),
-                            "NRIC cannot be empty.");
+                    s -> !s.trim().isEmpty(),
+                    "NRIC cannot be empty.");
+            
 
                     UserAccount user = Login.authenticate(db, inputNRIC, role, new Scanner(System.in));
 
