@@ -42,7 +42,7 @@ public class InputValidation {
     }
 
     public static String getString(String prompt, Predicate<String> validator, String errorMessage) {
-        return getValidatedInput(prompt, input -> input, s -> s.matches("[a-zA-Z\\s]+") && validator.test(s), errorMessage);
+        return getValidatedInput(prompt, input -> input, validator, errorMessage);
     }
 
     public static Date getDate(String prompt, String format, String errorMessage) {
