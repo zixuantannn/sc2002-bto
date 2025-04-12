@@ -1,12 +1,13 @@
 import java.util.InputMismatchException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-
     public static void main(String[] args) {
         Database db = new Database();
-        CSVImporter.importEnquiry(db, "EnquiryList.csv");
         CSVImporter.importApplicants(db, "ApplicantList.csv");
         CSVImporter.importManagers(db, "ManagerList.csv");
         CSVImporter.importOfficers(db, "OfficerList.csv");
@@ -33,7 +34,7 @@ public class Main {
             }
         }
         System.out.println("Total officers loaded: " + officerCount);
-
+        
         int projectCount = 0;
         System.out.println("\n=== Project Details ===");
         for (Project p : db.projectList) {
@@ -44,92 +45,64 @@ public class Main {
         }
         System.out.println("Total projects loaded: " + projectCount);
 
-        int enquiryCount = 0;
-        int nextid = 0;
-        System.out.println("\n=== Enquiry Details ===");
-        for (Enquiry e : db.enquiryList) {
-            if (e != null) {
-                e.viewDetails();
-                enquiryCount++;
-            }
-        }
-        System.out.println("Total enquiry loaded: " + enquiryCount);
-        System.out.println("Next enquiry ID: " + Enquiry.getCount());
-
         System.out.println("\n \n");
 
         while (true) {
             printMainMenu();
-            int choice;
-            try {
-                System.out.print("\nEnter your choice: ");
-                choice = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
-                continue;
+            Integer choice = InputValidation.getValidatedInt(scanner, "");
+            if (choice == null) {
+                System.out.println("Exiting program due to invalid input.");
+                break;
             }
-
+            System.out.println();
             switch (choice) {
                 case 1:
                     printRoleMenu();
-                    int roleChoice = scanner.nextInt();
-                    scanner.nextLine();
+                    Integer roleChoice = InputValidation.getValidatedInt(scanner, "Enter your role (1-3): ");
+                    if (roleChoice == null) {
+                        System.out.println("Exiting program due to invalid input.");
+                        break;
+                    }
+
+                    Login login = new Login(scanner);
 
                     switch (roleChoice) {
                         case 1:
                             System.out.println("Applicant Selected!");
-                            System.out.print("Enter your NRIC: ");
-                            String input = scanner.nextLine();
-                            boolean availability = login(db, input, "applicant");
-                            if (availability) {
-                                Applicant user = null;
-                                for (Applicant ap : db.applicantList) {
-                                    if (ap.getNRIC().equals(input)) {
-                                        user = ap;
-                                        break;
-                                    }
-                                }
-                                ApplicantUI applicantUI = new ApplicantUI(user, db, scanner);
+                            String input = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
+                            if (input == null) break;
+                    
+                            UserAccount user = login.authenticate(db, input, "applicant");
+                            if (user instanceof Applicant) {
+                                ApplicantUI applicantUI = new ApplicantUI((Applicant) user, db, scanner);
                                 applicantUI.displayMenu();
                             }
                             break;
+                    
                         case 2:
                             System.out.println("Officer Selected!");
-                            System.out.print("Enter your NRIC: ");
-                            String input1 = scanner.nextLine();
-                            boolean availability1 = login(db, input1, "officer");
-                            if (availability1) {
-                                Officer user = null;
-                                for (Officer officer : db.officerList) {
-                                    if (officer.getNRIC().equals(input1)) {
-                                        user = officer;
-                                        break;
-                                    }
-                                }
-                                OfficerUI officerUI = new OfficerUI(user, db, scanner);
+                            String input1 = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
+                            if (input1 == null) break;
+                    
+                            UserAccount user1 = login.authenticate(db, input1, "officer");
+                            if (user1 instanceof Officer){
+                                OfficerUI officerUI = new OfficerUI((Officer)user1, db, scanner);
                                 officerUI.displayMenu();
-
                             }
                             break;
+                    
                         case 3:
                             System.out.println("Manager Selected!");
-                            System.out.print("Enter your NRIC: ");
-                            String input2 = scanner.nextLine();
-                            boolean availability2 = login(db, input2, "manager");
-                            if (availability2) {
-                                Manager user = null;
-                                for (Manager manager : db.managerList) {
-                                    if (manager.getNRIC().equals(input2)) {
-                                        user = manager;
-                                        break;
-                                    }
-                                }
-                                ManagerUI managerUI = new ManagerUI(user, db, scanner);
+                            String input2 = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
+                            if (input2 == null) break;
+                    
+                            UserAccount user2 = login.authenticate(db, input2, "manager");
+                            if(user2 instanceof Manager){
+                                ManagerUI managerUI = new ManagerUI((Manager)user2, db, scanner);
                                 managerUI.displayMenu();
                             }
                             break;
+                    
                         default:
                             System.out.println("Invalid role choice!");
                             break;
@@ -160,7 +133,7 @@ public class Main {
         System.out.println(line);
         System.out.print("Choice: ");
     }
-
+    
     private static void printRoleMenu() {
         String line = "+--------------------------------------------+";
         System.out.println(line);
@@ -170,81 +143,11 @@ public class Main {
         System.out.printf("| %-42s |\n", "2. Officer");
         System.out.printf("| %-42s |\n", "3. Manager");
         System.out.println(line);
-        System.out.print("Choice: ");
+        System.out.println("Choice: ");
     }
-
+    
     private static String centerString(int width, String s) {
         return String.format("%" + ((width - s.length()) / 2 + s.length()) + "s%" +
                 ((width - s.length() + 1) / 2) + "s", s, "");
-    }
-
-    private static boolean login(Database db, String input, String position) {
-
-        UserAccount user = null;
-        boolean isApplicant = false;
-        boolean isOfficer = false;
-        boolean isManager = false;
-
-        for (Applicant ap : db.applicantList) {
-            if (ap.getNRIC().equals(input)) {
-                isApplicant = true;
-                user = ap;
-                break;
-            }
-        }
-
-        for (Officer officer : db.officerList) {
-            if (officer.getNRIC().equals(input)) {
-                isOfficer = true;
-                user = officer;
-                break;
-            }
-        }
-
-        for (Manager manager : db.managerList) {
-            if (manager.getNRIC().equals(input)) {
-                isManager = true;
-                user = manager;
-                break;
-            }
-        }
-
-        if (user == null) {
-            System.out.println("Invalid ID.");
-            return false;
-        }
-
-        String role = position;
-
-        if (role.equals("applicant") && !isApplicant) {
-            System.out.println("Invalid ID.");
-            return false;
-        } else if (role.equals("officer") && !isOfficer) {
-            System.out.println("Invalid ID.");
-            return false;
-        } else if (role.equals("manager") && !isManager) {
-            System.out.println("Invalid ID.");
-            return false;
-        }
-
-        System.out.print("Enter your password: ");
-        String password = scanner.nextLine();
-
-        if (password.equals(user.getPassword())) {
-            System.out.println("\nLogin successful! Welcome, " + role + " " + user.getName() + "!");
-            if ("password".equals(user.getPassword())) {
-                System.out.println(
-                        "You are logging in with a default password, please change your password to a strong one (Alphanumeric and 8+ characters).");
-                String newPassword = InputValidation.getPassword("Enter your new password: ",
-                        "Password must be alphanumeric and at least 8 characters long.");
-                user.changePassword(newPassword);
-                System.out.println("You have changed your password successfully.");
-            }
-            System.out.println("\nWelcome, " + user.getName() + "! You are logged in as " + role + ".");
-        } else {
-            System.out.println("Incorrect password.");
-            return false;
-        }
-        return true;
     }
 }
