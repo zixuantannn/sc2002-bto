@@ -52,7 +52,7 @@ public class Login {
             if ("password".equals(user.getPassword())) {
                 System.out.println("You are using a default password.");
                 System.out.println("Do you want to change password (yes/no)?");
-                String answer = this.scanner.nextLine();
+                String answer = scanner.nextLine();
                 if (answer.equalsIgnoreCase("yes")) {
                     System.out.print("Enter your new password: ");
                     String newPassword = scanner.nextLine();
@@ -67,4 +67,3 @@ public class Login {
         }
     }
 }
-
