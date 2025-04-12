@@ -1,18 +1,20 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class OfficerUI implements OfficerMenu{
+public class OfficerUI implements OfficerMenu {
     Officer officer = null;
     Database db = null;
     Scanner scanner = new Scanner(System.in);
 
-    public OfficerUI(Officer officer, Database db, Scanner scanner){
+    public OfficerUI(Officer officer, Database db, Scanner scanner) {
         this.officer = officer;
         this.db = db;
         this.scanner = scanner;
     }
 
-    public void logout(){
+    public void logout() {
+        EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, officer.getEnquiryHandler().getEnquiryList());
+        CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
@@ -30,15 +32,14 @@ public class OfficerUI implements OfficerMenu{
             System.out.println("7. Logout\n");
             System.out.print("Choose an option: ");
 
-            
             try {
                 System.out.print("\nEnter your choice: ");
                 choice = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine(); 
-                continue; 
+                scanner.nextLine();
+                continue;
             }
 
             switch (choice) {
@@ -70,26 +71,24 @@ public class OfficerUI implements OfficerMenu{
         System.out.println("\n");
     }
 
-
     public void registerProjectAsOfficer() {
         System.out.println("Registering a new project as Officer...");
         this.officer.registerToProject(this.scanner, this.db);
     }
 
-    public void viewProjectsForApplyOfficer(){
+    public void viewProjectsForApplyOfficer() {
         System.out.println("View all available projects for apply officer...");
         boolean check = false;
-        for(Project project : this.db.projectList){
-            if(project.getNumOfficerSlots()>0){
+        for (Project project : this.db.projectList) {
+            if (project.getNumOfficerSlots() > 0) {
                 project.viewProjectDetails();
                 check = true;
             }
         }
-        if(!check){
+        if (!check) {
             System.out.println("There is no available project fo registering as Officer!");
         }
     }
-
 
     public void checkRegistrationStatus() {
         System.out.println("Checking registration status...");
@@ -110,6 +109,5 @@ public class OfficerUI implements OfficerMenu{
         System.out.println("Handling flat booking process...");
         this.officer.handleFlatBooking(this.scanner, this.db);
     }
-
 
 }

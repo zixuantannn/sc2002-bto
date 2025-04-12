@@ -29,6 +29,10 @@ public class Applicant extends UserAccount {
         this.applicantProjHandler = new ApplicantProjectHandler(Database.projectList);
     }
 
+    public EnquiryHandler getEnquiryHandler() {
+        return enqHandler;
+    }
+
     public ApplicationForm getApplyForm() {
         return this.applyForm;
     }

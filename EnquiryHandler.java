@@ -10,7 +10,7 @@ public class EnquiryHandler {
 
     public EnquiryHandler(String filter, List<Enquiry> enquiryList, String filterType) {
         this.allEnquries = new ArrayList<>();
-        for (Enquiry enquiry : enquiryList) {
+        for (Enquiry enquiry : Database.enquiryList) {
             if (filterType.equals(FILTER_BY_NRIC) && enquiry.getNRIC().equalsIgnoreCase(filter)) {
                 this.allEnquries.add(enquiry);
             } else if (filterType.equals(FILTER_BY_PROJECT) && enquiry.getProjectName().equalsIgnoreCase(filter)) {
@@ -36,8 +36,13 @@ public class EnquiryHandler {
     public void createEnquiry(String nric, String content) {
         Enquiry newEnquiry = new Enquiry(nric, content);
         allEnquries.add(newEnquiry);
+        CSVWriter.submitEnquiry(newEnquiry, "EnquiryList.csv");
         System.out.println("New Enquiry submitted.");
 
+    }
+
+    public List<Enquiry> getEnquiryList() {
+        return this.allEnquries;
     }
 
     public void displayMyEnquiries() {
@@ -67,7 +72,7 @@ public class EnquiryHandler {
             if (enquiry.getID() == id) {
                 found = true;
                 if (enquiry.getResponse() == null) { // Enquiry have not been answered
-                    System.out.println("Please enter the new enquiry: ");
+                    System.out.print("Please enter the new enquiry: ");
                     String newContent = sc.nextLine();
                     enquiry.updateContent(newContent);
                     System.out.println("Enquiry content updated successfully.");
@@ -76,9 +81,10 @@ public class EnquiryHandler {
                 }
                 break;
             }
-            if (!found) {
-                System.out.println("Enquiry ID not found. Please check again.");
-            }
+
+        }
+        if (!found) {
+            System.out.println("Enquiry ID not found. Please check again.");
         }
 
     }
@@ -110,6 +116,7 @@ public class EnquiryHandler {
 
                 if (choice.equals("yes")) {
                     allEnquries.remove(enquiryToRemove);
+                    Database.enquiryList.remove(enquiryToRemove);
                     System.out.println("Enquiry have been removed.");
                 } else {
                     System.out.println("No changes have been done");
@@ -120,6 +127,18 @@ public class EnquiryHandler {
 
         } else {
             System.out.println("Enquiry ID not found. Please check again.");
+        }
+    }
+
+    public static void syncEnquiriesOnLogout(List<Enquiry> allEnquries, List<Enquiry> filteredList) {
+        for (Enquiry updated : filteredList) {
+            for (int i = 0; i < allEnquries.size(); i++) {
+                Enquiry original = allEnquries.get(i);
+                if (original.getID() == updated.getID()) {
+                    allEnquries.set(i, updated);
+                    break;
+                }
+            }
         }
     }
 

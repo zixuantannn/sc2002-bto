@@ -33,6 +33,10 @@ public class Officer extends Applicant {
         this.enqHandler = new EnquiryHandler(projectName, Database.enquiryList, EnquiryHandler.FILTER_BY_PROJECT);
     }
 
+    public EnquiryHandler getEnquiryHandler() {
+        return this.enqHandler;
+    }
+
     public void setAssignedProject(Project project) {
         this.assignedProject = project;
     }

@@ -14,6 +14,8 @@ public class ManagerUI implements ManagerMenu {
     }
 
     public void logout() {
+        EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, manager.getEnquiryHandler().getEnquiryList());
+        CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 

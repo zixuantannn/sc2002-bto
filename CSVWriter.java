@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSVWriter {
@@ -122,6 +123,58 @@ public class CSVWriter {
 
         if (!tempFile.renameTo(inputFile)) {
             System.out.println("Could not rename temp file to project file.");
+        }
+    }
+
+    public static void submitEnquiry(Enquiry enquiry, String filepath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, true))) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            // Construct the CSV row manually
+            StringBuilder sb = new StringBuilder();
+            sb.append(enquiry.getNRIC()).append(","); // NRIC
+            sb.append(enquiry.getID()).append(","); // Enquiry ID
+            sb.append(enquiry.getContent()).append(","); // content
+            sb.append(","); // response
+            sb.append(enquiry.getProjectName().equals("-") ? "" : enquiry.getProjectName()).append(","); // project name
+
+            sb.append(sdf.format(enquiry.getDate())).append(",");
+            ;// date created
+
+            bw.write(sb.toString());
+            bw.newLine();
+            System.out.println("Enquiry saved to " + filepath);
+        } catch (IOException e) {
+            System.out.println("Error sending enquiry.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveEnquirieToCSV(List<Enquiry> enquiryList, String filepath) {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) { // false = overwrite
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            bw.write(
+                    "NRIC,Enquiry ID,content,response,Project Name,date created");
+            bw.newLine();
+
+            for (Enquiry e : enquiryList) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(e.getNRIC()).append(",");
+                sb.append(e.getID()).append(",");
+                sb.append(e.getContent()).append(",");
+                sb.append(e.getResponse() == null ? "" : e.getResponse()).append(",");
+                sb.append(e.getProjectName().equals("-") ? null : e.getProjectName()).append(",");
+                sb.append(sdf.format(e.getDate()));
+
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+
+            System.out.println("All projects overwritten to CSV file.");
+        } catch (IOException e) {
+            System.out.println("Error overwriting project CSV.");
+            e.printStackTrace();
         }
     }
 }

@@ -37,6 +37,10 @@ public class Enquiry {
         this.projectName = "-";
     }
 
+    public Date getDate() {
+        return date;
+    }
+
     public String getNRIC() {
         return senderNRIC;
     }
@@ -46,7 +50,7 @@ public class Enquiry {
     }
 
     public static void setCountEnquiry(int count) {
-        count_enquiry = count;
+        count_enquiry = count + 1;
     }
 
     public String getProjectName() {

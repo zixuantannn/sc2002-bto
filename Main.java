@@ -5,6 +5,7 @@ public class Main {
         Database db = new Database();
 
         // Load CSV files
+        CSVImporter.importEnquiry(db, "EnquiryList.csv");
         CSVImporter.importApplicants(db, "ApplicantList.csv");
         CSVImporter.importManagers(db, "ManagerList.csv");
         CSVImporter.importOfficers(db, "OfficerList.csv");
@@ -45,6 +46,17 @@ public class Main {
         System.out.println("Total projects loaded: " + projectCount);
         System.out.println("\n");
 
+        int enquiryCount = 0;
+        System.out.println("\n=== Enquiry Details ===");
+        for (Enquiry e : db.enquiryList) {
+            if (e != null) {
+                e.viewDetails();
+                enquiryCount++;
+            }
+        }
+        System.out.println("Total enquiry loaded: " + enquiryCount);
+        System.out.println("Next enquiry ID: " + Enquiry.getCount());
+
         while (true) {
             printMainMenu();
 
@@ -64,9 +76,8 @@ public class Main {
                     String role = getRoleFromChoice(roleChoice);
 
                     String inputNRIC = InputValidation.getString("Enter your NRIC: ",
-                    s -> !s.trim().isEmpty(),
-                    "NRIC cannot be empty.");
-            
+                            s -> !s.trim().isEmpty(),
+                            "NRIC cannot be empty.");
 
                     UserAccount user = Login.authenticate(db, inputNRIC, role, new Scanner(System.in));
 

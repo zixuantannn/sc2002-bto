@@ -26,6 +26,10 @@ public class Manager extends UserAccount {
         return this.handledProject;
     }
 
+    public EnquiryHandler getEnquiryHandler() {
+        return this.enqHandler;
+    }
+
     public void createProjectListing(Scanner sc, Database db) {
         try {
 
