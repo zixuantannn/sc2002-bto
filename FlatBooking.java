@@ -71,16 +71,21 @@ public class FlatBooking {
     public void setFlatType(String flatType) {
         this.flatType = flatType;
     }
-
     public void viewFlatBookingDetails() {
-        System.out.println("BookingID: " + bookingID);
-        System.out.println("Applicant Name: " + applicantName);
-        System.out.println("Applicant NRIC: " + applicantNRIC);
-        System.out.println("Age: " + applicantAge);
-        System.out.println("Marital Status: " + applicantMaritalStatus);
-        System.out.println("Project Name: " + projectName);
-        System.out.println("Flat Type: " + flatType);
+        String line = "+------------------------------------------------------+";
+        System.out.println(line);
+        System.out.printf("| %-50s |\n", "Flat Booking Details");
+        System.out.println(line);
+        System.out.printf("| %-20s: %-25s |\n", "Booking ID", bookingID);
+        System.out.printf("| %-20s: %-25s |\n", "Applicant Name", applicantName);
+        System.out.printf("| %-20s: %-25s |\n", "Applicant NRIC", applicantNRIC);
+        System.out.printf("| %-20s: %-25d |\n", "Age", applicantAge);
+        System.out.printf("| %-20s: %-25s |\n", "Marital Status", applicantMaritalStatus);
+        System.out.printf("| %-20s: %-25s |\n", "Project Name", projectName);
+        System.out.printf("| %-20s: %-25s |\n", "Flat Type", flatType);
+        System.out.println(line);
     }
+    
     
     
 }
