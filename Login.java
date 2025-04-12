@@ -11,7 +11,7 @@ public class Login {
         this.scanner = scanner;
     }
 
-    public UserAccount authenticate(Database db, String input, String position) {
+    static public UserAccount authenticate(Database db, String input, String position) {
         UserAccount user = null;
 
         switch (position.toLowerCase()) {
