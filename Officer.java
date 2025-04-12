@@ -190,6 +190,7 @@ public class Officer extends Applicant {
         FlatBooking flatBooking = new FlatBooking(applicant.getName(), applicant.getNRIC(), applicant.getAge(),
                 applicant.getMaritalStatus(), assignedProject.getName(), flatType);
         generateReceipt(flatBooking);
+        db.flatBookingList.add(flatBooking);
     }
 
     public void generateReceipt(FlatBooking flatBooking) {
