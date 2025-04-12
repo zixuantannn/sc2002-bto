@@ -351,12 +351,12 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void viewRegistration() {
-        handledProject.viewListOfRegistration(); // new function for class Project
+    public boolean viewRegistration() {
+        return handledProject.viewListOfRegistration(); // new function for class Project
     }
 
-    public void viewApplication() {
-        handledProject.viewListOfApplication(); // new function for class Project
+    public boolean viewApplication() {
+        return handledProject.viewListOfApplication(); // new function for class Project
     }
 
     public void assignOfficerToProject(Scanner sc, Database db) {
