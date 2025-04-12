@@ -5,5 +5,4 @@ interface OfficerMenu extends CommonMenu{
     public void viewHandledProject();
     public void viewAndReplyEnquiryList();
     public void handleFlatBook();
-    public void generateReceiptForFlatBooking();
 }
