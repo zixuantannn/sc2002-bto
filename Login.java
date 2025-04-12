@@ -5,13 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Login {
-    private Scanner scanner;
 
-    public Login(Scanner scanner) {
-        this.scanner = scanner;
-    }
-
-    static public UserAccount authenticate(Database db, String input, String position) {
+    static public UserAccount authenticate(Database db, String input, String position, Scanner scanner) {
         UserAccount user = null;
 
         switch (position.toLowerCase()) {
