@@ -27,8 +27,7 @@ public class OfficerUI implements OfficerMenu{
             System.out.println("4. View Handled Project Details");
             System.out.println("5. View and Reply Enquiry List");
             System.out.println("6. Flat Selection and Booking Management");
-            System.out.println("7. Receipt Generation For Flat Booking");
-            System.out.println("8. Logout\n");
+            System.out.println("7. Logout\n");
             System.out.print("Choose an option: ");
 
             
@@ -62,15 +61,12 @@ public class OfficerUI implements OfficerMenu{
                     handleFlatBook();
                     break;
                 case 7:
-                    generateReceiptForFlatBooking();
-                    break;
-                case 8:
                     logout();
                     return;
                 default:
                     System.out.println("Invalid choice! Please choose a valid option.");
             }
-        } while (choice != 8);
+        } while (choice != 7);
         System.out.println("\n");
     }
 
@@ -115,8 +111,5 @@ public class OfficerUI implements OfficerMenu{
         this.officer.handleFlatBooking(this.scanner, this.db);
     }
 
-    public void generateReceiptForFlatBooking(){
-        this.officer.generateReceipt(null);
-    }
 
 }
