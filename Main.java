@@ -1,18 +1,16 @@
-import java.util.InputMismatchException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
         Database db = new Database();
+
+        // Load CSV files
         CSVImporter.importApplicants(db, "ApplicantList.csv");
         CSVImporter.importManagers(db, "ManagerList.csv");
         CSVImporter.importOfficers(db, "OfficerList.csv");
         CSVImporter.importProjects(db, "ProjectList.csv");
 
+        // Display loading confirmation
         System.out.println("Data loaded successfully.");
         System.out.println("=== Applicants ===");
         for (Applicant a : db.applicantList) {
@@ -25,6 +23,7 @@ public class Main {
             if (m != null)
                 System.out.println(m.getName());
         }
+
         System.out.println("\n=== Officers ===");
         int officerCount = 0;
         for (Officer o : db.officerList) {
@@ -34,7 +33,7 @@ public class Main {
             }
         }
         System.out.println("Total officers loaded: " + officerCount);
-        
+
         int projectCount = 0;
         System.out.println("\n=== Project Details ===");
         for (Project p : db.projectList) {
@@ -44,81 +43,68 @@ public class Main {
             }
         }
         System.out.println("Total projects loaded: " + projectCount);
-
-        System.out.println("\n \n");
+        System.out.println("\n");
 
         while (true) {
             printMainMenu();
-            Integer choice = InputValidation.getValidatedInt(scanner, "");
-            if (choice == null) {
-                System.out.println("Exiting program due to invalid input.");
-                break;
-            }
+
+            int choice = InputValidation.getInt("Enter your choice: ",
+                    i -> i >= 1 && i <= 3,
+                    "Please enter a valid option between 1 and 3.");
+
             System.out.println();
+
             switch (choice) {
                 case 1:
                     printRoleMenu();
-                    Integer roleChoice = InputValidation.getValidatedInt(scanner, "Enter your role (1-3): ");
-                    if (roleChoice == null) {
-                        System.out.println("Exiting program due to invalid input.");
-                        break;
-                    }
+                    int roleChoice = InputValidation.getInt("Enter your role (1-3): ",
+                            i -> i >= 1 && i <= 3,
+                            "Please enter a valid role number (1-3).");
 
-                    Login login = new Login();
+                    String role = getRoleFromChoice(roleChoice);
 
-                    switch (roleChoice) {
-                        case 1:
-                            System.out.println("Applicant Selected!");
-                            String input = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
-                            if (input == null) break;
-                    
-                            UserAccount user = login.authenticate(db, input, "applicant", scanner);
-                            if (user instanceof Applicant) {
-                                ApplicantUI applicantUI = new ApplicantUI((Applicant) user, db, scanner);
-                                applicantUI.displayMenu();
-                            }
-                            break;
-                    
-                        case 2:
-                            System.out.println("Officer Selected!");
-                            String input1 = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
-                            if (input1 == null) break;
-                    
-                            UserAccount user1 = login.authenticate(db, input1, "officer", scanner);
-                            if (user1 instanceof Officer){
-                                OfficerUI officerUI = new OfficerUI((Officer)user1, db, scanner);
-                                officerUI.displayMenu();
-                            }
-                            break;
-                    
-                        case 3:
-                            System.out.println("Manager Selected!");
-                            String input2 = InputValidation.getValidatedString(scanner, "Enter your NRIC: ", false);
-                            if (input2 == null) break;
-                    
-                            UserAccount user2 = login.authenticate(db, input2, "manager", scanner);
-                            if(user2 instanceof Manager){
-                                ManagerUI managerUI = new ManagerUI((Manager)user2, db, scanner);
-                                managerUI.displayMenu();
-                            }
-                            break;
-                    
-                        default:
-                            System.out.println("Invalid role choice!");
-                            break;
+                    String inputNRIC = InputValidation.getString("Enter your NRIC: ",
+                            s -> !s.trim().isEmpty(),
+                            "NRIC cannot be empty.");
+
+                    UserAccount user = Login.authenticate(db, inputNRIC, role, new Scanner(System.in));
+
+                    if (user instanceof Applicant) {
+                        new ApplicantUI((Applicant) user, db, new Scanner(System.in)).displayMenu();
+                    } else if (user instanceof Officer) {
+                        new OfficerUI((Officer) user, db, new Scanner(System.in)).displayMenu();
+                    } else if (user instanceof Manager) {
+                        new ManagerUI((Manager) user, db, new Scanner(System.in)).displayMenu();
                     }
                     break;
+
                 case 2:
                     System.out.println("Feature to create a new applicant account is under construction.");
                     break;
+
                 case 3:
                     System.out.println("Exiting the BTO App. Goodbye!");
                     System.exit(0);
                     break;
+
                 default:
                     System.out.println("Invalid choice!");
             }
+
             System.out.println("-----------------------------");
+        }
+    }
+
+    private static String getRoleFromChoice(int roleChoice) {
+        switch (roleChoice) {
+            case 1:
+                return "applicant";
+            case 2:
+                return "officer";
+            case 3:
+                return "manager";
+            default:
+                return "";
         }
     }
 
@@ -131,9 +117,8 @@ public class Main {
         System.out.printf("| %-42s |\n", "2. Create new Applicant account");
         System.out.printf("| %-42s |\n", "3. Exit");
         System.out.println(line);
-        System.out.print("Choice: ");
     }
-    
+
     private static void printRoleMenu() {
         String line = "+--------------------------------------------+";
         System.out.println(line);
@@ -143,9 +128,8 @@ public class Main {
         System.out.printf("| %-42s |\n", "2. Officer");
         System.out.printf("| %-42s |\n", "3. Manager");
         System.out.println(line);
-        System.out.println("Choice: ");
     }
-    
+
     private static String centerString(int width, String s) {
         return String.format("%" + ((width - s.length()) / 2 + s.length()) + "s%" +
                 ((width - s.length() + 1) / 2) + "s", s, "");
