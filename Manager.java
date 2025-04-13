@@ -2,7 +2,6 @@
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -405,78 +404,91 @@ public class Manager extends UserAccount {
     }
 
     public void assignOfficerToProject(Scanner sc, Database db) {
-        
         RegistrationForm registerForm = null;
-        List<RegistrationForm> registerList = handledProject.getListOfRegisterForm(); // new function for class Project
-        if (registerList.size() == 0){
+        List<RegistrationForm> registerList = handledProject.getListOfRegisterForm();
+    
+        if (registerList.size() == 0) {
             System.out.println("No registration forms found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter registration form ID or 0 to cancel: ",i -> i >=0,
-                    "Please enter a positive value");
-        if (ID == 0){
+    
+        int ID = InputValidation.getInt("Enter registration form ID or 0 to cancel: ", i -> i >= 0,
+                "Please enter a positive value");
+        if (ID == 0) {
             return;
         }
+    
         for (RegistrationForm form : registerList) {
             if (form.getRegistrationID() == ID) {
                 registerForm = form;
                 break;
             }
         }
-
+    
         if (registerForm == null) {
-            System.out.println("Your ID you entered is invalid!");
-        } else {
-            // Ask user to approve or reject
-            String assignment = InputValidation.getApproveOrReject("Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ", "Invalid input. Please try again!");
+            System.out.println("The ID you entered is invalid!");
+            return;
+        }
     
-            if (assignment.equalsIgnoreCase("approve")) {
-                // Check if there are available officer slots
-                if (handledProject.getNumOfficerSlots() <= 0) {
-                    System.out.println("No available officer slot.");
-                } else {
-                    // Approve the registration form and reduce officer slots
-                    registerForm.setRegistrationStatus("approved");
-                    handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
+        String assignment = InputValidation.getApproveOrReject(
+                "Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ",
+                "Invalid input. Please try again!");
     
-                    String officerName = registerForm.getOfficerName();
-                    String NRICofficer = registerForm.getOfficerNRIC();
-                    List<String> currentOfficers = Arrays.asList(handledProject.getOfficers());
+        if (assignment.equalsIgnoreCase("approve")) {
+            if (handledProject.getNumOfficerSlots() <= 0) {
+                System.out.println("No available officer slot.");
+                return;
+            }
     
-                    boolean assigned = false;
+            registerForm.setRegistrationStatus("approved");
+            handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
     
-                    // Check if there is space for more officers
-                    if (currentOfficers.size() < handledProject.getNumOfficerSlots()) {
-                        // There is space for more officers
-                        currentOfficers.add(officerName);  // Add the officer to the project
+            String officerName = registerForm.getOfficerName();
+            String NRICofficer = registerForm.getOfficerNRIC();
     
-                        // Now, find the officer object in the database to assign the project
-                        for (Officer officer : db.officerList) {
-                            if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
-                                officer.setAssignedProject(handledProject); // Assign the project to the officer
-                                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv"); // Update the project list in CSV
-                                System.out.println("Officer " + officerName + " approved and assigned to project " + handledProject.getName());
-                                assigned = true;
-                                break;  // Exit the loop after assigning the officer
-                            }
-                        }
-    
-                        if (!assigned) {
-                            System.out.println("Officer with NRIC " + NRICofficer + " not found.");
-                        }
-                    } else {
-                        // If no space, print an error message
-                        System.out.println("Officer slots are full for this project.");
+            // Convert to clean List, filtering out null, "null", "None"
+            List<String> currentOfficers = new ArrayList<>();
+            for (String officer : handledProject.getOfficers()) {
+                if (officer != null && !officer.trim().isEmpty()) {
+                    String cleaned = officer.trim().toLowerCase();
+                    if (!cleaned.equals("null") && !cleaned.equals("none")) {
+                        currentOfficers.add(officer.trim());
                     }
                 }
-            } else if (assignment.equalsIgnoreCase("reject")) {
-                // Reject the registration form
-                registerForm.setRegistrationStatus("rejected");
-                System.out.println("Registration rejected.");
             }
+    
+            // Add new officer
+            currentOfficers.add(officerName);
+    
+            // Convert back to fixed-length array
+            String[] updatedOfficersArray = new String[10];
+            for (int i = 0; i < currentOfficers.size() && i < 10; i++) {
+                updatedOfficersArray[i] = currentOfficers.get(i);
+            }
+            handledProject.setOfficers(updatedOfficersArray);
+    
+            boolean assigned = false;
+            for (Officer officer : db.officerList) {
+                if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
+                    officer.setAssignedProject(handledProject);
+                    CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                    System.out.println("Officer " + officerName + " approved and assigned to project " + handledProject.getName());
+                    assigned = true;
+                    break;
+                }
+            }
+    
+            if (!assigned) {
+                System.out.println("Officer with NRIC " + NRICofficer + " not found.");
+            }
+    
+        } else if (assignment.equalsIgnoreCase("reject")) {
+            registerForm.setRegistrationStatus("rejected");
+            System.out.println("Registration rejected.");
         }
     }
-
+    
+    
     public void manageApplicationForm(Scanner sc) {
         
         ApplicationForm applyForm = null;
