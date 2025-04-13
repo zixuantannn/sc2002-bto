@@ -225,20 +225,20 @@ public class Project {
         }
     }
     public void displayProjectsWithFilters(Scanner scanner, Database db) {
-        System.out.println("Would you like to filter by neighborhood? (yes/no)");
-        if (scanner.nextLine().equalsIgnoreCase("yes")) {
+        String answer = InputValidation.getYesOrNo("Would you like to filter by neighborhood (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        if (answer.equalsIgnoreCase("yes")) {
             System.out.println("Enter neighborhood:");
             savedNeighborhoodFilter = scanner.nextLine();
         }
 
-        System.out.println("Would you like to filter by 2-Room flats availability? (yes/no)");
-        if (scanner.nextLine().equalsIgnoreCase("yes")) {
+        answer = InputValidation.getYesOrNo("Would you like to filter by 2-Room flats availability (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        if (answer.equalsIgnoreCase("yes")) {
             System.out.println("Enter 'true' if filtering for projects with 2-Room flats, 'false' otherwise:");
             savedType1Filter = Boolean.valueOf(scanner.nextLine());
         }
 
-        System.out.println("Would you like to filter by 3-Room flats availability? (yes/no)");
-        if (scanner.nextLine().equalsIgnoreCase("yes")) {
+        answer = InputValidation.getYesOrNo("Would you like to filter by 3-Room flats availability (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        if (answer.equalsIgnoreCase("yes")) {
             System.out.println("Enter 'true' if filtering for projects with 3-Room flats, 'false' otherwise:");
             savedType2Filter = Boolean.valueOf(scanner.nextLine());
         }
