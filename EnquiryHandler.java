@@ -181,6 +181,7 @@ public class EnquiryHandler {
         List<Enquiry> enqList = this.allEnquries;
         if (enqList == null || enqList.isEmpty()) {
             System.out.println("There are no enquiries to reply to.");
+            return;
         }
 
         for (Enquiry enquiry : enqList) {
