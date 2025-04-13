@@ -91,14 +91,16 @@ public class Manager extends UserAccount {
             // Check if current date is the application open date. If yes, then
             // automatically set visibility as ON.
             LocalDate today = LocalDate.now();
-            LocalDate projectOpenDate = openDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate projectOpenDate = openDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate projectCloseDate = closeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-            String visibilityStatus;
-            if (!projectOpenDate.isAfter(today)) {
-                visibilityStatus = "on";
-            } else {
-                visibilityStatus = "off";
-            }
+        String visibilityStatus;
+        if (!projectOpenDate.isAfter(today) && !projectCloseDate.isBefore(today)) {
+            visibilityStatus = "on";
+        } else {
+            visibilityStatus = "off";
+        }
+
 
             Project newProject = new Project(
                     name,
@@ -115,7 +117,7 @@ public class Manager extends UserAccount {
                     visibilityStatus);
 
             // Manager who created a project is automatically assigned to the project
-            this.setHandledProject(newProject);
+            //this.setHandledProject(newProject);
 
             db.projectList.add(newProject);
             CSVWriter.saveProject(newProject, "ProjectList.csv");
