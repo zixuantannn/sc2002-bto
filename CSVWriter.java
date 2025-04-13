@@ -177,4 +177,95 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
+
+    public static void updatePassword(String filepath, Database db, UserAccount user) {
+
+        List<?> userList = null;
+
+        if (user instanceof Officer) {
+            userList = db.officerList;
+        } else if (user instanceof Applicant) {
+            userList = db.applicantList;
+        } else if (user instanceof Manager) {
+            userList = db.managerList;
+        }
+
+        // Find the user and update the password
+        boolean userFound = false;
+        if (userList != null) {
+            for (Object currentUser : userList) {
+                if (currentUser instanceof UserAccount) {
+                    UserAccount currentUserAccount = (UserAccount) currentUser;
+                    if (currentUserAccount.getNRIC().equals(user.getNRIC())) {
+                        userFound = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!userFound) {
+                System.out.println("NRIC not found in CSV file.");
+                return;
+            }
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
+                bw.write("Name,NRIC,Age,Marital Status,Password");
+                bw.newLine();
+
+                // Write all updated users back into the CSV file
+                if (userList instanceof List<?>) {
+                    for (Object currentUser : userList) {
+                        if (currentUser instanceof UserAccount) {
+                            UserAccount currentUserAccount = (UserAccount) currentUser;
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(currentUserAccount.getName()).append(",");
+                            sb.append(currentUserAccount.getNRIC()).append(",");
+                            sb.append(currentUserAccount.getAge()).append(",");
+                            sb.append(currentUserAccount.getMaritalStatus()).append(",");
+                            sb.append(currentUserAccount.getPassword()).append(",");
+
+                            bw.write(sb.toString());
+                            bw.newLine();
+                        }
+                    }
+                }
+
+                bw.close();
+                System.out.println("Password saved to CSV file.");
+
+            } catch (IOException e) {
+                System.out.println("Error reading or writing CSV file.");
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public static void saveFlatBooking(List<FlatBooking> flatBookings, String filepath) {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) { // false = overwrite
+            bw.write(
+                    "bookingID,applicant name,applicant NRIC,applicant age,marital status,project name,flat type");
+            bw.newLine();
+
+            for (FlatBooking booking : flatBookings) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(booking.getBookingID()).append(",");
+                sb.append(booking.getApplicantName()).append(",");
+                sb.append(booking.getApplicantNRIC()).append(",");
+                sb.append(booking.getApplicantAge()).append(",");
+                sb.append(booking.getApplicantMaritalStatus()).append(",");
+                sb.append(booking.getProjectName()).append(",");
+                sb.append(booking.getFlatType()).append(",");
+
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+
+            System.out.println("Booking saved to CSV file.");
+        } catch (IOException e) {
+            System.out.println("Error overwriting FlatBooking CSV.");
+            e.printStackTrace();
+        }
+    }
 }
