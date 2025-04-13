@@ -31,6 +31,14 @@ public class Officer extends Applicant {
         this.currentBehavior = new OfficerBehavior();
     }
 
+    public void setBehavior(RoleBehavior behavior) {
+        this.currentBehavior = behavior;
+    }
+
+    public void showMenu(Database db, Scanner scanner) {
+        this.currentBehavior.showMenu(this, db, scanner);
+    }  
+
     public void setEnqHandler(String projectName) {
         this.enqHandler = new EnquiryHandler(projectName, Database.enquiryList, EnquiryHandler.FILTER_BY_PROJECT);
     }
