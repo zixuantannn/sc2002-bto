@@ -31,9 +31,9 @@ public class ApplicantUI implements ApplicantMenu {
             System.out.println("5. Withdrawal Apply Form");
             System.out.println("6. Submit Enquiry");
             System.out.println("7. Display All Enquiries.");
-            System.out.println("8. Modify Content of Enquiries.");
             System.out.println("9. Remove Enquiry...");
-            System.out.println("10. Logout\n");
+            System.out.println("10. View your Flat Booking.");
+            System.out.println("11. Logout\n");
             System.out.print("Choose an option: ");
 
             try {
@@ -75,12 +75,15 @@ public class ApplicantUI implements ApplicantMenu {
                     removeEnquiries();
                     break;
                 case 10:
+                    viewFlatBooking();
+                    break;
+                case 11:
                     logout();
                     return;
                 default:
                     System.out.println("Invalid choice! Please choose a valid option.");
             }
-        } while (choice != 10);
+        } while (choice != 11);
         System.out.println("\n");
     }
 
@@ -128,5 +131,10 @@ public class ApplicantUI implements ApplicantMenu {
         System.out.println("Remove enquiry...");
         this.applicant.removeEnquiry(this.scanner);
     }
+
+    public void viewFlatBooking(){
+        System.out.println("View Flat Booking...");
+        this.applicant.viewTheFlatBooking(this.database);
+    }    
 
 }
