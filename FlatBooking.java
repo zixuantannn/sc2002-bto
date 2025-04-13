@@ -19,6 +19,20 @@ public class FlatBooking {
         this.projectName = projectName;
         this.flatType = flatType;
     }
+    public FlatBooking(int bookingID, String applicantName, String applicantNRIC, int applicantAge, 
+                    String applicantMaritalStatus, String projectName, String flatType) {
+        this.bookingID = bookingID;
+        this.applicantName = applicantName;
+        this.applicantNRIC = applicantNRIC;
+        this.applicantAge = applicantAge;
+        this.applicantMaritalStatus = applicantMaritalStatus;
+        this.projectName = projectName;
+        this.flatType = flatType;
+
+        if (bookingID >= ID) {
+            ID = bookingID + 1;
+        }
+    }
     
     public int getBookingID() {
         return bookingID;
