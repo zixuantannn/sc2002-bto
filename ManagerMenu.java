@@ -10,4 +10,5 @@ interface ManagerMenu extends CommonMenu{
     public void viewAllEnquiry();
     public void viewAndReplyAllEnquiry();
     public void viewProjectsManagerCreated();
+    public void generateReportFlatBooking();
 }
