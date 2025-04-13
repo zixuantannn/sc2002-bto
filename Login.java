@@ -1,7 +1,3 @@
-import java.util.InputMismatchException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Scanner;
 
 public class Login {
@@ -49,15 +45,18 @@ public class Login {
 
         if (password.equals(user.getPassword())) {
             System.out.println("\nLogin successful! Welcome, " + position + " " + user.getName() + "!");
+            
             if ("password".equals(user.getPassword())) {
                 System.out.println("You are using a default password.");
-                System.out.println("Do you want to change password (yes/no)?");
-                String answer = scanner.nextLine();
+                String answer = InputValidation.getYesOrNo("Do you want to change password (yes/no)?\n", "Please enter 'yes' or 'no'.");
+
                 if (answer.equalsIgnoreCase("yes")) {
-                    System.out.print("Enter your new password: ");
-                    String newPassword = scanner.nextLine();
-                    user.changePassword(newPassword);
-                    System.out.println("Password changed successfully.");
+                    // Prompt user for a new strong password
+                    String newPassword = InputValidation.getStrongPassword("Enter your new strong password: ", "Password must be at least 8 characters long and contain letters and digits.");
+                    if (newPassword != null) {
+                        user.changePassword(newPassword);  // Change the password if it's strong
+                        System.out.println("Password changed successfully.");
+                    }
                 }
             }
             return user;
