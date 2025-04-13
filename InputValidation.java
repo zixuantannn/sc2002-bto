@@ -59,7 +59,7 @@ public class InputValidation {
         }, date -> date != null, errorMessage);
     }
 
-    public static String getPassword(String prompt, String errorMessage) {
+    public static String getStrongPassword(String prompt, String errorMessage) {
         return getValidatedInput(prompt, input -> input, password -> password.matches("[a-zA-Z0-9]{8,}") , errorMessage);
     }
 }
