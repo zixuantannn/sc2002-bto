@@ -591,4 +591,67 @@ public class Manager extends UserAccount {
         }
     }
 
+    public void generateApplicantBookingReport(Database db, Scanner sc) {
+        if (this.getHandledProject() == null) {
+            System.out.println("You are not handling any project, so no report can be generated.");
+            return;
+        }
+    
+        String managerProjectName = this.getHandledProject().getName();
+    
+        System.out.println("\n--- Applicant Flat Booking Report (Project: " + managerProjectName + ") ---");
+    
+        System.out.print("Do you want to filter by marital status? (yes/no): ");
+        String filterMarital = sc.nextLine().trim().toLowerCase();
+        String maritalStatusFilter = null;
+        if (filterMarital.equals("yes")) {
+            System.out.print("Enter marital status to filter (Single/Married): ");
+            maritalStatusFilter = sc.nextLine().trim();
+        }
+    
+        System.out.print("Do you want to filter by flat type? (yes/no): ");
+        String filterFlatType = sc.nextLine().trim().toLowerCase();
+        String flatTypeFilter = null;
+        if (filterFlatType.equals("yes")) {
+            System.out.print("Enter flat type to filter (e.g., 2-Room, 3-Room): ");
+            flatTypeFilter = sc.nextLine().trim();
+        }
+    
+        boolean found = false;
+        System.out.printf("\n%-20s %-5s %-15s %-25s %-10s\n", "Name", "Age", "Marital Status", "Project Name", "Flat Type");
+        System.out.println("-------------------------------------------------------------------------------");
+    
+        for (FlatBooking booking : db.flatBookingList) {
+            if (!booking.getProjectName().equalsIgnoreCase(managerProjectName)) {
+                continue; // skip bookings not under this manager's project
+            }
+      
+            boolean matches = true;
+    
+            if (maritalStatusFilter != null &&
+                    !booking.getApplicantMaritalStatus().equalsIgnoreCase(maritalStatusFilter)) {
+                matches = false;
+            }
+    
+            if (flatTypeFilter != null &&
+                    !booking.getFlatType().equalsIgnoreCase(flatTypeFilter)) {
+                matches = false;
+            }
+    
+            if (matches) {
+                found = true;
+                System.out.printf("%-20s %-5d %-15s %-25s %-10s\n",
+                        booking.getApplicantName(),
+                        booking.getApplicantAge(),
+                        booking.getApplicantMaritalStatus(),
+                        booking.getProjectName(),
+                        booking.getFlatType());
+            }
+        }
+    
+        if (!found) {
+            System.out.println("No matching records found.");
+        }
+    }
+
 }
