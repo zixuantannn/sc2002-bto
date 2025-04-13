@@ -7,6 +7,7 @@ public class Officer extends Applicant {
     private Project assignedProject = null;
     private List<RegistrationForm> registrationForms = new ArrayList<>();
     private EnquiryHandler enqHandler;
+    private RoleBehavior currentBehavior;
 
     public Officer(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
@@ -16,7 +17,7 @@ public class Officer extends Applicant {
         } else {
             this.enqHandler = new EnquiryHandler(null);
         }
-
+        this.currentBehavior = new OfficerBehavior();
     }
 
     public Officer(String name, String NRIC, int age, String maritalStatus, String password) {
@@ -27,6 +28,7 @@ public class Officer extends Applicant {
         } else {
             this.enqHandler = new EnquiryHandler(null);
         }
+        this.currentBehavior = new OfficerBehavior();
     }
 
     public void setEnqHandler(String projectName) {
