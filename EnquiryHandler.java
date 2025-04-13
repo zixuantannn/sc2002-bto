@@ -132,6 +132,9 @@ public class EnquiryHandler {
     }
 
     public static void syncEnquiriesOnLogout(List<Enquiry> allEnquries, List<Enquiry> filteredList) {
+        if (filteredList == null || filteredList.isEmpty()) {
+            return;
+        }
         for (Enquiry updated : filteredList) {
             for (int i = 0; i < allEnquries.size(); i++) {
                 Enquiry original = allEnquries.get(i);
