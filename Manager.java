@@ -1,9 +1,10 @@
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.time.ZoneId;
 
 public class Manager extends UserAccount {
     private Project handledProject = null;
@@ -352,10 +353,20 @@ public class Manager extends UserAccount {
     }
 
     public boolean viewRegistration() {
+        if (this.handledProject == null) {
+            // Initialize handledProject or handle the error appropriately
+            System.out.println("Currently not handling any project.");
+            return false;
+        }
         return handledProject.viewListOfRegistration(); // new function for class Project
     }
 
     public boolean viewApplication() {
+        if (this.handledProject == null) {
+            // Initialize handledProject or handle the error appropriately
+            System.out.println("Currently not handling any project.");
+            return false;
+        }
         return handledProject.viewListOfApplication(); // new function for class Project
     }
     
@@ -512,8 +523,14 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void viewWithdrawalRequest() {
+    public boolean viewWithdrawalRequest() {
+        if (this.handledProject == null) {
+            // Initialize handledProject or handle the error appropriately
+            System.out.println("Currently not handling any project.");
+            return false;
+        }
         this.handledProject.viewRequestWithdrawal();
+        return true;
     }
 
     public void manageWithdrawalRequest(Scanner sc) {
