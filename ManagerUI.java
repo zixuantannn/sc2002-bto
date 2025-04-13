@@ -189,7 +189,6 @@ public class ManagerUI implements ManagerMenu {
         if (!check) {
             return;
         }
-        System.out.println("Approve or reject officer registration form:");
         this.manager.assignOfficerToProject(this.scanner, this.database);
     }
 
@@ -204,7 +203,6 @@ public class ManagerUI implements ManagerMenu {
         if (!check) {
             return;
         }
-        System.out.println("Approve or reject BTO application form:");
         this.manager.manageApplicationForm(this.scanner);
     }
 
@@ -219,7 +217,6 @@ public class ManagerUI implements ManagerMenu {
         if (!check){
             return;
         }
-        System.out.println("Approve or reject BTO withdrawal form:");
         this.manager.manageWithdrawalRequest(this.scanner);
     }
 
