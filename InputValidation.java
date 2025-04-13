@@ -48,6 +48,11 @@ public class InputValidation {
         Predicate<String> yesOrNoValidator = input -> input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("no");
         return getValidatedInput(prompt, input -> input, yesOrNoValidator, errorMessage);
     }
+    public static String getApproveOrReject(String prompt, String errorMessage) {
+        Predicate<String> approveOrRejectValidator = input -> input.equalsIgnoreCase("approve") || input.equalsIgnoreCase("reject");
+        return getValidatedInput(prompt, input -> input, approveOrRejectValidator, errorMessage);
+    }
+    
 
     public static String getOnOrOff(String prompt, String errorMessage) {
         Predicate<String> onOrOffValidator = input -> input.equalsIgnoreCase("on") || input.equalsIgnoreCase("off");
