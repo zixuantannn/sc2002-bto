@@ -30,9 +30,9 @@ public class ApplicantUI implements ApplicantMenu {
             System.out.println("4. View the Applied Project");
             System.out.println("5. Withdrawal Apply Form");
             System.out.println("6. Submit Enquiry");
-            System.out.println("7. Display All Enquiries.");
-            System.out.println("8. Modify Content of Enquiries.");
-            System.out.println("9. Remove Enquiry...");
+            System.out.println("7. Display All Enquiries");
+            System.out.println("8. Edit Enquiries");
+            System.out.println("9. Remove Enquiry");
             System.out.println("10. View your Flat Booking.");
             System.out.println("11. Logout\n");
             System.out.print("Choose an option: ");
