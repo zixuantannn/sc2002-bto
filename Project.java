@@ -282,24 +282,26 @@ public class Project {
                 "%" + ((width - s.length()) / 2 + s.length()) + "s%" + ((width - s.length() + 1) / 2) + "s", s, "");
     }
 
-    public void viewListOfRegistration() {
+    public boolean viewListOfRegistration() {
         if (this.listOfRegisterForm.size() <= 0) {
             System.out.println("There is no available registration form.");
-            return;
+            return false;
         }
         for (int i = 0; i < this.listOfRegisterForm.size(); i++) {
             listOfRegisterForm.get(i).viewDetails();
         }
+        return true;
     }
 
-    public void viewListOfApplication() {
+    public boolean viewListOfApplication() {
         if (this.listOfApplyForm.size() <= 0) {
             System.out.println("There is no available application form.");
-            return;
+            return false;
         }
         for (int i = 0; i < this.listOfApplyForm.size(); i++) {
             listOfApplyForm.get(i).viewDetails();
         }
+        return true;
     }
 
     public void viewEnquiryList() {
