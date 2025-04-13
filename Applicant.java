@@ -153,4 +153,14 @@ public class Applicant extends UserAccount {
 
     }
 
+    public void viewTheFlatBooking(Database database){
+        for(FlatBooking booking : database.flatBookingList){
+            if(booking.getApplicantNRIC().equals(this.getNRIC())){
+                booking.viewFlatBookingDetails();
+                break;
+            }
+        }
+        System.out.println("You have no flat booking!");
+    }    
+
 }
