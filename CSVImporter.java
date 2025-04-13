@@ -136,4 +136,36 @@ public class CSVImporter {
         }
         Enquiry.setCountEnquiry(maxID);
     }
+    public static void importFlatBookings(Database db, String filepath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            br.readLine(); // Skip header
+    
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(",", -1); // handle empty fields safely
+    
+                int bookingID = Integer.parseInt(tokens[0].trim());
+                String applicantName = tokens[1].trim();
+                String applicantNRIC = tokens[2].trim();
+                int applicantAge = Integer.parseInt(tokens[3].trim());
+                String maritalStatus = tokens[4].trim();
+                String projectName = tokens[5].trim();
+                String flatType = tokens[6].trim();
+    
+                FlatBooking booking = new FlatBooking(
+                    bookingID,
+                    applicantName,
+                    applicantNRIC,
+                    applicantAge,
+                    maritalStatus,
+                    projectName,
+                    flatType
+                );
+    
+                db.flatBookingList.add(booking);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
