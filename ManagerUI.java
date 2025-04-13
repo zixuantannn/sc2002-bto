@@ -39,9 +39,9 @@ public class ManagerUI implements ManagerMenu {
             System.out.println("4. Toggle project visibility");
             System.out.println("5. View All Project Listings");
             System.out.println("6. View the list of projects that you have created only.");
-            System.out.println("7. Manage HDB Officer Registrations(Approve/Reject)");
-            System.out.println("8. Approve or Reject BTO Applications");
-            System.out.println("9. Approve or Reject BTO Withdrawal");
+            System.out.println("7. Manage HDB Officer Registrations (Approve/Reject)");
+            System.out.println("8. Manage BTO Applications (Approve/Reject)");
+            System.out.println("9. Manage BTO Withdrawals (Approve/Reject)");
             System.out.println("10. Generate and Filter Reports");
             System.out.println("11. View all Enquiries of All Projects.");
             System.out.println("12. View and Reply All Enquiries of All Projects.");
@@ -182,8 +182,7 @@ public class ManagerUI implements ManagerMenu {
     public void manageOfficerRegistration() {
         System.out.println("Manage officer registration...");
         boolean check = false;
-        System.out.println("Do you want to view all available officer registration forms?(yes/no)");
-        String response = scanner.nextLine();
+        String response = InputValidation.getYesOrNo("Do you want to view all available officer registration forms?(yes/no)\n", "Please enter 'yes' or 'no'.");
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewRegistration();
         }
@@ -197,8 +196,8 @@ public class ManagerUI implements ManagerMenu {
     public void manageBTOApplication() {
         boolean check = false;
         System.out.println("Manage BTO application form...");
-        System.out.println("Do you want to view all available application forms?(yes/no)");
-        String response = scanner.nextLine();
+        String response = InputValidation.getYesOrNo("Do you want to view all available application forms?(yes/no)\n", "Please enter 'yes' or 'no'.");
+
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewApplication();
         }
@@ -210,13 +209,17 @@ public class ManagerUI implements ManagerMenu {
     }
 
     public void manageBTOWithdrawal() {
+        boolean check = false;
         System.out.println("Manage withdrawal request...");
-        System.out.println("Do you want to view all available withdrawal forms?(yes/no)");
-        String response = scanner.nextLine();
+        String response = InputValidation.getYesOrNo("Do you want to view all available withdrawal forms?(yes/no)\n", "Please enter 'yes' or 'no'.");
+
         if (response.equalsIgnoreCase("yes")) {
-            this.manager.viewWithdrawalRequest();
+            check = this.manager.viewWithdrawalRequest();
         }
-        System.out.println("Approve or reject officer registration form:");
+        if (!check){
+            return;
+        }
+        System.out.println("Approve or reject BTO withdrawal form:");
         this.manager.manageWithdrawalRequest(this.scanner);
     }
 
