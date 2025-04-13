@@ -23,7 +23,7 @@ public class ManagerUI implements ManagerMenu {
         int choice = 0;
 
         do {
-            // setTheHandledProject();
+            setTheHandledProject();
 
             System.out.println("\n--- Manager Menu ---");
 
@@ -152,6 +152,7 @@ public class ManagerUI implements ManagerMenu {
 
         if (targetProject == null) {
             System.out.println("No projects are within the application period with visibility 'on'.");
+            this.manager.setHandledProject(targetProject);
             return;
         }
 
@@ -162,14 +163,13 @@ public class ManagerUI implements ManagerMenu {
 
     public void viewAllOrFilteredProjectListings() {
         System.out.println("View projects...");
-        System.out.println("Do you want to view all project listings?(yes/no)");
-        String answer = scanner.nextLine();
+        String answer = InputValidation.getYesOrNo("Do you want to view all project listings (yes/no)?\n", "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
             this.manager.viewAllProject(this.database);
         }
 
-        System.out.println("Do you want to view filtered project listings?(yes/no)");
-        answer = scanner.nextLine();
+        answer = InputValidation.getYesOrNo("Do you want to view filtered project listings (yes/no)?\n", "Please enter 'yes' or 'no'.");
+
         if (answer.equalsIgnoreCase("yes")) {
             this.manager.viewFilteredProjects(this.scanner, this.database);
         }
