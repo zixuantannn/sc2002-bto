@@ -77,15 +77,33 @@ public class Main {
                     String role = getRoleFromChoice(roleChoice);
 
                     String inputNRIC = InputValidation.getString("Enter your NRIC: ",
-                            s -> !s.trim().isEmpty(),
-                            "NRIC cannot be empty.");
+                    s -> !s.trim().isEmpty(),
+                    "NRIC cannot be empty.");
+            
 
                     UserAccount user = Login.authenticate(db, inputNRIC, role, new Scanner(System.in));
 
-                    if (user instanceof Applicant) {
-                        new ApplicantUI((Applicant) user, db, new Scanner(System.in)).displayMenu();
-                    } else if (user instanceof Officer) {
-                        new OfficerUI((Officer) user, db, new Scanner(System.in)).displayMenu();
+                    if (user instanceof Officer) {
+                        Officer officer = (Officer) user;
+                        officer.setBehavior(new OfficerBehavior());
+                        
+                        while (true) {
+                            System.out.println("1. Continue as Officer");
+                            System.out.println("2. Switch to Applicant Mode");
+                            int r = InputValidation.getInt("Choose your role mode: ", i -> i == 1 || i == 2, "1 or 2 only!");
+                        
+                            if (r == 1) {
+                                officer.setBehavior(new OfficerBehavior());
+                            } else {
+                                officer.setBehavior(new ApplicantBehavior());
+                            }
+                        
+                            officer.showMenu(db, new Scanner(System.in));
+                            officer.setBehavior(new OfficerBehavior());
+                            break; 
+                        }   
+                    } else if (user instanceof Applicant) {
+                        new ApplicantUI((Applicant) user, db, new Scanner(System.in)).displayMenu();  
                     } else if (user instanceof Manager) {
                         new ManagerUI((Manager) user, db, new Scanner(System.in)).displayMenu();
                     }
