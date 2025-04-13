@@ -48,6 +48,11 @@ public class InputValidation {
         Predicate<String> yesOrNoValidator = input -> input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("no");
         return getValidatedInput(prompt, input -> input, yesOrNoValidator, errorMessage);
     }
+
+    public static String getOnOrOff(String prompt, String errorMessage) {
+        Predicate<String> onOrOffValidator = input -> input.equalsIgnoreCase("on") || input.equalsIgnoreCase("off");
+        return getValidatedInput(prompt, input -> input, onOrOffValidator, errorMessage);
+    }
     
     public static Date getDate(String prompt, String format, String errorMessage) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
