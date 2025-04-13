@@ -220,9 +220,6 @@ public class ManagerUI implements ManagerMenu {
         this.manager.manageWithdrawalRequest(this.scanner);
     }
 
-    public void generateAndFilterReport() {
-
-    }
 
     public void viewAllEnquiry() {
         System.out.println("View all enquiries...");
