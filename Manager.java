@@ -300,20 +300,37 @@ public class Manager extends UserAccount {
     public void setVisibility(Scanner sc, Database db) {
         Project target = null;
         System.out.print("Enter the project name you want to toggle its visibility: ");
-        String targetName = sc.nextLine();
+        String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ", s -> !s.isEmpty(),
+        "Neighborhood cannot be empty.");
+
+        // Check if the project exists first
+        boolean projectExists = false;
+        boolean isProjectHandler = false;
+
         for (Project project : db.projectList) {
             if (targetName.equalsIgnoreCase(project.getName())) {
-                target = project;
+                projectExists = true;
+                // Check if the user is the project manager
+                if (project.getManager().equals(this.getName())) {
+                    target = project;
+                    isProjectHandler = true;
+                }
                 break;
             }
         }
-        if (target == null) {
-            System.out.println("Your project you are finding is not available.");
+
+        if (!projectExists) {
+            System.out.println("The project you are looking for does not exist.");
             return;
+        } else if (!isProjectHandler) {
+                System.out.println("You are not the manager of this project.");
+                return;
+        } else {
+            // Continue with toggling visibility or other logic
+            System.out.println("Project found. Proceeding with visibility toggle...");
         }
         while (true) {
-            System.out.print("Set the visibility of project (on/off): ");
-            String visibilityInput = sc.nextLine().trim().toLowerCase();
+            String visibilityInput = InputValidation.getOnOrOff("Set the visibility of project (on/off): ", "Please enter 'on' or 'off' ");
 
             if (visibilityInput.equals("on")) {
                 target.setVisibility(visibilityInput);
