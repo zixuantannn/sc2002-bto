@@ -2,7 +2,6 @@
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -418,6 +417,7 @@ public class Manager extends UserAccount {
         if (ID == 0) {
             return;
         }
+
         for (RegistrationForm form : registerList) {
             if (form.getRegistrationID() == ID) {
                 registerForm = form;
