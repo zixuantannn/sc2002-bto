@@ -2,6 +2,7 @@
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -411,8 +412,11 @@ public class Manager extends UserAccount {
             System.out.println("No registration forms found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter registration form ID:",i -> i >0,
+        int ID = InputValidation.getInt("Enter registration form ID or 0 to cancel: ",i -> i >=0,
                     "Please enter a positive value");
+        if (ID == 0){
+            return;
+        }
         for (RegistrationForm form : registerList) {
             if (form.getRegistrationID() == ID) {
                 registerForm = form;
@@ -421,86 +425,55 @@ public class Manager extends UserAccount {
         }
 
         if (registerForm == null) {
-            System.out.println("Your ID you enter is invalid!");
+            System.out.println("Your ID you entered is invalid!");
         } else {
-            System.out.print(
-                    "Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ");
-            while (true) {
-                String assign = sc.nextLine();
-
-                if (assign.equals("approve")) {
-                    if (handledProject.getNumOfficerSlots() <= 0) {
-                        System.out.println("No available officer slot.");
-                        break;
-                    }
+            // Ask user to approve or reject
+            String assignment = InputValidation.getApproveOrReject("Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ", "Invalid input. Please try again!");
+    
+            if (assignment.equalsIgnoreCase("approve")) {
+                // Check if there are available officer slots
+                if (handledProject.getNumOfficerSlots() <= 0) {
+                    System.out.println("No available officer slot.");
+                } else {
+                    // Approve the registration form and reduce officer slots
                     registerForm.setRegistrationStatus("approved");
                     handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
+    
                     String officerName = registerForm.getOfficerName();
                     String NRICofficer = registerForm.getOfficerNRIC();
-                    String[] currentOfficers = handledProject.getOfficers();
-
+                    List<String> currentOfficers = Arrays.asList(handledProject.getOfficers());
+    
                     boolean assigned = false;
-
-                    for (int i = 0; i < currentOfficers.length; i++) {
-                        if (currentOfficers[i] == null || currentOfficers[i].isEmpty()) {
-                            currentOfficers[i] = officerName;
-
-                            // Find the officer and assign the project
-                            for (Officer officer : db.officerList) {
-                                if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
-                                    officer.setAssignedProject(handledProject);
-                                    CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
-                                    System.out.println("Officer " + officerName + " approved and assigned to project "
-                                            + handledProject.getName());
-                                    assigned = true;
-                                    break;
-                                }
-                            }
-
-                            if (assigned) {
-                                break;
+    
+                    // Check if there is space for more officers
+                    if (currentOfficers.size() < handledProject.getNumOfficerSlots()) {
+                        // There is space for more officers
+                        currentOfficers.add(officerName);  // Add the officer to the project
+    
+                        // Now, find the officer object in the database to assign the project
+                        for (Officer officer : db.officerList) {
+                            if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
+                                officer.setAssignedProject(handledProject); // Assign the project to the officer
+                                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv"); // Update the project list in CSV
+                                System.out.println("Officer " + officerName + " approved and assigned to project " + handledProject.getName());
+                                assigned = true;
+                                break;  // Exit the loop after assigning the officer
                             }
                         }
-                    }
-
-                    if (!assigned) {
+    
+                        if (!assigned) {
+                            System.out.println("Officer with NRIC " + NRICofficer + " not found.");
+                        }
+                    } else {
+                        // If no space, print an error message
                         System.out.println("Officer slots are full for this project.");
                     }
-                    break;
-
-                    // // Expand and update officer list
-                    // for (int i = 0; i < currentOfficers.length; i++) {
-                    // if (currentOfficers[i] == null || currentOfficers[i].isEmpty()) {
-
-                    // currentOfficers[i] = officerName;
-                    // for (Officer o : db.officerList) {
-                    // if (o != null && o.getNRIC().equalsIgnoreCase(NRICofficer)) { // create
-                    // function in
-                    // // Officer
-                    // o.setAssignedProject(handledProject);
-                    // CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
-                    // System.out.println(" Officer " + officerName + " approved and assigned to
-                    // project "
-                    // + handledProject.getName());
-                    // break;
-                    // }
-                    // }
-                    // break;
-                    // } else {
-                    // System.out.println("Officer slots are full for this project.");
-                    // return;
-                    // }
-                    // }
-                    // break;
-                } else if (assign.equals("reject")) {
-                    registerForm.setRegistrationStatus("rejected");
-                    System.out.println("Registration rejected.");
-                    break;
-                } else {
-                    System.out.println("Invalid input.Please try again!");
                 }
+            } else if (assignment.equalsIgnoreCase("reject")) {
+                // Reject the registration form
+                registerForm.setRegistrationStatus("rejected");
+                System.out.println("Registration rejected.");
             }
-
         }
     }
 
@@ -512,8 +485,11 @@ public class Manager extends UserAccount {
             System.out.println("No application requests found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter application form ID:",i -> i >0,
+        int ID = InputValidation.getInt("Enter application form ID or 0 to cancel:",i -> i >=0,
                     "Please enter a positive value");
+        if (ID == 0){
+            return;
+        }
         for (int i = 0; i < applyList.size(); i++) {
             if (ID == applyList.get(i).getApplicationID()) {
                 applyForm = applyList.get(i);
@@ -572,8 +548,11 @@ public class Manager extends UserAccount {
             System.out.println("No withdrawal requests found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter application ID with withdrawal request:",i -> i >0,
+        int ID = InputValidation.getInt("Enter application ID with withdrawal request or 0 to cancel:",i -> i >=0,
                     "Please enter a positive value");
+        if (ID == 0){
+            return;
+        }
         for (ApplicationForm form : applyList) {
             if (form != null && form.getApplicationID() == ID && form.getWithdrawalRequest() != null) {
                 targetForm = form;
