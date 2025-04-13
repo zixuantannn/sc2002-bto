@@ -92,16 +92,15 @@ public class Manager extends UserAccount {
             // Check if current date is the application open date. If yes, then
             // automatically set visibility as ON.
             LocalDate today = LocalDate.now();
-        LocalDate projectOpenDate = openDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate projectCloseDate = closeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate projectOpenDate = openDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate projectCloseDate = closeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        String visibilityStatus;
-        if (!projectOpenDate.isAfter(today) && !projectCloseDate.isBefore(today)) {
-            visibilityStatus = "on";
-        } else {
-            visibilityStatus = "off";
-        }
-
+            String visibilityStatus;
+            if (!projectOpenDate.isAfter(today) && !projectCloseDate.isBefore(today)) {
+                visibilityStatus = "on";
+            } else {
+                visibilityStatus = "off";
+            }
 
             Project newProject = new Project(
                     name,
@@ -118,7 +117,7 @@ public class Manager extends UserAccount {
                     visibilityStatus);
 
             // Manager who created a project is automatically assigned to the project
-            //this.setHandledProject(newProject);
+            // this.setHandledProject(newProject);
 
             db.projectList.add(newProject);
             CSVWriter.saveProject(newProject, "ProjectList.csv");
@@ -303,8 +302,9 @@ public class Manager extends UserAccount {
     public void setVisibility(Scanner sc, Database db) {
         Project target = null;
         System.out.print("Enter the project name you want to toggle its visibility: ");
-        String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ", s -> !s.isEmpty(),
-        "Cannot be empty.");
+        String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ",
+                s -> !s.isEmpty(),
+                "Cannot be empty.");
 
         // Check if the project exists first
         boolean projectExists = false;
@@ -326,14 +326,15 @@ public class Manager extends UserAccount {
             System.out.println("The project you are looking for does not exist.");
             return;
         } else if (!isProjectHandler) {
-                System.out.println("You are not the manager of this project.");
-                return;
+            System.out.println("You are not the manager of this project.");
+            return;
         } else {
             // Continue with toggling visibility or other logic
             System.out.println("Project found. Proceeding with visibility toggle...");
         }
         while (true) {
-            String visibilityInput = InputValidation.getOnOrOff("Set the visibility of project (on/off): ", "Please enter 'on' or 'off' ");
+            String visibilityInput = InputValidation.getOnOrOff("Set the visibility of project (on/off): ",
+                    "Please enter 'on' or 'off' ");
 
             if (visibilityInput.equals("on")) {
                 target.setVisibility(visibilityInput);
@@ -389,8 +390,8 @@ public class Manager extends UserAccount {
         }
         return handledProject.viewListOfApplication(); // new function for class Project
     }
-    
-    public void viewProjectsCreatedByManager(Database database){
+
+    public void viewProjectsCreatedByManager(Database database) {
         List<Project> lis = new ArrayList<>();
         boolean check = false;
         for (Project project : database.projectList) {
@@ -399,22 +400,22 @@ public class Manager extends UserAccount {
                 check = true;
             }
         }
-        if(!check){
+        if (!check) {
             System.out.println("You have not created any project!");
         }
     }
 
     public void assignOfficerToProject(Scanner sc, Database db) {
-        
+
         RegistrationForm registerForm = null;
         List<RegistrationForm> registerList = handledProject.getListOfRegisterForm(); // new function for class Project
-        if (registerList.size() == 0){
+        if (registerList.size() == 0) {
             System.out.println("No registration forms found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter registration form ID or 0 to cancel: ",i -> i >=0,
-                    "Please enter a positive value");
-        if (ID == 0){
+        int ID = InputValidation.getInt("Enter registration form ID or 0 to cancel: ", i -> i >= 0,
+                "Please enter a positive value");
+        if (ID == 0) {
             return;
         }
         for (RegistrationForm form : registerList) {
@@ -428,8 +429,10 @@ public class Manager extends UserAccount {
             System.out.println("Your ID you entered is invalid!");
         } else {
             // Ask user to approve or reject
-            String assignment = InputValidation.getApproveOrReject("Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ", "Invalid input. Please try again!");
-    
+            String assignment = InputValidation.getApproveOrReject(
+                    "Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ",
+                    "Invalid input. Please try again!");
+
             if (assignment.equalsIgnoreCase("approve")) {
                 // Check if there are available officer slots
                 if (handledProject.getNumOfficerSlots() <= 0) {
@@ -438,29 +441,31 @@ public class Manager extends UserAccount {
                     // Approve the registration form and reduce officer slots
                     registerForm.setRegistrationStatus("approved");
                     handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
-    
+
                     String officerName = registerForm.getOfficerName();
                     String NRICofficer = registerForm.getOfficerNRIC();
                     List<String> currentOfficers = Arrays.asList(handledProject.getOfficers());
-    
+
                     boolean assigned = false;
-    
+
                     // Check if there is space for more officers
                     if (currentOfficers.size() < handledProject.getNumOfficerSlots()) {
                         // There is space for more officers
-                        currentOfficers.add(officerName);  // Add the officer to the project
-    
+                        currentOfficers.add(officerName); // Add the officer to the project
+
                         // Now, find the officer object in the database to assign the project
                         for (Officer officer : db.officerList) {
                             if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
                                 officer.setAssignedProject(handledProject); // Assign the project to the officer
-                                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv"); // Update the project list in CSV
-                                System.out.println("Officer " + officerName + " approved and assigned to project " + handledProject.getName());
+                                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv"); // Update the project
+                                                                                                // list in CSV
+                                System.out.println("Officer " + officerName + " approved and assigned to project "
+                                        + handledProject.getName());
                                 assigned = true;
-                                break;  // Exit the loop after assigning the officer
+                                break; // Exit the loop after assigning the officer
                             }
                         }
-    
+
                         if (!assigned) {
                             System.out.println("Officer with NRIC " + NRICofficer + " not found.");
                         }
@@ -478,16 +483,16 @@ public class Manager extends UserAccount {
     }
 
     public void manageApplicationForm(Scanner sc) {
-        
+
         ApplicationForm applyForm = null;
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
-        if (applyList.size() == 0){
+        if (applyList.size() == 0) {
             System.out.println("No application requests found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter application form ID or 0 to cancel:",i -> i >=0,
-                    "Please enter a positive value");
-        if (ID == 0){
+        int ID = InputValidation.getInt("Enter application form ID or 0 to cancel:", i -> i >= 0,
+                "Please enter a positive value");
+        if (ID == 0) {
             return;
         }
         for (int i = 0; i < applyList.size(); i++) {
@@ -500,19 +505,22 @@ public class Manager extends UserAccount {
         if (applyForm == null) {
             System.out.println("Your ID you enter is invalid!");
         } else {
-            System.out.print("Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
-            String assign = InputValidation.getApproveOrReject("Please enter 'approve' or 'reject': ", "Invalid input. Please try again!");
+            System.out.print(
+                    "Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
+            String assign = InputValidation.getApproveOrReject("Please enter 'approve' or 'reject': ",
+                    "Invalid input. Please try again!");
 
             if (assign.equalsIgnoreCase("approve")) {
                 applyForm.updateStatus("successful");
-                System.out.println("Applicant " + applyForm.getApplicantName() + " approved to project " + handledProject.getName());
+                System.out.println("Applicant " + applyForm.getApplicantName() + " approved to project "
+                        + handledProject.getName());
             } else if (assign.equalsIgnoreCase("reject")) {
                 applyForm.updateStatus("unsuccessful");
                 applyForm.getApplicant().setApplyForm(null);
                 applyForm.getApplicant().resetAvailablilty();
-                System.out.println("Applicant " + applyForm.getApplicantName() + " rejected from project " + handledProject.getName());
+                System.out.println("Applicant " + applyForm.getApplicantName() + " rejected from project "
+                        + handledProject.getName());
             }
-
 
         }
     }
@@ -529,11 +537,9 @@ public class Manager extends UserAccount {
 
     public void manageWithdrawalRequest(Scanner sc) {
 
-        
-
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
         ApplicationForm targetForm = null;
-        if (applyList.size() == 0){
+        if (applyList.size() == 0) {
             System.out.println("No withdrawal requests found.");
             return;
         }
@@ -544,13 +550,13 @@ public class Manager extends UserAccount {
                 break;
             }
         }
-        if (exists == false){
+        if (exists == false) {
             System.out.println("No withdrawal requests found.");
             return;
         }
-        int ID = InputValidation.getInt("Enter application ID with withdrawal request or 0 to cancel:",i -> i >=0,
-                    "Please enter a positive value");
-        if (ID == 0){
+        int ID = InputValidation.getInt("Enter application ID with withdrawal request or 0 to cancel:", i -> i >= 0,
+                "Please enter a positive value");
+        if (ID == 0) {
             return;
         }
         for (ApplicationForm form : applyList) {
@@ -559,7 +565,7 @@ public class Manager extends UserAccount {
                 break;
             }
         }
-        
+
         if (targetForm == null) {
             System.out.println("No withdrawal request found for the given ID.");
             return;
@@ -581,41 +587,8 @@ public class Manager extends UserAccount {
         enqHandler.viewProjectEnquiries();
     }
 
-    public void viewAndReplyEnquiries(Database db) {
-        Scanner sc = new Scanner(System.in);
-
-        List<Enquiry> generalEnquiries = enqHandler.getProjectEnquiries("-");
-        if (!generalEnquiries.isEmpty()) {
-            System.out.println("=== General Enquiry ===");
-            for (Enquiry enquiry : generalEnquiries) {
-                if (enquiry.getResponse() == null) {
-                    System.out.println("Enquiry: " + enquiry.getContent());
-                    System.out.print("Enter your reply: ");
-                    String reply = sc.nextLine();
-                    enquiry.updateResponse(reply);
-                    System.out.println("Response saved.");
-                }
-            }
-        }
-        for (Project pro : db.projectList) {
-            System.out.println("The list of enquiries in the project " + pro.getName());
-            enqHandler.viewProjectEnquiries(pro.getName());
-            List<Enquiry> projEnquiries = enqHandler.getProjectEnquiries(pro.getName());
-            if (!projEnquiries.isEmpty()) {
-                System.out.println("=== Project: " + pro.getName() + " ===");
-                for (Enquiry enquiry : projEnquiries) {
-                    if (enquiry.getResponse() == null) {
-                        System.out.println("Enquiry: " + enquiry.getContent());
-                        System.out.print("Enter your reply: ");
-                        String reply = sc.nextLine();
-                        enquiry.updateResponse(reply);
-                        System.out.println("Response saved.");
-                        System.out.println();
-                    }
-                }
-
-            }
-        }
+    public void ReplyEnquiries() {
+        enqHandler.ReplyEnquiry();
     }
 
     public void generateApplicantBookingReport(Database db, Scanner sc) {
@@ -623,11 +596,11 @@ public class Manager extends UserAccount {
             System.out.println("You are not handling any project, so no report can be generated.");
             return;
         }
-    
+
         String managerProjectName = this.getHandledProject().getName();
-    
+
         System.out.println("\n--- Applicant Flat Booking Report (Project: " + managerProjectName + ") ---");
-    
+
         System.out.print("Do you want to filter by marital status? (yes/no): ");
         String filterMarital = sc.nextLine().trim().toLowerCase();
         String maritalStatusFilter = null;
@@ -635,7 +608,7 @@ public class Manager extends UserAccount {
             System.out.print("Enter marital status to filter (Single/Married): ");
             maritalStatusFilter = sc.nextLine().trim();
         }
-    
+
         System.out.print("Do you want to filter by flat type? (yes/no): ");
         String filterFlatType = sc.nextLine().trim().toLowerCase();
         String flatTypeFilter = null;
@@ -643,28 +616,29 @@ public class Manager extends UserAccount {
             System.out.print("Enter flat type to filter (e.g., 2-Room, 3-Room): ");
             flatTypeFilter = sc.nextLine().trim();
         }
-    
+
         boolean found = false;
-        System.out.printf("\n%-20s %-5s %-15s %-25s %-10s\n", "Name", "Age", "Marital Status", "Project Name", "Flat Type");
+        System.out.printf("\n%-20s %-5s %-15s %-25s %-10s\n", "Name", "Age", "Marital Status", "Project Name",
+                "Flat Type");
         System.out.println("-------------------------------------------------------------------------------");
-    
+
         for (FlatBooking booking : db.flatBookingList) {
             if (!booking.getProjectName().equalsIgnoreCase(managerProjectName)) {
                 continue; // skip bookings not under this manager's project
             }
-      
+
             boolean matches = true;
-    
+
             if (maritalStatusFilter != null &&
                     !booking.getApplicantMaritalStatus().equalsIgnoreCase(maritalStatusFilter)) {
                 matches = false;
             }
-    
+
             if (flatTypeFilter != null &&
                     !booking.getFlatType().equalsIgnoreCase(flatTypeFilter)) {
                 matches = false;
             }
-    
+
             if (matches) {
                 found = true;
                 System.out.printf("%-20s %-5d %-15s %-25s %-10s\n",
@@ -675,7 +649,7 @@ public class Manager extends UserAccount {
                         booking.getFlatType());
             }
         }
-    
+
         if (!found) {
             System.out.println("No matching records found.");
         }

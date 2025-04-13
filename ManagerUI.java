@@ -44,7 +44,7 @@ public class ManagerUI implements ManagerMenu {
             System.out.println("9. Manage BTO Withdrawals (Approve/Reject)");
             System.out.println("10. Generate and Filter Reports");
             System.out.println("11. View all Enquiries of All Projects.");
-            System.out.println("12. View and Reply All Enquiries of All Projects.");
+            System.out.println("12. View and Reply Enquiries.");
             System.out.println("13. Log out");
 
             try {
@@ -92,7 +92,7 @@ public class ManagerUI implements ManagerMenu {
                     viewAllEnquiry();
                     break;
                 case 12:
-                    viewAndReplyAllEnquiry();
+                    ReplyEnquiry();
                     break;
                 case 13:
                     logout();
@@ -163,12 +163,14 @@ public class ManagerUI implements ManagerMenu {
 
     public void viewAllOrFilteredProjectListings() {
         System.out.println("View projects...");
-        String answer = InputValidation.getYesOrNo("Do you want to view all project listings (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        String answer = InputValidation.getYesOrNo("Do you want to view all project listings (yes/no)?\n",
+                "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
             this.manager.viewAllProject(this.database);
         }
 
-        answer = InputValidation.getYesOrNo("Do you want to view filtered project listings (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        answer = InputValidation.getYesOrNo("Do you want to view filtered project listings (yes/no)?\n",
+                "Please enter 'yes' or 'no'.");
 
         if (answer.equalsIgnoreCase("yes")) {
             this.manager.viewFilteredProjects(this.scanner, this.database);
@@ -182,7 +184,9 @@ public class ManagerUI implements ManagerMenu {
     public void manageOfficerRegistration() {
         System.out.println("Manage officer registration...");
         boolean check = false;
-        String response = InputValidation.getYesOrNo("Do you want to view all available officer registration forms?(yes/no)\n", "Please enter 'yes' or 'no'.");
+        String response = InputValidation.getYesOrNo(
+                "Do you want to view all available officer registration forms?(yes/no)\n",
+                "Please enter 'yes' or 'no'.");
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewRegistration();
         }
@@ -195,7 +199,8 @@ public class ManagerUI implements ManagerMenu {
     public void manageBTOApplication() {
         boolean check = false;
         System.out.println("Manage BTO application form...");
-        String response = InputValidation.getYesOrNo("Do you want to view all available application forms?(yes/no)\n", "Please enter 'yes' or 'no'.");
+        String response = InputValidation.getYesOrNo("Do you want to view all available application forms?(yes/no)\n",
+                "Please enter 'yes' or 'no'.");
 
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewApplication();
@@ -209,29 +214,29 @@ public class ManagerUI implements ManagerMenu {
     public void manageBTOWithdrawal() {
         boolean check = false;
         System.out.println("Manage withdrawal request...");
-        String response = InputValidation.getYesOrNo("Do you want to view all available withdrawal forms?(yes/no)\n", "Please enter 'yes' or 'no'.");
+        String response = InputValidation.getYesOrNo("Do you want to view all available withdrawal forms?(yes/no)\n",
+                "Please enter 'yes' or 'no'.");
 
         if (response.equalsIgnoreCase("yes")) {
             check = this.manager.viewWithdrawalRequest();
         }
-        if (!check){
+        if (!check) {
             return;
         }
         this.manager.manageWithdrawalRequest(this.scanner);
     }
-
 
     public void viewAllEnquiry() {
         System.out.println("View all enquiries...");
         this.manager.viewAllEnquiries();
     }
 
-    public void viewAndReplyAllEnquiry() {
-        System.out.println("View and reply all enquiries...");
-        this.manager.viewAndReplyEnquiries(this.database);
+    public void ReplyEnquiry() {
+        System.out.println("View and reply enquiries...");
+        this.manager.ReplyEnquiries();
     }
 
-    public void generateReportFlatBooking(){
+    public void generateReportFlatBooking() {
         this.manager.generateApplicantBookingReport(this.database, this.scanner);
     }
 }

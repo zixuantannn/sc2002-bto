@@ -37,7 +37,7 @@ public class Officer extends Applicant {
 
     public void showMenu(Database db, Scanner scanner) {
         this.currentBehavior.showMenu(this, db, scanner);
-    }  
+    }
 
     public void setEnqHandler(String projectName) {
         this.enqHandler = new EnquiryHandler(projectName, Database.enquiryList, EnquiryHandler.FILTER_BY_PROJECT);
@@ -116,31 +116,7 @@ public class Officer extends Applicant {
     }
 
     public void viewAndReplyEnquiries() {
-
-        Scanner sc = new Scanner(System.in);
-        if (assignedProject != null) {
-            enqHandler.viewProjectEnquiries(assignedProject.getName());
-            List<Enquiry> enqList = enqHandler.getProjectEnquiries(assignedProject.getName());
-            if (!enqList.isEmpty()) {
-                System.out.println("=== Project " + assignedProject.getName() + " ===");
-                for (Enquiry enquiry : enqList) {
-                    if (enquiry.getResponse() == null) {
-                        System.out.println("Enquiry: " + enquiry.getContent());
-                        System.out.print("Enter your reply: ");
-                        String reply = sc.nextLine();
-                        enquiry.updateResponse(reply);
-                        System.out.println("Response saved.");
-                        System.out.println();
-                    }
-
-                }
-            } else {
-                System.out.println("You have no enquiries to answer");
-            }
-
-        } else {
-            System.out.println("You have no handled project!");
-        }
+        enqHandler.ReplyEnquiry();
     }
 
     public void handleFlatBooking(Scanner scanner, Database db) {

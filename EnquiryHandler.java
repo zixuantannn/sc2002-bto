@@ -37,6 +37,7 @@ public class EnquiryHandler {
         Enquiry newEnquiry = new Enquiry(nric, content);
         allEnquries.add(newEnquiry);
         CSVWriter.submitEnquiry(newEnquiry, "EnquiryList.csv");
+        Database.enquiryList.add(newEnquiry);
         System.out.println("New Enquiry submitted.");
 
     }
@@ -174,9 +175,49 @@ public class EnquiryHandler {
         return projectEnquiries;
     }
 
+    public void ReplyEnquiry() {
+        Scanner sc = new Scanner(System.in);
+        Enquiry chosen = null;
+        List<Enquiry> enqList = this.allEnquries;
+        if (enqList == null || enqList.isEmpty()) {
+            System.out.println("There are no enquiries to reply to.");
+        }
+
+        for (Enquiry enquiry : enqList) {
+            enquiry.viewDetails();
+        }
+        do {
+            System.out.print("Which enquiry would you like to reply: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            chosen = findEnquiryByID(choice);
+            if (chosen == null) {
+                System.out.println("Enquiry ID not found. Please try again");
+            } else if (chosen.getResponse() != null) {
+                System.out.println("This enquiry has already been answered.");
+                return;
+            }
+
+        } while (chosen == null);
+        if (chosen.getProjectName().equals("-")) {
+            System.out.println("=== General Enquiry ===");
+
+        } else {
+            System.out.println("=== Project Enquiry ===");
+            System.out.println("Project Name: " + chosen.getProjectName());
+
+        }
+        System.out.println("Enquiry: " + chosen.getContent());
+        System.out.print("Response: ");
+        String reply = sc.nextLine();
+        chosen.updateResponse(reply);
+        System.out.println("Response saved.");
+    }
+
     public void viewProjectEnquiries() {
         for (Enquiry enquiry : allEnquries) {
             enquiry.viewDetails();
         }
     }
+
 }
