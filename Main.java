@@ -10,6 +10,7 @@ public class Main {
         CSVImporter.importManagers(db, "ManagerList.csv");
         CSVImporter.importOfficers(db, "OfficerList.csv");
         CSVImporter.importProjects(db, "ProjectList.csv");
+        CSVImporter.importFlatBookings(db, "FlatBookingList.csv");
 
         // Display loading confirmation
         System.out.println("Data loaded successfully.");
