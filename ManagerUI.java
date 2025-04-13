@@ -86,6 +86,7 @@ public class ManagerUI implements ManagerMenu {
                     manageBTOWithdrawal();
                     break;
                 case 10:
+                    generateReportFlatBooking();
                     break;
                 case 11:
                     viewAllEnquiry();
@@ -231,5 +232,9 @@ public class ManagerUI implements ManagerMenu {
     public void viewAndReplyAllEnquiry() {
         System.out.println("View and reply all enquiries...");
         this.manager.viewAndReplyEnquiries(this.database);
+    }
+
+    public void generateReportFlatBooking(){
+        this.manager.generateApplicantBookingReport(this.database, this.scanner);
     }
 }
