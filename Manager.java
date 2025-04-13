@@ -404,12 +404,15 @@ public class Manager extends UserAccount {
     }
 
     public void assignOfficerToProject(Scanner sc, Database db) {
-        System.out.print("Enter registration form ID: ");
-        int ID = sc.nextInt();
-        sc.nextLine(); // create ID for registration form
+        
         RegistrationForm registerForm = null;
         List<RegistrationForm> registerList = handledProject.getListOfRegisterForm(); // new function for class Project
-
+        if (registerList.size() == 0){
+            System.out.println("No registration forms found.");
+            return;
+        }
+        int ID = InputValidation.getInt("Enter registration form ID:",i -> i >0,
+                    "Please enter a positive value");
         for (RegistrationForm form : registerList) {
             if (form.getRegistrationID() == ID) {
                 registerForm = form;
@@ -502,11 +505,15 @@ public class Manager extends UserAccount {
     }
 
     public void manageApplicationForm(Scanner sc) {
-        System.out.print("Enter application form ID: ");
-        int ID = sc.nextInt();
-        sc.nextLine(); // create ID for registration form
+        
         ApplicationForm applyForm = null;
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
+        if (applyList.size() == 0){
+            System.out.println("No application requests found.");
+            return;
+        }
+        int ID = InputValidation.getInt("Enter application form ID:",i -> i >0,
+                    "Please enter a positive value");
         for (int i = 0; i < applyList.size(); i++) {
             if (ID == applyList.get(i).getApplicationID()) {
                 applyForm = applyList.get(i);
@@ -517,27 +524,19 @@ public class Manager extends UserAccount {
         if (applyForm == null) {
             System.out.println("Your ID you enter is invalid!");
         } else {
-            System.out.print(
-                    "Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
-            while (true) {
-                String assign = sc.nextLine();
+            System.out.print("Do you want to approve or reject the application form with ID " + ID + " (approve/reject)?: ");
+            String assign = InputValidation.getApproveOrReject("Please enter 'approve' or 'reject': ", "Invalid input. Please try again!");
 
-                if (assign.equals("approve")) {
-                    applyForm.updateStatus("successful");
-
-                    System.out.println(" Applicant " + applyForm.getApplicantName() + " approved to project "
-                            + handledProject.getName());
-                    break;
-                } else if (assign.equals("reject")) {
-                    applyForm.updateStatus("unsuccessful");
-                    applyForm.getApplicant().setApplyForm(null);
-                    applyForm.getApplicant().resetAvailablilty();
-                    System.out.println(" Applicant " + applyForm.getApplicantName() + " rejected to project "
-                            + handledProject.getName());
-                } else {
-                    System.out.println("Invalid input.Please try again!");
-                }
+            if (assign.equalsIgnoreCase("approve")) {
+                applyForm.updateStatus("successful");
+                System.out.println("Applicant " + applyForm.getApplicantName() + " approved to project " + handledProject.getName());
+            } else if (assign.equalsIgnoreCase("reject")) {
+                applyForm.updateStatus("unsuccessful");
+                applyForm.getApplicant().setApplyForm(null);
+                applyForm.getApplicant().resetAvailablilty();
+                System.out.println("Applicant " + applyForm.getApplicantName() + " rejected from project " + handledProject.getName());
             }
+
 
         }
     }
@@ -554,20 +553,34 @@ public class Manager extends UserAccount {
 
     public void manageWithdrawalRequest(Scanner sc) {
 
-        System.out.println("Enter application ID with withdrawal request: ");
-        int ID = sc.nextInt();
-        sc.nextLine();
+        
 
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
         ApplicationForm targetForm = null;
-
+        if (applyList.size() == 0){
+            System.out.println("No withdrawal requests found.");
+            return;
+        }
+        boolean exists = false;
+        for (ApplicationForm form : applyList) {
+            if (form.getWithdrawalRequest() != null) {
+                exists = true;
+                break;
+            }
+        }
+        if (exists == false){
+            System.out.println("No withdrawal requests found.");
+            return;
+        }
+        int ID = InputValidation.getInt("Enter application ID with withdrawal request:",i -> i >0,
+                    "Please enter a positive value");
         for (ApplicationForm form : applyList) {
             if (form != null && form.getApplicationID() == ID && form.getWithdrawalRequest() != null) {
                 targetForm = form;
                 break;
             }
         }
-
+        
         if (targetForm == null) {
             System.out.println("No withdrawal request found for the given ID.");
             return;
@@ -575,8 +588,7 @@ public class Manager extends UserAccount {
 
         System.out.println("Withdrawal request found for Applicant: " + targetForm.getApplicantName());
         System.out.println("Message: " + targetForm.getWithdrawalRequest());
-        System.out.print("Approve withdrawal? (yes/no): ");
-        String input = sc.nextLine().trim().toLowerCase();
+        String input = InputValidation.getYesOrNo("Approve withdrawal? (yes/no)\n", "Please enter yes or no:");
 
         if (input.equals("yes")) {
             applyList.remove(targetForm);
