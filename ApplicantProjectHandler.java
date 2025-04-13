@@ -63,6 +63,14 @@ public class ApplicantProjectHandler extends ProjectManager {
         if (project == null) {
             System.out.println("Project not found !");
         } else {
+            if (ap instanceof Officer) {
+                Officer officer = (Officer) ap;
+                Project assigned = officer.getAssignedProject();
+                if (assigned != null && assigned.getName().equals(appliedProject)) {
+                    System.out.println("You cannot apply for the project you are currently managing as an officer.");
+                    return;
+                }
+            } 
             ap.setApplyForm(new ApplicationForm(ap, appliedProject, "Pending"));
             ap.setAvailability();
             project.getListOfApplyForm().add(ap.getApplyForm());
