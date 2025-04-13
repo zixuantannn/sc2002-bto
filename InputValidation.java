@@ -44,7 +44,11 @@ public class InputValidation {
     public static String getString(String prompt, Predicate<String> validator, String errorMessage) {
         return getValidatedInput(prompt, input -> input, validator, errorMessage);
     }
-
+    public static String getYesOrNo(String prompt, String errorMessage) {
+        Predicate<String> yesOrNoValidator = input -> input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("no");
+        return getValidatedInput(prompt, input -> input, yesOrNoValidator, errorMessage);
+    }
+    
     public static Date getDate(String prompt, String format, String errorMessage) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         sdf.setLenient(false); // Ensures the date is strictly parsed (no invalid dates like 2000-00-00)
@@ -60,6 +64,12 @@ public class InputValidation {
     }
 
     public static String getStrongPassword(String prompt, String errorMessage) {
-        return getValidatedInput(prompt, input -> input, password -> password.matches("[a-zA-Z0-9]{8,}") , errorMessage);
+        return getValidatedInput(
+            prompt, 
+            input -> input, 
+            password -> password.matches(".*[a-zA-Z].*") && password.matches(".*\\d.*") && password.length() >= 8, 
+            errorMessage
+        );
     }
+    
 }
