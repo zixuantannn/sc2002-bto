@@ -303,7 +303,7 @@ public class Manager extends UserAccount {
         Project target = null;
         System.out.print("Enter the project name you want to toggle its visibility: ");
         String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ", s -> !s.isEmpty(),
-        "Neighborhood cannot be empty.");
+        "Cannot be empty.");
 
         // Check if the project exists first
         boolean projectExists = false;
