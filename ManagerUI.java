@@ -139,14 +139,17 @@ public class ManagerUI implements ManagerMenu {
             Date openDate = project.getOpenDate();
             Date closeDate = project.getCloseDate();
             String visibility = project.getVisibility();
+            String projectManagerName = project.getManager(); 
+            String currentManagerName = this.manager.getName(); 
 
             // Check if the current date is within the application period and visibility is
             // "on"
             if ((currentDate.equals(openDate) || currentDate.after(openDate)) &&
                     (currentDate.equals(closeDate) || currentDate.before(closeDate)) &&
-                    visibility.equalsIgnoreCase("on")) {
+                    visibility.equalsIgnoreCase("on") &&
+                    currentManagerName.equalsIgnoreCase(projectManagerName)) {
                 targetProject = project;
-                break; // Set the first project found that satisfies both conditions
+                break; 
             }
         }
 
