@@ -300,7 +300,6 @@ public class Manager extends UserAccount {
 
     public void setVisibility(Scanner sc, Database db) {
         Project target = null;
-        System.out.print("Enter the project name you want to toggle its visibility: ");
         String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ",
                 s -> !s.isEmpty(),
                 "Cannot be empty.");
