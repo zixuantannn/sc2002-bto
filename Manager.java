@@ -86,7 +86,7 @@ public class Manager extends UserAccount {
             int officerSlots = InputValidation.getInt("Enter available officer slots (max 10): ",
                     n -> n >= 0 && n <= 10, "Officer slots must be between 0 and 10.");
 
-            String[] officers = new String[officerSlots];
+            String[] officers = new String[0];
 
             // Check if current date is the application open date. If yes, then
             // automatically set visibility as ON.
