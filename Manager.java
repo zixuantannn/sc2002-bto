@@ -2,7 +2,6 @@
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -448,7 +447,6 @@ public class Manager extends UserAccount {
             String officerName = registerForm.getOfficerName();
             String NRICofficer = registerForm.getOfficerNRIC();
     
-            // Convert to clean List, filtering out null, "null", "None"
             List<String> currentOfficers = new ArrayList<>();
             for (String officer : handledProject.getOfficers()) {
                 if (officer != null && !officer.trim().isEmpty()) {
@@ -458,17 +456,18 @@ public class Manager extends UserAccount {
                     }
                 }
             }
-    
-            // Add new officer
-            currentOfficers.add(officerName);
-    
-            // Convert back to fixed-length array
-            String[] updatedOfficersArray = new String[10];
-            for (int i = 0; i < currentOfficers.size() && i < 10; i++) {
-                updatedOfficersArray[i] = currentOfficers.get(i);
+
+            // Add the new officer (avoid duplicates if needed)
+            if (!currentOfficers.contains(officerName)) {
+                currentOfficers.add(officerName);
             }
-            handledProject.setOfficers(updatedOfficersArray);
-    
+
+            // Generate officer string with space separator
+            String officerCSVString = String.join(" ", currentOfficers);
+
+            // Update officer array with this string in slot 0 only (rest empty)
+            handledProject.setOfficers(new String[]{officerCSVString}); // Only set the CSV string without extra slots
+
             boolean assigned = false;
             for (Officer officer : db.officerList) {
                 if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
