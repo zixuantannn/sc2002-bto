@@ -19,6 +19,20 @@ public class RegistrationForm {
         this.registrationStatus = "Pending";
     }
 
+    public RegistrationForm(int registerID, String officerName, String officerNRIC, int officerAge, String maritalStatus, String registeredProjectName, String registrationStatus) {
+        this.registerID = registerID;
+        this.officerName = officerName;
+        this.officerNRIC = officerNRIC;
+        this.officerAge = officerAge;
+        this.maritalStatus = maritalStatus;
+        this.registeredProjectName = registeredProjectName;
+        this.registrationStatus = registrationStatus;
+    
+        if (registerID >= index_registration_form) {
+            index_registration_form = registerID + 1;
+        }
+    }
+
     public int getRegistrationID() {
         return registerID;
     }
