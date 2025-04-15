@@ -19,6 +19,17 @@ public class ApplicationForm {
         this.registrationStatus = registrationStatus;
     }
 
+    public ApplicationForm(int id, Applicant applicant, String appliedProjectName, String registrationStatus) {
+        this.applicationID = id;
+        this.applicant = applicant;
+        this.appliedProjectName = appliedProjectName;
+        this.registrationStatus = registrationStatus;
+    
+        if (id >= index_application_form) {
+            index_application_form = id + 1;
+        }
+    }
+
     public int getApplicationID() {
         return this.applicationID;
     }
