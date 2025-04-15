@@ -100,8 +100,11 @@ public class EnquiryHandler {
         displayMyEnquiries();
 
         System.out.print("Please enter the Enquiry ID to delete: ");
-        int id = sc.nextInt();
-        sc.nextLine(); // To remove newline character left by nextInt()
+        int id = InputValidation.getInt(
+            "Please enter the Enquiry ID to delete: ",
+            i -> i > 0,
+            "Enquiry ID must be a positive integer."
+        );
 
         boolean found = false;
         Enquiry enquiryToRemove = findEnquiryByID(id);
@@ -191,9 +194,11 @@ public class EnquiryHandler {
             enquiry.viewDetails();
         }
         do {
-            System.out.print("Which enquiry would you like to reply: ");
-            int choice = sc.nextInt();
-            sc.nextLine();
+            int choice = InputValidation.getInt(
+                "Which enquiry would you like to reply: ",
+                i -> i > 0,
+                "Please enter a valid positive enquiry ID."
+            );
             chosen = findEnquiryByID(choice);
             if (chosen == null) {
                 System.out.println("Enquiry ID not found. Please try again");
