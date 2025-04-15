@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class ApplicantProjectHandler extends ProjectManager {
+public class ApplicantProjectHandler extends ProjectHandler {
     public ApplicantProjectHandler(List<Project> projectList) {
         super(projectList);
     }
@@ -11,6 +11,10 @@ public class ApplicantProjectHandler extends ProjectManager {
     public List<Project> filterAvailableProject(Database db, Applicant ap) {
         List<Project> filteredProjects = new ArrayList<>();
         for (Project project : getProjectList()) {
+            if (!project.getVisibility().equals("on")) {
+                continue;
+            }
+
             if (ap.getAge() > 34 && ap.getMaritalStatus().equals("Single")) {
                 // If at least 1 2-room is available and visibility is on
                 if (project.getNumType1() > 0) {
@@ -54,6 +58,7 @@ public class ApplicantProjectHandler extends ProjectManager {
         viewAvailableProjects(filteredProjects);
         if (filteredProjects.isEmpty()) {
             System.out.println("No available project to apply!");
+            return;
         }
         System.out.print("Enter your project name you want to apply: ");
         String appliedProject = sc.nextLine();
@@ -70,7 +75,7 @@ public class ApplicantProjectHandler extends ProjectManager {
                     System.out.println("You cannot apply for the project you are currently managing as an officer.");
                     return;
                 }
-            } 
+            }
             ap.setApplyForm(new ApplicationForm(ap, appliedProject, "Pending"));
             ap.setAvailability();
             project.getListOfApplyForm().add(ap.getApplyForm());
