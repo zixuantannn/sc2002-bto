@@ -22,7 +22,7 @@ public class CSVImporter {
     
                 Applicant applicant = new Applicant(name, nric, age, maritalStatus, password);
     
-                // Đọc thông tin application nếu có đầy đủ 3 trường
+                // ApplicationForm
                 if (tokens.length > 7) {
                     String appIdStr = tokens[5].trim();
                     String appliedProject = tokens[6].trim();
@@ -34,6 +34,24 @@ public class CSVImporter {
                         applicant.setApplyForm(form);
                         applicant.addProjectList(form);
                         applicant.setAvailability();
+    
+                        // WithdrawalRequest
+                        if (tokens.length > 10) {
+                            String reason = tokens[8].trim();
+                            String withdrawalStatus = tokens[9].trim();
+                            String managerName = tokens[10].trim();
+    
+                            if (!reason.isEmpty() && !withdrawalStatus.isEmpty()) {
+                                form.createWithdrawalRequest(reason);
+                                WithdrawalRequest request = form.getWithdrawalRequest();
+    
+                                if (withdrawalStatus.equalsIgnoreCase("Approved")) {
+                                    request.approve(managerName);
+                                } else if (withdrawalStatus.equalsIgnoreCase("Rejected")) {
+                                    request.reject(managerName);
+                                }
+                            }
+                        }
                     }
                 }
     
@@ -43,6 +61,7 @@ public class CSVImporter {
             e.printStackTrace();
         }
     }
+    
     
 
     public static void importManagers(Database db, String filepath) {
@@ -68,7 +87,7 @@ public class CSVImporter {
     public static void importOfficers(Database db, String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
-            br.readLine(); // skip header
+            br.readLine(); // Skip header
     
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(",", -1);
@@ -81,7 +100,7 @@ public class CSVImporter {
     
                 Officer officer = new Officer(name, nric, age, maritalStatus, password);
     
-                // Handle RegistrationForm (if available)
+                // RegistrationForm
                 if (tokens.length > 7) {
                     String registerIDStr = tokens[5].trim();
                     String registeredProject = tokens[6].trim();
@@ -94,7 +113,7 @@ public class CSVImporter {
                     }
                 }
     
-                // Handle ApplicationForm (if available)
+                // ApplicationForm
                 if (tokens.length > 10) {
                     String applicationIDStr = tokens[8].trim();
                     String appliedProject = tokens[9].trim();
@@ -106,6 +125,24 @@ public class CSVImporter {
                         officer.setApplyForm(appForm);
                         officer.addProjectList(appForm);
                         officer.setAvailability();
+    
+                        // WithdrawalRequest
+                        if (tokens.length > 13) {
+                            String reason = tokens[11].trim();
+                            String withdrawalStatus = tokens[12].trim();
+                            String managerName = tokens[13].trim();
+    
+                            if (!reason.isEmpty() && !withdrawalStatus.isEmpty()) {
+                                appForm.createWithdrawalRequest(reason);
+                                WithdrawalRequest request = appForm.getWithdrawalRequest();
+    
+                                if (withdrawalStatus.equalsIgnoreCase("Approved")) {
+                                    request.approve(managerName);
+                                } else if (withdrawalStatus.equalsIgnoreCase("Rejected")) {
+                                    request.reject(managerName);
+                                }
+                            }
+                        }
                     }
                 }
     
@@ -115,6 +152,7 @@ public class CSVImporter {
             e.printStackTrace();
         }
     }
+    
     
 
     public static void importProjects(Database db, String filepath) {
