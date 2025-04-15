@@ -100,11 +100,7 @@ public class EnquiryHandler {
         displayMyEnquiries();
 
         System.out.print("Please enter the Enquiry ID to delete: ");
-        int choice = InputValidation.getInt(
-            "Which enquiry would you like to reply: ",
-            i -> i > 0 && i <= enquiryList.size(),
-            "Please enter a valid enquiry number."
-        );
+        int id = sc.nextInt();
         sc.nextLine(); // To remove newline character left by nextInt()
 
         boolean found = false;
