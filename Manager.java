@@ -119,7 +119,7 @@ public class Manager extends UserAccount {
             // this.setHandledProject(newProject);
 
             db.projectList.add(newProject);
-            CSVWriter.saveProject(newProject, "ProjectList.csv");
+//          CSVWriter.saveProject(newProject, "ProjectList.csv");
             System.out.println("Project listing created successfully.");
         } catch (Exception e) {
             System.out.println("An error occurred during project creation.");
@@ -272,7 +272,7 @@ public class Manager extends UserAccount {
                     break;
             }
         }
-        CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+//      CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
         System.out.println("Project listing updated successfully.");
     }
 
@@ -294,7 +294,7 @@ public class Manager extends UserAccount {
         }
 
         db.projectList.remove(target);
-        CSVWriter.deleteProject(projectName);
+  //    CSVWriter.deleteProject(projectName);
         System.out.println("Project listing deleted successfully.");
     }
 
