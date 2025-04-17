@@ -241,31 +241,103 @@ public class CSVWriter {
 
     }
 
-    public static void saveFlatBooking(List<FlatBooking> flatBookings, String filepath) {
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) { // false = overwrite
-            bw.write(
-                    "bookingID,applicant name,applicant NRIC,applicant age,marital status,project name,flat type");
+    public static void saveApplicants(List<Applicant> applicants, String filepath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
+            bw.write("Name,NRIC,Age,MaritalStatus,Password,ApplicationID,AppliedProject,RegistrationStatus");
             bw.newLine();
-
-            for (FlatBooking booking : flatBookings) {
+    
+            for (Applicant a : applicants) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(booking.getBookingID()).append(",");
-                sb.append(booking.getApplicantName()).append(",");
-                sb.append(booking.getApplicantNRIC()).append(",");
-                sb.append(booking.getApplicantAge()).append(",");
-                sb.append(booking.getApplicantMaritalStatus()).append(",");
-                sb.append(booking.getProjectName()).append(",");
-                sb.append(booking.getFlatType()).append(",");
-
+                sb.append(a.getName()).append(",");
+                sb.append(a.getNRIC()).append(",");
+                sb.append(a.getAge()).append(",");
+                sb.append(a.getMaritalStatus()).append(",");
+                sb.append(a.getPassword()).append(",");
+    
+                ApplicationForm form = a.getApplyForm();
+                if (form != null) {
+                    sb.append(form.getApplicationID()).append(",");
+                    sb.append(form.getAppliedProjectName()).append(",");
+                    sb.append(form.getApplicationStatus());
+                }
+    
                 bw.write(sb.toString());
                 bw.newLine();
             }
-
-            System.out.println("Booking saved to CSV file.");
         } catch (IOException e) {
-            System.out.println("Error overwriting FlatBooking CSV.");
+            System.out.println("Error writing applicants to file.");
             e.printStackTrace();
         }
     }
+    
+    public static void saveOfficers(List<Officer> officers, String filepath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
+            bw.write("Name,NRIC,Age,MaritalStatus,Password,RegistrationID,RegisteredProject,RegistrationStatus,ApplicationID,AppliedProject,ApplicationStatus");
+            bw.newLine();
+    
+            for (Officer o : officers) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(o.getName()).append(",");
+                sb.append(o.getNRIC()).append(",");
+                sb.append(o.getAge()).append(",");
+                sb.append(o.getMaritalStatus()).append(",");
+                sb.append(o.getPassword()).append(",");
+    
+                RegistrationForm reg = o.getRegistrationForms().isEmpty() ? null : o.getRegistrationForms().get(0);
+                if (reg != null) {
+                    sb.append(reg.getRegistrationID()).append(",");
+                    sb.append(reg.getRegisteredProjectName()).append(",");
+                    sb.append(reg.getRegistrationStatus()).append(",");
+                } else {
+                    sb.append(",,,");
+                }
+    
+                ApplicationForm app = o.getApplyForm();
+                if (app != null) {
+                    sb.append(app.getApplicationID()).append(",");
+                    sb.append(app.getAppliedProjectName()).append(",");
+                    sb.append(app.getApplicationStatus());
+                }
+    
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing officers to file.");
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveManagers(List<Manager> managers, String filepath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
+            bw.write("Name,NRIC,Age,MaritalStatus,Password");
+            bw.newLine();
+            for (Manager m : managers) {
+                bw.write(m.getName() + "," + m.getNRIC() + "," + m.getAge() + "," +
+                        m.getMaritalStatus() + "," + m.getPassword());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing managers to file.");
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveFlatBookings(List<FlatBooking> bookings, String filepath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
+            bw.write("BookingID,ApplicantName,NRIC,Age,MaritalStatus,ProjectName,FlatType");
+            bw.newLine();
+            for (FlatBooking fb : bookings) {
+                bw.write(fb.getBookingID() + "," + fb.getApplicantName() + "," +
+                        fb.getApplicantNRIC() + "," + fb.getApplicantAge() + "," +
+                        fb.getApplicantMaritalStatus() + "," + fb.getProjectName() + "," +
+                        fb.getFlatType());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing flat bookings to file.");
+            e.printStackTrace();
+        }
+    }
+    
 }
