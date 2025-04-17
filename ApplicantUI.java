@@ -15,7 +15,7 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, applicant.getEnquiryHandler().getEnquiryList());
-        CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
+   //   CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
