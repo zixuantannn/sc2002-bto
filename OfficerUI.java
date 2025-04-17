@@ -14,7 +14,7 @@ public class OfficerUI implements OfficerMenu {
 
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, officer.getEnquiryHandler().getEnquiryList());
-        CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
+  //    CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
