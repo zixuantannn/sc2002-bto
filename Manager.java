@@ -336,12 +336,12 @@ public class Manager extends UserAccount {
 
             if (visibilityInput.equals("on")) {
                 target.setVisibility(visibilityInput);
-                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+   //           CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
                 System.out.println("Project visibility set to ON.");
                 break;
             } else if (visibilityInput.equals("off")) {
                 target.setVisibility(visibilityInput);
-                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+    //          CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
                 System.out.println("Project visibility set to OFF.");
                 break;
             } else {
