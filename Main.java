@@ -114,6 +114,18 @@ public class Main {
                     break;
 
                 case 3:
+                System.out.println("Saving all data before exit...");
+
+                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                CSVWriter.saveApplicants(db.applicantList, "ApplicantList.csv");
+                CSVWriter.saveOfficers(db.officerList, "OfficerList.csv");
+                CSVWriter.saveManagers(db.managerList, "ManagerList.csv");
+                CSVWriter.saveFlatBookings(db.flatBookingList, "FlatBookingList.csv");
+                CSVWriter.saveEnquirieToCSV(db.enquiryList, "EnquiryList.csv");
+                
+                System.out.println("All data saved. Goodbye!");
+                System.exit(0);
+                
                     System.out.println("Exiting the BTO App. Goodbye!");
                     System.exit(0);
                     break;
