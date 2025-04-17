@@ -181,7 +181,7 @@ public class Officer extends Applicant {
                 applicant.getMaritalStatus(), assignedProject.getName(), flatType);
         generateReceipt(flatBooking);
         db.flatBookingList.add(flatBooking);
-        CSVWriter.saveFlatBooking(db.flatBookingList, "FlatBookingList.csv");
+  //    CSVWriter.saveFlatBooking(db.flatBookingList, "FlatBookingList.csv");
     }
 
     public void generateReceipt(FlatBooking flatBooking) {
