@@ -175,21 +175,21 @@ public class Project {
     }
 
     public void viewProjectDetails() {
-        String line = "+---------------------------------------------------+";
+        String line = "+-----------------------------------------------------+";
         String title = "PROJECT DETAILS";
 
         System.out.println(line);
-        System.out.printf("|%s|\n", centerString(51, title));
+        System.out.printf("|%s|\n", centerString(53, title));
         System.out.println(line);
 
-        System.out.printf("| %-20s : %-26s |\n", "Name", name);
-        System.out.printf("| %-20s : %-26s |\n", "Neighborhood", neighborhood);
-        System.out.printf("| %-20s : %-26s |\n", "Type 1 Units", numType1 + " ($" + sellPriceType1 + ")");
-        System.out.printf("| %-20s : %-26s |\n", "Type 2 Units", numType2 + " ($" + sellPriceType2 + ")");
-        System.out.printf("| %-20s : %-26s |\n", "Opening Date", openDate.toString());
-        System.out.printf("| %-20s : %-26s |\n", "Closing Date", closeDate.toString());
-        System.out.printf("| %-20s : %-26s |\n", "Manager", manager);
-        System.out.printf("| %-20s : %-26s |\n", "Officer Slots", numOfficerSlots);
+        System.out.printf("| %-20s : %-28s |\n", "Name", name);
+        System.out.printf("| %-20s : %-28s |\n", "Neighborhood", neighborhood);
+        System.out.printf("| %-20s : %-28s |\n", "2-Room Units", numType1 + " ($" + sellPriceType1 + ")");
+        System.out.printf("| %-20s : %-28s |\n", "3-Room Units", numType2 + " ($" + sellPriceType2 + ")");
+        System.out.printf("| %-20s : %-28s |\n", "Opening Date", openDate.toString());
+        System.out.printf("| %-20s : %-28s |\n", "Closing Date", closeDate.toString());
+        System.out.printf("| %-20s : %-28s |\n", "Manager", manager);
+        System.out.printf("| %-20s : %-28s |\n", "Officer Slots", numOfficerSlots);
 
         StringBuilder assignedOfficers = new StringBuilder();
         boolean hasOfficer = false;
@@ -207,8 +207,8 @@ public class Project {
         if (!hasOfficer) {
             assignedOfficers.append("None");
         }
-        System.out.printf("| %-20s : %-26s |\n", "Assigned Officers", assignedOfficers.toString());
-        System.out.printf("| %-20s : %-26s |\n", "Visibility", (visibility != null ? visibility : "Not Set"));
+        System.out.printf("| %-20s : %-28s |\n", "Assigned Officers", assignedOfficers.toString());
+        System.out.printf("| %-20s : %-28s |\n", "Visibility", (visibility != null ? visibility : "Not Set"));
         System.out.println(line);
     }
 
@@ -224,20 +224,24 @@ public class Project {
             System.out.println("No projects found for the specified manager.");
         }
     }
+
     public void displayProjectsWithFilters(Scanner scanner, Database db) {
-        String answer = InputValidation.getYesOrNo("Would you like to filter by neighborhood (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        String answer = InputValidation.getYesOrNo("Would you like to filter by neighborhood (yes/no)?\n",
+                "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
             System.out.println("Enter neighborhood:");
             savedNeighborhoodFilter = scanner.nextLine();
         }
 
-        answer = InputValidation.getYesOrNo("Would you like to filter by 2-Room flats availability (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        answer = InputValidation.getYesOrNo("Would you like to filter by 2-Room flats availability (yes/no)?\n",
+                "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
             System.out.println("Enter 'true' if filtering for projects with 2-Room flats, 'false' otherwise:");
             savedType1Filter = Boolean.valueOf(scanner.nextLine());
         }
 
-        answer = InputValidation.getYesOrNo("Would you like to filter by 3-Room flats availability (yes/no)?\n", "Please enter 'yes' or 'no'.");
+        answer = InputValidation.getYesOrNo("Would you like to filter by 3-Room flats availability (yes/no)?\n",
+                "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
             System.out.println("Enter 'true' if filtering for projects with 3-Room flats, 'false' otherwise:");
             savedType2Filter = Boolean.valueOf(scanner.nextLine());
@@ -250,15 +254,16 @@ public class Project {
             if (savedType1Filter != null && savedType1Filter && project.getNumType1() <= 0) {
                 matches = false;
             }
-            
+
             if (savedType2Filter != null && savedType2Filter && project.getNumType2() <= 0) {
                 matches = false;
             }
-            
-            if (!savedNeighborhoodFilter.isEmpty() && !project.getNeighborhood().equalsIgnoreCase(savedNeighborhoodFilter)) {
+
+            if (!savedNeighborhoodFilter.isEmpty()
+                    && !project.getNeighborhood().equalsIgnoreCase(savedNeighborhoodFilter)) {
                 matches = false;
             }
-            
+
             if (matches) {
                 filteredProjects.add(project);
             }
