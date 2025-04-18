@@ -37,21 +37,21 @@ public class WithdrawalRequest {
 
     public void viewDetails() {
         // Define a format string for the table rows
-        String rowFormat = "| %-10s | %-15s | %-40s | %-40s |%n";
+        String rowFormat = "| %-15s | %-20s | %-40s | %-15s |%n";
 
         // Print the table header
         System.out.format(
-                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
-        System.out.format(rowFormat, "Project Name", "Reason", "Response", "ManagerName");
+                "+-----------------+----------------------+------------------------------------------+-----------------+%n");
+        System.out.format(rowFormat, "Application ID", "Project Name", "Reason", "Status");
         System.out.format(
-                "+------------+-----------------+------------------------------------------+------------------------------------------+%n");
+                "+-----------------+----------------------+------------------------------------------+-----------------+%n");
 
-        // Print the enquiry details in a row
+        // Print the withdrawal details in a row
         System.out.format(rowFormat,
+                form.getApplicationID(),
                 form.getAppliedProjectName(),
                 reason,
-                status,
-                (managerName != null ? managerName : "-"));
+                status);
 
         // Print the closing border
         System.out.format(
