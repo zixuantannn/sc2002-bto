@@ -113,9 +113,9 @@ public class ApplicantProjectHandler extends ProjectHandler {
         if (ap.getProjectAppliedList().isEmpty()) {
             System.out.println("You have not applied for any project. ");
         }
-        // If no pending project in the list
-        else if (!(ap.getProjectAppliedList().get(0)).getApplicationStatus().equals("Pending")) {
-            System.out.println("You have no pending projects. ");
+        // If no current project in the list (not rejected)
+        else if (!(ap.getProjectAppliedList().get(0)).getApplicationStatus().equals("Rejected")) {
+            System.out.println("You have no current projects. ");
         } else {
             System.out.println("What is the reason for withdrawal: ");
             String reason = sc.nextLine();
