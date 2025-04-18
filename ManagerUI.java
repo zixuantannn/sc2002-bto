@@ -117,7 +117,6 @@ public class ManagerUI implements ManagerMenu {
     }
 
     public void setTheHandledProject() {
-        System.out.println("Automatically setting the handled project...");
 
         // Get the current system date
         Date currentDate = new Date(); // This will give us the current date and time
