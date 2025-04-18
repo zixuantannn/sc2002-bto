@@ -262,6 +262,8 @@ public class CSVImporter {
                 String maritalStatus = tokens[4].trim();
                 String projectName = tokens[5].trim();
                 String flatType = tokens[6].trim();
+                String neighborhood = tokens[7].trim();
+                int sellPrice = Integer.parseInt(tokens[8].trim());
 
                 FlatBooking booking = new FlatBooking(
                         bookingID,
@@ -270,7 +272,9 @@ public class CSVImporter {
                         applicantAge,
                         maritalStatus,
                         projectName,
-                        flatType);
+                        flatType,
+                        neighborhood,
+                        sellPrice);
 
                 db.flatBookingList.add(booking);
             }

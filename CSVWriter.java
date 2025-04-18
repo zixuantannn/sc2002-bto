@@ -76,7 +76,7 @@ public class CSVWriter {
                 bw.newLine();
             }
 
- //         System.out.println("All projects overwritten to CSV file.");
+            // System.out.println("All projects overwritten to CSV file.");
         } catch (IOException e) {
             System.out.println("Error overwriting project CSV.");
             e.printStackTrace();
@@ -171,7 +171,7 @@ public class CSVWriter {
                 bw.newLine();
             }
 
-//          System.out.println("All projects overwritten to CSV file.");
+            // System.out.println("All projects overwritten to CSV file.");
         } catch (IOException e) {
             System.out.println("Error overwriting project CSV.");
             e.printStackTrace();
@@ -245,7 +245,7 @@ public class CSVWriter {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write("Name,NRIC,Age,MaritalStatus,Password,ApplicationID,AppliedProject,RegistrationStatus");
             bw.newLine();
-    
+
             for (Applicant a : applicants) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(a.getName()).append(",");
@@ -253,14 +253,14 @@ public class CSVWriter {
                 sb.append(a.getAge()).append(",");
                 sb.append(a.getMaritalStatus()).append(",");
                 sb.append(a.getPassword()).append(",");
-    
+
                 ApplicationForm form = a.getApplyForm();
                 if (form != null) {
                     sb.append(form.getApplicationID()).append(",");
                     sb.append(form.getAppliedProjectName()).append(",");
                     sb.append(form.getApplicationStatus());
                 }
-    
+
                 bw.write(sb.toString());
                 bw.newLine();
             }
@@ -269,12 +269,13 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
-    
+
     public static void saveOfficers(List<Officer> officers, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
-            bw.write("Name,NRIC,Age,MaritalStatus,Password,RegistrationID,RegisteredProject,RegistrationStatus,ApplicationID,AppliedProject,ApplicationStatus");
+            bw.write(
+                    "Name,NRIC,Age,MaritalStatus,Password,RegistrationID,RegisteredProject,RegistrationStatus,ApplicationID,AppliedProject,ApplicationStatus");
             bw.newLine();
-    
+
             for (Officer o : officers) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(o.getName()).append(",");
@@ -282,7 +283,7 @@ public class CSVWriter {
                 sb.append(o.getAge()).append(",");
                 sb.append(o.getMaritalStatus()).append(",");
                 sb.append(o.getPassword()).append(",");
-    
+
                 RegistrationForm reg = o.getRegistrationForms().isEmpty() ? null : o.getRegistrationForms().get(0);
                 if (reg != null) {
                     sb.append(reg.getRegistrationID()).append(",");
@@ -291,14 +292,14 @@ public class CSVWriter {
                 } else {
                     sb.append(",,,");
                 }
-    
+
                 ApplicationForm app = o.getApplyForm();
                 if (app != null) {
                     sb.append(app.getApplicationID()).append(",");
                     sb.append(app.getAppliedProjectName()).append(",");
                     sb.append(app.getApplicationStatus());
                 }
-    
+
                 bw.write(sb.toString());
                 bw.newLine();
             }
@@ -307,7 +308,7 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
-    
+
     public static void saveManagers(List<Manager> managers, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write("Name,NRIC,Age,MaritalStatus,Password");
@@ -322,16 +323,16 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
-    
+
     public static void saveFlatBookings(List<FlatBooking> bookings, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
-            bw.write("BookingID,ApplicantName,NRIC,Age,MaritalStatus,ProjectName,FlatType");
+            bw.write("BookingID,ApplicantName,NRIC,Age,MaritalStatus,ProjectName,FlatType,Neighborhood,SellPrice");
             bw.newLine();
             for (FlatBooking fb : bookings) {
                 bw.write(fb.getBookingID() + "," + fb.getApplicantName() + "," +
                         fb.getApplicantNRIC() + "," + fb.getApplicantAge() + "," +
                         fb.getApplicantMaritalStatus() + "," + fb.getProjectName() + "," +
-                        fb.getFlatType());
+                        fb.getFlatType() + "," + fb.getNeighborhood() + "," + fb.getSellPrice());
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -339,5 +340,5 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
-    
+
 }
