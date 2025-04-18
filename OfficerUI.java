@@ -1,6 +1,7 @@
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Date;
 
 public class OfficerUI implements OfficerMenu {
     Officer officer = null;
