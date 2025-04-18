@@ -24,7 +24,7 @@ public class ApplicationForm {
         this.applicant = applicant;
         this.appliedProjectName = appliedProjectName;
         this.registrationStatus = registrationStatus;
-    
+
         if (id >= index_application_form) {
             index_application_form = id + 1;
         }
@@ -55,7 +55,7 @@ public class ApplicationForm {
     }
 
     public void viewDetails() {
-        System.out.println("===== Application Details =====");
+        System.out.println("=============== Application Details ===============");
         System.out.println("Application ID: " + applicationID);
         System.out.println("Applicant Name: " + applicant.getName());
         System.out.println("Applicant NRIC: " + applicant.getNRIC());
@@ -63,7 +63,7 @@ public class ApplicationForm {
         System.out.println("Marital Status: " + applicant.getMaritalStatus());
         System.out.println("Applied Project Name: " + appliedProjectName);
         System.out.println("Registration Status: " + registrationStatus);
-        System.out.println("================================");
+        System.out.println("===================================================");
     }
 
     public static void deleteApplication(ApplicationForm form) {
