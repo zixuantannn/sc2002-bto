@@ -543,7 +543,7 @@ public class Manager extends UserAccount {
         return true;
     }
 
-    public void manageWithdrawalRequest() {
+    public void manageWithdrawalRequest(Database db) {
 
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
         ApplicationForm targetForm = null;
@@ -585,6 +585,20 @@ public class Manager extends UserAccount {
 
         if (input.equals("yes")) {
             Applicant ap = targetForm.getApplicant();
+            if (targetForm.getApplicationStatus().equalsIgnoreCase("Booked")) {
+                for (Project p : db.projectList) {
+                    if (p.getName().equalsIgnoreCase(targetForm.getAppliedProjectName())) {
+                        String flatType = ap.getFlatBooking().getFlatType();
+                        if (flatType.equalsIgnoreCase("2-Room")) {
+                            p.setNumType1(p.getNumType1() + 1);
+                        } else if (flatType.equalsIgnoreCase("3-Room")) {
+                            p.setNumType2(p.getNumType2() + 1);
+                        }
+                        break; // found the project, no need to continue loop
+                    }
+                }
+            }            
+            targetForm.updateStatus("Pending");
             ap.resetAvailablilty();
             ap.setApplyForm(null);
             applyList.remove(targetForm);
