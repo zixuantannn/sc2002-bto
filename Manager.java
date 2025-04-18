@@ -616,7 +616,6 @@ public class Manager extends UserAccount {
                 "Invalid input. Please enter 'yes' or 'no'.");
         String maritalStatusFilter = null;
         if (filterMarital.equals("yes")) {
-            System.out.print("Enter marital status to filter (Single/Married): ");
             maritalStatusFilter = InputValidation.getString("Enter marital status to filter(Single/Married): ",
                     input -> input.equalsIgnoreCase("Single") || input.equalsIgnoreCase("Married"),
                     "Please enter a valid marital status ('Single' or 'Married').");
