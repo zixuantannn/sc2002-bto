@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
 public class Applicant extends UserAccount {
     private int applicantId;
@@ -67,8 +66,8 @@ public class Applicant extends UserAccount {
 
     }
 
-    public void applyForProject(Database db, Scanner sc) {
-        applicantProjHandler.applyForProject(db, sc, this);
+    public void applyForProject(Database db) {
+        applicantProjHandler.applyForProject(db, this);
     }
 
     // To display all the project applied
@@ -81,38 +80,28 @@ public class Applicant extends UserAccount {
         applicantProjHandler.viewApplicationStatus(this);
     }
 
-    public void withdrawalApplication(Scanner sc) {
-        applicantProjHandler.withdrawalApplication(sc, this);
+    public void withdrawalApplication() {
+        applicantProjHandler.withdrawalApplication(this);
     }
 
-    public void sendEnquiry(Scanner sc, Database db) {
+    public void sendEnquiry(Database db) {
         String content;
         int choice = -1;
         do {
             System.out.println("----- Enquiry Type -----");
             System.out.println("1. General Enquiry");
             System.out.println("2. Project Related Enquiry");
-
-            try {
-                System.out.print("What type of enquiry do you want to submit (1/2): ");
-                choice = sc.nextInt();
-                sc.nextLine(); // consume newline
-
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Invalid choice. Please enter 1 or 2 only.");
-                }
-
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a number.");
-                sc.nextLine(); // consume invalid input
-            }
+            choice = InputValidation.getInt("What type of enquiry do you want to submit (1/2):",
+                    input -> input == 1 || input == 2,
+                    "Invalid choice. Please enter 1 or 2 only.");
 
         } while (choice != 1 && choice != 2);
 
         if (choice == 1) {
             // General enquiry
-            System.out.print("Enter your enquiry content: ");
-            content = sc.nextLine();
+            content = InputValidation.getString("Enter your enquiry content: ",
+                    input -> !input.trim().isEmpty(),
+                    "Enquiry content cannot be empty. ");
             enqHandler.createEnquiry(this.getNRIC(), content);
 
         } else if (choice == 2) {
@@ -123,18 +112,13 @@ public class Applicant extends UserAccount {
                 return;
             }
 
-            System.out.print("Enter the project name: ");
-            String projectName = sc.nextLine();
+            String projectName = InputValidation.getString("Enter the project name: ",
+                    input -> availableProjects.stream().anyMatch(p -> p.getName().equalsIgnoreCase(input)),
+                    "Project not found. Please try again. ");
 
-            boolean found = availableProjects.stream()
-                    .anyMatch(p -> p.getName().equalsIgnoreCase(projectName));
-
-            if (!found) {
-                System.out.println("Project not found in available list. Enquiry not submitted.");
-                return;
-            }
-            System.out.print("Enter your enquiry content: ");
-            content = sc.nextLine();
+            content = InputValidation.getString("Enter your enquiry content: ",
+                    input -> !input.trim().isEmpty(),
+                    "Enquiry content cannot be empty. ");
             enqHandler.createEnquiry(this.getNRIC(), content, projectName);
         }
 
@@ -144,23 +128,23 @@ public class Applicant extends UserAccount {
         enqHandler.displayMyEnquiries();
     }
 
-    public void modifyEnquiry(Scanner sc) {
-        enqHandler.modifyEnquiry(sc);
+    public void modifyEnquiry() {
+        enqHandler.modifyEnquiry();
     }
 
-    public void removeEnquiry(Scanner sc) {
-        enqHandler.removeEnquriy(sc);
+    public void removeEnquiry() {
+        enqHandler.removeEnquriy();
 
     }
 
-    public void viewTheFlatBooking(Database database){
-        for(FlatBooking booking : database.flatBookingList){
-            if(booking.getApplicantNRIC().equals(this.getNRIC())){
+    public void viewTheFlatBooking(Database database) {
+        for (FlatBooking booking : database.flatBookingList) {
+            if (booking.getApplicantNRIC().equals(this.getNRIC())) {
                 booking.viewFlatBookingDetails();
                 break;
             }
         }
         System.out.println("You have no flat booking!");
-    }    
+    }
 
 }

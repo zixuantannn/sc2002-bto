@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -49,7 +48,7 @@ public class ApplicantProjectHandler extends ProjectHandler {
         }
     }
 
-    public void applyForProject(Database db, Scanner sc, Applicant ap) {
+    public void applyForProject(Database db, Applicant ap) {
         if (ap.getAvailability()) {
             System.out.println("Cannot apply for multiple projects.");
             return;
@@ -60,8 +59,9 @@ public class ApplicantProjectHandler extends ProjectHandler {
             System.out.println("No available project to apply!");
             return;
         }
-        System.out.print("Enter your project name you want to apply: ");
-        String appliedProject = sc.nextLine();
+        String appliedProject = InputValidation.getString("Enter your project name you want to apply: ",
+                project -> !project.trim().isEmpty(),
+                "Project name cannot be empty.");
 
         Project project = getProject(appliedProject);
 
@@ -108,18 +108,19 @@ public class ApplicantProjectHandler extends ProjectHandler {
         }
     }
 
-    public void withdrawalApplication(Scanner sc, Applicant ap) {
+    public void withdrawalApplication(Applicant ap) {
         // If there are no projects
-        if (ap.getProjectAppliedList().isEmpty()) {
+        if (ap.getApplyForm() == null) {
             System.out.println("You have not applied for any project. ");
-        }
-        // If no current project in the list (not rejected)
-        else if (!(ap.getProjectAppliedList().get(0)).getApplicationStatus().equals("Rejected")) {
-            System.out.println("You have no current projects. ");
+
         } else {
             System.out.println("What is the reason for withdrawal: ");
-            String reason = sc.nextLine();
+            String reason = InputValidation.getString("What is the reason for withdrawal: ",
+                    reasonInput -> !reasonInput.trim().isEmpty(),
+                    "Reason for withdrawal cannot be empty.");
             ap.getApplyForm().createWithdrawalRequest(reason);
+            ap.setApplyForm(null);
+            ap.resetAvailablilty();
             System.out.println("You have requested withdrawal for your BTO application");
         }
     }

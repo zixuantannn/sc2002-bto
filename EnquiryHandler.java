@@ -28,6 +28,7 @@ public class EnquiryHandler {
     public void createEnquiry(String nric, String content, String projectName) {
         Enquiry newEnquiry = new Enquiry(nric, content, projectName);
         allEnquries.add(newEnquiry);
+        Database.enquiryList.add(newEnquiry);
         System.out.println("New Enquiry submitted.");
 
     }
@@ -36,7 +37,7 @@ public class EnquiryHandler {
     public void createEnquiry(String nric, String content) {
         Enquiry newEnquiry = new Enquiry(nric, content);
         allEnquries.add(newEnquiry);
-        CSVWriter.submitEnquiry(newEnquiry, "EnquiryList.csv");
+        // CSVWriter.submitEnquiry(newEnquiry, "EnquiryList.csv");
         Database.enquiryList.add(newEnquiry);
         System.out.println("New Enquiry submitted.");
 
@@ -57,24 +58,25 @@ public class EnquiryHandler {
 
     }
 
-    public void modifyEnquiry(Scanner sc) {
+    public void modifyEnquiry() {
         if (allEnquries.isEmpty()) {
             System.out.println("You have no enquiries to edit.");
             return;
         }
 
         displayMyEnquiries();
+        int id = InputValidation.getInt(
+                "Please enter the Enquiry ID to edit: ", input -> input > 0,
+                "Enquiry ID must be a positive integer.");
 
-        System.out.print("Please enter the Enquiry ID to edit: ");
-        int id = sc.nextInt();
-        sc.nextLine();
         boolean found = false;
         for (Enquiry enquiry : allEnquries) {
             if (enquiry.getID() == id) {
                 found = true;
                 if (enquiry.getResponse() == null) { // Enquiry have not been answered
-                    System.out.print("Please enter the new enquiry: ");
-                    String newContent = sc.nextLine();
+                    String newContent = InputValidation.getString(
+                            "Please enter the new enquiry: ", input -> !input.trim().isEmpty(),
+                            "Enquiry content cannot be empty.");
                     enquiry.updateContent(newContent);
                     System.out.println("Enquiry content updated successfully.");
                 } else { // Enquiry have been answered
@@ -90,7 +92,7 @@ public class EnquiryHandler {
 
     }
 
-    public void removeEnquriy(Scanner sc) {
+    public void removeEnquriy() {
         if (allEnquries.isEmpty()) {
             System.out.println("You have no enquiries to edit.");
             return;
@@ -99,9 +101,9 @@ public class EnquiryHandler {
         // Display all enquiries
         displayMyEnquiries();
 
-        System.out.print("Please enter the Enquiry ID to delete: ");
-        int id = sc.nextInt();
-        sc.nextLine(); // To remove newline character left by nextInt()
+        int id = InputValidation.getInt(
+                "Please enter the Enquiry ID to delete: ", input -> input > 0,
+                "Enquiry ID must be a positive integer.");
 
         boolean found = false;
         Enquiry enquiryToRemove = findEnquiryByID(id);
@@ -109,11 +111,9 @@ public class EnquiryHandler {
             if (enquiryToRemove.getResponse() == null) {
                 System.out.println("Chosen Enquiry: \nEnquiry ID:" + enquiryToRemove.getID() + " | Content: "
                         + enquiryToRemove.getContent() + "  | Response: " + enquiryToRemove.getResponse());
-                String choice;
-                do {
-                    System.out.print("Are you sure want to delete this enquiry (yes/no):");
-                    choice = sc.next().toLowerCase();
-                } while (!choice.equals("yes") && !choice.equals("no"));
+                String choice = InputValidation.getYesOrNo(
+                        "Are you sure you want to delete this enquiry (yes/no): ",
+                        "Please enter 'yes' or 'no'. ");
 
                 if (choice.equals("yes")) {
                     allEnquries.remove(enquiryToRemove);
@@ -179,7 +179,6 @@ public class EnquiryHandler {
     }
 
     public void ReplyEnquiry() {
-        Scanner sc = new Scanner(System.in);
         Enquiry chosen = null;
         List<Enquiry> enqList = this.allEnquries;
         if (enqList == null || enqList.isEmpty()) {
@@ -190,19 +189,24 @@ public class EnquiryHandler {
         for (Enquiry enquiry : enqList) {
             enquiry.viewDetails();
         }
-        do {
-            System.out.print("Which enquiry would you like to reply: ");
-            int choice = sc.nextInt();
-            sc.nextLine();
-            chosen = findEnquiryByID(choice);
-            if (chosen == null) {
-                System.out.println("Enquiry ID not found. Please try again");
-            } else if (chosen.getResponse() != null) {
-                System.out.println("This enquiry has already been answered.");
-                return;
-            }
 
-        } while (chosen == null);
+        boolean allAnswered = enqList.stream().allMatch(enquiry -> enquiry.getResponse() != null);
+        if (allAnswered) {
+            System.out.println("All enquiries have been answered. No further replies can be made.");
+        }
+        int enquiryID = InputValidation.getValidatedInput("Which enquiry would you like to reply to: ",
+                Integer::parseInt, id -> {
+                    Enquiry found = findEnquiryByID(id);
+                    if (found == null) {
+                        System.out.println("Enquiry ID not found. Please try again.");
+                        return false;
+                    } else if (found.getResponse() != null) {
+                        System.out.println("This enquiry has already been answered.");
+                        return false;
+                    }
+                    return true;
+                }, "Invalid input. Please enter a valid enquiry ID.");
+        chosen = findEnquiryByID(enquiryID);
         if (chosen.getProjectName().equals("-")) {
             System.out.println("=== General Enquiry ===");
 
@@ -213,7 +217,9 @@ public class EnquiryHandler {
         }
         System.out.println("Enquiry: " + chosen.getContent());
         System.out.print("Response: ");
-        String reply = sc.nextLine();
+        String reply = InputValidation.getString("Response: ",
+                input -> !input.trim().isEmpty(),
+                "Response cannot be empty");
         chosen.updateResponse(reply);
         System.out.println("Response saved.");
     }

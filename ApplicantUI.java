@@ -15,7 +15,7 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, applicant.getEnquiryHandler().getEnquiryList());
-   //   CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
+        // CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
@@ -95,7 +95,7 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void applyForBTOProject() {
         System.out.println("Applying for a BTO project...");
-        this.applicant.applyForProject(this.database, this.scanner);
+        this.applicant.applyForProject(this.database);
         ;
     }
 
@@ -110,12 +110,12 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void withdrawalApplyForm() {
         System.out.println("Withdrawing the application form...");
-        this.applicant.withdrawalApplication(this.scanner);
+        this.applicant.withdrawalApplication();
     }
 
     public void submitEnquiry() {
         System.out.println("Submitting an enquiry...");
-        this.applicant.sendEnquiry(this.scanner, this.database);
+        this.applicant.sendEnquiry(this.database);
     }
 
     public void displayEnquiries() {
@@ -125,17 +125,17 @@ public class ApplicantUI implements ApplicantMenu {
 
     public void editEnquiries() {
         System.out.println("Modify enquiry...");
-        this.applicant.modifyEnquiry(this.scanner);
+        this.applicant.modifyEnquiry();
     }
 
     public void removeEnquiries() {
         System.out.println("Remove enquiry...");
-        this.applicant.removeEnquiry(this.scanner);
+        this.applicant.removeEnquiry();
     }
 
-    public void viewFlatBooking(){
+    public void viewFlatBooking() {
         System.out.println("View Flat Booking...");
         this.applicant.viewTheFlatBooking(this.database);
-    }    
+    }
 
 }
