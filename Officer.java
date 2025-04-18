@@ -69,12 +69,12 @@ public class Officer extends Applicant {
         }
 
         if (assignedProject != null) {
-            System.out.println("Cannot register as an officer when handling a project as an officer.");
+            System.out.println("Cannot register to handle another project as you are currently handling a project.");
         }
 
         ApplicationForm form = this.getApplyForm();
         if (form != null && form.getAppliedProjectName().equals(project)) {
-            System.out.println("Cannot register as an officer after applying for the project as an applicant.");
+            System.out.println("Cannot register as an officer after applying for the same project as an applicant.");
             return;
         }
 
@@ -82,8 +82,9 @@ public class Officer extends Applicant {
             for (RegistrationForm reg : this.registrationForms) {
                 if (reg.getRegistrationStatus() == "Pending") {
                     System.out.println(
-                            "Cannot register as an officer for a new project as you have pending approval for the project "
-                                    + reg.getRegisteredProjectName() + ".");
+                            "Your application to handle the project: "
+                                    + reg.getRegisteredProjectName()
+                                    + " is still pending approval. For now, you cannot register for other projects.");
                     return;
                 }
                 ;
@@ -162,10 +163,18 @@ public class Officer extends Applicant {
             return;
         }
 
+        String maritalStatus = targetApplication.getApplicant().getMaritalStatus().toLowerCase();
+        int flatPrice = 0;
+
         System.out.print("Enter flat type to book (2-Room / 3-Room): ");
         String flatType = InputValidation.getString("Enter flat type to book (2-Room / 3-Room): ",
                 input -> !input.trim().isEmpty(),
                 "Flat type cannot be empty");
+
+        if (maritalStatus.equals("single") && flatType.equalsIgnoreCase("3-Room")) {
+            System.out.println("Single applicants can only apply for 2-Room flats.");
+            return;
+        }
 
         if (flatType.equalsIgnoreCase("2-Room")) {
             if (assignedProject.getNumType1() <= 0) {
@@ -173,12 +182,14 @@ public class Officer extends Applicant {
                 return;
             }
             assignedProject.setNumType1(assignedProject.getNumType1() - 1);
+            flatPrice = assignedProject.getSellPriceType1();
         } else if (flatType.equalsIgnoreCase("3-Room")) {
             if (assignedProject.getNumType2() <= 0) {
                 System.out.println("No available 3-Room flats.");
                 return;
             }
             assignedProject.setNumType2(assignedProject.getNumType2() - 1);
+            flatPrice = assignedProject.getSellPriceType2();
         } else {
             System.out.println("Invalid flat type specified.");
             return;
@@ -200,10 +211,10 @@ public class Officer extends Applicant {
 
         System.out.println("Flat booking successful for applicant: " + applicant.getName());
         FlatBooking flatBooking = new FlatBooking(applicant.getName(), applicant.getNRIC(), applicant.getAge(),
-                applicant.getMaritalStatus(), assignedProject.getName(), flatType);
+                applicant.getMaritalStatus(), assignedProject.getName(), flatType, assignedProject.getNeighborhood(),
+                flatPrice);
         generateReceipt(flatBooking);
         db.flatBookingList.add(flatBooking);
-        // CSVWriter.saveFlatBooking(db.flatBookingList, "FlatBookingList.csv");
     }
 
     public void generateReceipt(FlatBooking flatBooking) {
