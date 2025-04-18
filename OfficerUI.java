@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ public class OfficerUI implements OfficerMenu {
 
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, officer.getEnquiryHandler().getEnquiryList());
-  //    CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
+        // CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
@@ -76,36 +77,39 @@ public class OfficerUI implements OfficerMenu {
         this.officer.registerToProject(this.scanner, this.db);
     }
 
-/*  public void viewProjectsForApplyOfficer() {
-        System.out.println("View all available projects for apply officer...");
-        boolean check = false;
-        for (Project project : this.db.projectList) {
-            if (project.getNumOfficerSlots() > 0) {
-                project.viewProjectDetails();
-                check = true;
-            }
-        }
-        if (!check) {
-            System.out.println("There is no available project fo registering as Officer!");
-        }
-    }    */
+    /*
+     * public void viewProjectsForApplyOfficer() {
+     * System.out.println("View all available projects for apply officer...");
+     * boolean check = false;
+     * for (Project project : this.db.projectList) {
+     * if (project.getNumOfficerSlots() > 0) {
+     * project.viewProjectDetails();
+     * check = true;
+     * }
+     * }
+     * if (!check) {
+     * System.out.println("There is no available project fo registering as Officer!"
+     * );
+     * }
+     * }
+     */
 
     public void viewProjectsForApplyOfficer() {
         System.out.println("View all available projects for apply officer...");
         boolean check = false;
         Date now = new Date(); // current time
-    
+
         for (Project project : this.db.projectList) {
             boolean isVisible = project.getVisibility().equalsIgnoreCase("on");
             boolean isWithinDate = project.getOpenDate().before(now) && project.getCloseDate().after(now);
             boolean hasOfficerSlots = project.getNumOfficerSlots() > 0;
-    
+
             if (isVisible && isWithinDate && hasOfficerSlots) {
                 project.viewProjectDetails();
                 check = true;
             }
         }
-    
+
         if (!check) {
             System.out.println("There is no available project for registering as Officer!");
         }

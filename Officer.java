@@ -77,6 +77,18 @@ public class Officer extends Applicant {
             return;
         }
 
+        if (registrationForms.size() != 0) {
+            for (RegistrationForm reg : this.registrationForms) {
+                if (reg.getRegistrationStatus() == "Pending") {
+                    System.out.println(
+                            "Cannot register as an officer for a new project as you have pending approval for the project "
+                                    + reg.getRegisteredProjectName() + ".");
+                    return;
+                }
+                ;
+            }
+        }
+
         RegistrationForm newForm = new RegistrationForm(this.getName(), this.getNRIC(), this.getAge(),
                 this.getMaritalStatus(), project);
         Project registeredProject = null;
@@ -181,7 +193,7 @@ public class Officer extends Applicant {
                 applicant.getMaritalStatus(), assignedProject.getName(), flatType);
         generateReceipt(flatBooking);
         db.flatBookingList.add(flatBooking);
-  //    CSVWriter.saveFlatBooking(db.flatBookingList, "FlatBookingList.csv");
+        // CSVWriter.saveFlatBooking(db.flatBookingList, "FlatBookingList.csv");
     }
 
     public void generateReceipt(FlatBooking flatBooking) {
