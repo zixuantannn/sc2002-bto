@@ -223,17 +223,20 @@ public class Project {
             System.out.println("No projects found for the specified manager.");
         }
     }
-
     public void displayProjectsWithFilters(Database db) {
+        String neighborhoodFilter = "";
+        Boolean filter2Room = null;
+        Boolean filter3Room = null;
+    
         String answer = InputValidation.getYesOrNo("Would you like to filter by neighborhood (yes/no)?\n",
                 "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
-            savedNeighborhoodFilter = InputValidation.getString(
+            neighborhoodFilter = InputValidation.getString(
                     "Enter neighborhood: ",
                     input -> input != null && !input.trim().isEmpty(),
                     "Neighborhood cannot be empty.");
         }
-
+    
         answer = InputValidation.getYesOrNo("Would you like to filter by 2-Room flats availability (yes/no)?\n",
                 "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
@@ -241,9 +244,9 @@ public class Project {
                     "Enter 'true' to filter for 2-Room availability, 'false' otherwise: ",
                     input -> input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false"),
                     "Please enter 'true' or 'false'.");
-            savedType1Filter = Boolean.parseBoolean(boolInput);
+            filter2Room = Boolean.parseBoolean(boolInput);
         }
-
+    
         answer = InputValidation.getYesOrNo("Would you like to filter by 3-Room flats availability (yes/no)?\n",
                 "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
@@ -251,40 +254,39 @@ public class Project {
                     "Enter 'true' to filter for projects with 3-Room flats, 'false' otherwise: ",
                     input -> input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false"),
                     "Please enter 'true' or 'false'.");
-            savedType2Filter = Boolean.parseBoolean(boolInput2);
+            filter3Room = Boolean.parseBoolean(boolInput2);
         }
-
+    
         List<Project> filteredProjects = new ArrayList<>();
         for (Project project : db.projectList) {
             boolean matches = true;
-
-            if (savedType1Filter != null && savedType1Filter && project.getNumType1() <= 0) {
+    
+            if (filter2Room != null && filter2Room && project.getNumType1() <= 0) {
                 matches = false;
             }
-
-            if (savedType2Filter != null && savedType2Filter && project.getNumType2() <= 0) {
+    
+            if (filter3Room != null && filter3Room && project.getNumType2() <= 0) {
                 matches = false;
             }
-
-            if (!savedNeighborhoodFilter.isEmpty()
-                    && !project.getNeighborhood().equalsIgnoreCase(savedNeighborhoodFilter)) {
+    
+            if (!neighborhoodFilter.isEmpty()
+                    && !project.getNeighborhood().equalsIgnoreCase(neighborhoodFilter)) {
                 matches = false;
             }
-
+    
             if (matches) {
                 filteredProjects.add(project);
             }
         }
-
+    
         filteredProjects.sort(Comparator.comparing(Project::getName));
-
+    
         if (filteredProjects.isEmpty()) {
             System.out.println("No projects match the selected filters.");
         } else {
             System.out.println("Filtered Projects:");
             for (Project project : filteredProjects) {
-                System.out
-                        .println("Project Name: " + project.getName() + ", Neighborhood: " + project.getNeighborhood());
+                System.out.println("Project Name: " + project.getName() + ", Neighborhood: " + project.getNeighborhood());
             }
         }
     }
