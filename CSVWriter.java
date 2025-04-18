@@ -76,7 +76,7 @@ public class CSVWriter {
                 bw.newLine();
             }
 
-            System.out.println("All projects overwritten to CSV file.");
+ //         System.out.println("All projects overwritten to CSV file.");
         } catch (IOException e) {
             System.out.println("Error overwriting project CSV.");
             e.printStackTrace();
@@ -171,7 +171,7 @@ public class CSVWriter {
                 bw.newLine();
             }
 
-            System.out.println("All projects overwritten to CSV file.");
+//          System.out.println("All projects overwritten to CSV file.");
         } catch (IOException e) {
             System.out.println("Error overwriting project CSV.");
             e.printStackTrace();
