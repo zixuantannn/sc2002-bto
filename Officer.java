@@ -194,7 +194,7 @@ public class Officer extends Applicant {
             return;
         }
 
-        targetApplication.updateStatus("booked");
+        targetApplication.updateStatus("Booked");
 
         Applicant applicant = null;
         for (Applicant a : db.applicantList) {
@@ -212,6 +212,7 @@ public class Officer extends Applicant {
         FlatBooking flatBooking = new FlatBooking(applicant.getName(), applicant.getNRIC(), applicant.getAge(),
                 applicant.getMaritalStatus(), assignedProject.getName(), flatType, assignedProject.getNeighborhood(),
                 flatPrice);
+        applicant.setFlatBooking(flatBooking);
         generateReceipt(flatBooking);
         db.flatBookingList.add(flatBooking);
     }
