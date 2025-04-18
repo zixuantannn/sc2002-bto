@@ -119,7 +119,7 @@ public class Manager extends UserAccount {
             // this.setHandledProject(newProject);
 
             db.projectList.add(newProject);
-//          CSVWriter.saveProject(newProject, "ProjectList.csv");
+            // CSVWriter.saveProject(newProject, "ProjectList.csv");
             System.out.println("Project listing created successfully.");
         } catch (Exception e) {
             System.out.println("An error occurred during project creation.");
@@ -272,7 +272,7 @@ public class Manager extends UserAccount {
                     break;
             }
         }
-//      CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+        // CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
         System.out.println("Project listing updated successfully.");
     }
 
@@ -294,7 +294,7 @@ public class Manager extends UserAccount {
         }
 
         db.projectList.remove(target);
-  //    CSVWriter.deleteProject(projectName);
+        // CSVWriter.deleteProject(projectName);
         System.out.println("Project listing deleted successfully.");
     }
 
@@ -336,12 +336,12 @@ public class Manager extends UserAccount {
 
             if (visibilityInput.equals("on")) {
                 target.setVisibility(visibilityInput);
-   //           CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                // CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
                 System.out.println("Project visibility set to ON.");
                 break;
             } else if (visibilityInput.equals("off")) {
                 target.setVisibility(visibilityInput);
-    //          CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                // CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
                 System.out.println("Project visibility set to OFF.");
                 break;
             } else {
@@ -406,46 +406,46 @@ public class Manager extends UserAccount {
     public void assignOfficerToProject(Scanner sc, Database db) {
         RegistrationForm registerForm = null;
         List<RegistrationForm> registerList = handledProject.getListOfRegisterForm();
-    
+
         if (registerList.size() == 0) {
             System.out.println("No registration forms found.");
             return;
         }
-    
+
         int ID = InputValidation.getInt("Enter registration form ID or 0 to cancel: ", i -> i >= 0,
                 "Please enter a positive value");
         if (ID == 0) {
             return;
         }
-    
+
         for (RegistrationForm form : registerList) {
             if (form.getRegistrationID() == ID) {
                 registerForm = form;
                 break;
             }
         }
-    
+
         if (registerForm == null) {
             System.out.println("The ID you entered is invalid!");
             return;
         }
-    
+
         String assignment = InputValidation.getApproveOrReject(
                 "Do you want to approve or reject the registration form with ID " + ID + " (approve/reject)?: ",
                 "Invalid input. Please try again!");
-    
+
         if (assignment.equalsIgnoreCase("approve")) {
             if (handledProject.getNumOfficerSlots() <= 0) {
                 System.out.println("No available officer slot.");
                 return;
             }
-    
+
             registerForm.setRegistrationStatus("approved");
             handledProject.setNumOfficerSlots(handledProject.getNumOfficerSlots() - 1);
-    
+
             String officerName = registerForm.getOfficerName();
             String NRICofficer = registerForm.getOfficerNRIC();
-    
+
             List<String> currentOfficers = new ArrayList<>();
             for (String officer : handledProject.getOfficers()) {
                 if (officer != null && !officer.trim().isEmpty()) {
@@ -465,23 +465,25 @@ public class Manager extends UserAccount {
             String officerCSVString = String.join(" ", currentOfficers);
 
             // Update officer array with this string in slot 0 only (rest empty)
-            handledProject.setOfficers(new String[]{officerCSVString}); // Only set the CSV string without extra slots
+            handledProject.setOfficers(new String[] { officerCSVString }); // Only set the CSV string without extra
+                                                                           // slots
 
             boolean assigned = false;
             for (Officer officer : db.officerList) {
                 if (officer != null && officer.getNRIC().equalsIgnoreCase(NRICofficer)) {
                     officer.setAssignedProject(handledProject);
                     CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
-                    System.out.println("Officer " + officerName + " approved and assigned to project " + handledProject.getName());
+                    System.out.println(
+                            "Officer " + officerName + " approved and assigned to project " + handledProject.getName());
                     assigned = true;
                     break;
                 }
             }
-    
+
             if (!assigned) {
                 System.out.println("Officer with NRIC " + NRICofficer + " not found.");
             }
-    
+
         } else if (assignment.equalsIgnoreCase("reject")) {
             registerForm.setRegistrationStatus("rejected");
             System.out.println("Registration rejected.");
@@ -582,6 +584,9 @@ public class Manager extends UserAccount {
         String input = InputValidation.getYesOrNo("Approve withdrawal? (yes/no)\n", "Please enter yes or no:");
 
         if (input.equals("yes")) {
+            Applicant ap = targetForm.getApplicant();
+            ap.resetAvailablilty();
+            ap.setApplyForm(null);
             applyList.remove(targetForm);
             System.out.println(" Withdrawal request approved. Application removed.");
         } else {

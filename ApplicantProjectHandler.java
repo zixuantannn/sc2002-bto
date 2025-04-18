@@ -119,8 +119,6 @@ public class ApplicantProjectHandler extends ProjectHandler {
                     reasonInput -> !reasonInput.trim().isEmpty(),
                     "Reason for withdrawal cannot be empty.");
             ap.getApplyForm().createWithdrawalRequest(reason);
-            ap.setApplyForm(null);
-            ap.resetAvailablilty();
             System.out.println("You have requested withdrawal for your BTO application");
         }
     }
