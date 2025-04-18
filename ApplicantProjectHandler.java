@@ -117,7 +117,6 @@ public class ApplicantProjectHandler extends ProjectHandler {
             System.out.println("You have not applied for any project. ");
 
         } else {
-            System.out.println("What is the reason for withdrawal: ");
             String reason = InputValidation.getString("What is the reason for withdrawal: ",
                     reasonInput -> !reasonInput.trim().isEmpty(),
                     "Reason for withdrawal cannot be empty.");
