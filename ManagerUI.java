@@ -44,7 +44,7 @@ public class ManagerUI implements ManagerMenu {
             System.out.println("12. View and Reply Enquiries.");
             System.out.println("13. Log out");
 
-            choice = InputValidation.getInt("Enter your choice: ",
+            choice = InputValidation.getInt("Choose an option: ",
                     input -> input >= 1 && input <= 13,
                     "Please enter a number between 1 and 13.");
 

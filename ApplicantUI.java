@@ -32,9 +32,8 @@ public class ApplicantUI implements ApplicantMenu {
             System.out.println("9. Remove Enquiry");
             System.out.println("10. View your Flat Booking.");
             System.out.println("11. Logout\n");
-            System.out.print("Choose an option: ");
 
-            choice = InputValidation.getInt("Enter your choice: ",
+            choice = InputValidation.getInt("Choose an option: ",
                     input -> input >= 1 && input <= 11,
                     "Please enter a number between 1 and 11.");
 

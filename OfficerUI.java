@@ -29,9 +29,8 @@ public class OfficerUI implements OfficerMenu {
             System.out.println("5. View and Reply Enquiry List");
             System.out.println("6. Flat Selection and Booking Management");
             System.out.println("7. Logout\n");
-            System.out.print("Choose an option: ");
 
-            choice = InputValidation.getInt("Enter your choice: ",
+            choice = InputValidation.getInt("Choose an option: ",
                     input -> input >= 1 && input <= 7,
                     "Please enter a number between 1 and 7.");
 
