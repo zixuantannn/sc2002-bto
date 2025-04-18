@@ -166,7 +166,6 @@ public class Officer extends Applicant {
         String maritalStatus = targetApplication.getApplicant().getMaritalStatus().toLowerCase();
         int flatPrice = 0;
 
-        System.out.print("Enter flat type to book (2-Room / 3-Room): ");
         String flatType = InputValidation.getString("Enter flat type to book (2-Room / 3-Room): ",
                 input -> !input.trim().isEmpty(),
                 "Flat type cannot be empty");
