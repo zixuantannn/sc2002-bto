@@ -23,7 +23,7 @@ public class Applicant extends UserAccount {
     public Applicant(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
         this.appliedForProject = false;
-        this.projectApplied = new ArrayList<>(); // need read from excel
+        this.projectApplied = new ArrayList<>();
         this.enqHandler = new EnquiryHandler(NRIC, Database.enquiryList, EnquiryHandler.FILTER_BY_NRIC);
         this.applicantProjHandler = new ApplicantProjectHandler(Database.projectList);
     }

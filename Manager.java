@@ -580,7 +580,7 @@ public class Manager extends UserAccount {
         }
 
         System.out.println("Withdrawal request found for Applicant: " + targetForm.getApplicantName());
-        System.out.println("Message: " + targetForm.getWithdrawalRequest());
+        System.out.println("Reason: " + targetForm.getWithdrawalRequest().getReason());
         String input = InputValidation.getYesOrNo("Approve withdrawal? (yes/no)\n", "Please enter yes or no:");
 
         if (input.equals("yes")) {

@@ -89,13 +89,9 @@ public class ApplicantProjectHandler extends ProjectHandler {
     }
 
     public void viewAppliedProject(Applicant ap) {
-        if (!ap.getProjectAppliedList().isEmpty()) { // list is not empty
-            System.out.println("You applied for the following project: ");
-            for (ApplicationForm form : ap.getProjectAppliedList()) {
-                System.out.println("Project Name: " + form.getAppliedProjectName() + " | Application Status: "
-                        + form.getApplicationStatus());
-                // do we need display flat type
-            }
+        if (ap.getApplyForm() != null) {
+            ap.getApplyForm().viewDetails();
+
         } else {
             System.out.println("You have not applied for any project yet.");
         }
