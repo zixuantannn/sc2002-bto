@@ -76,7 +76,7 @@ public class OfficerUI implements OfficerMenu {
         this.officer.registerToProject(this.scanner, this.db);
     }
 
-    public void viewProjectsForApplyOfficer() {
+/*  public void viewProjectsForApplyOfficer() {
         System.out.println("View all available projects for apply officer...");
         boolean check = false;
         for (Project project : this.db.projectList) {
@@ -87,6 +87,27 @@ public class OfficerUI implements OfficerMenu {
         }
         if (!check) {
             System.out.println("There is no available project fo registering as Officer!");
+        }
+    }    */
+
+    public void viewProjectsForApplyOfficer() {
+        System.out.println("View all available projects for apply officer...");
+        boolean check = false;
+        Date now = new Date(); // current time
+    
+        for (Project project : this.db.projectList) {
+            boolean isVisible = project.getVisibility().equalsIgnoreCase("on");
+            boolean isWithinDate = project.getOpenDate().before(now) && project.getCloseDate().after(now);
+            boolean hasOfficerSlots = project.getNumOfficerSlots() > 0;
+    
+            if (isVisible && isWithinDate && hasOfficerSlots) {
+                project.viewProjectDetails();
+                check = true;
+            }
+        }
+    
+        if (!check) {
+            System.out.println("There is no available project for registering as Officer!");
         }
     }
 
