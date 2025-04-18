@@ -27,8 +27,9 @@ public class OfficerUI implements OfficerMenu {
             System.out.println("3. Check Registration Status");
             System.out.println("4. View Handled Project Details");
             System.out.println("5. View and Reply Enquiry List");
-            System.out.println("6. Flat Selection and Booking Management");
-            System.out.println("7. Logout\n");
+            System.out.println("6. View Application Forms in Handled Project");
+            System.out.println("7. Flat Selection and Booking Management");
+            System.out.println("8. Logout\n");
 
             choice = InputValidation.getInt("Choose an option: ",
                     input -> input >= 1 && input <= 7,
@@ -51,9 +52,12 @@ public class OfficerUI implements OfficerMenu {
                     viewAndReplyEnquiryList();
                     break;
                 case 6:
-                    handleFlatBook();
+                    viewApplicationForms();
                     break;
                 case 7:
+                    handleFlatBook();
+                    break;
+                case 8:
                     logout();
                     return;
                 default:
@@ -125,5 +129,10 @@ public class OfficerUI implements OfficerMenu {
         System.out.println("Handling flat booking process...");
         this.officer.handleFlatBooking(this.db);
     }
+
+    public void viewApplicationForms() {
+        officer.viewApplicationsInHandledProject();
+    }
+
 
 }
