@@ -1,5 +1,4 @@
 import java.util.Date;
-import java.util.InputMismatchException;
 
 public class ManagerUI implements ManagerMenu {
     Manager manager = null;
@@ -216,7 +215,7 @@ public class ManagerUI implements ManagerMenu {
         if (!check) {
             return;
         }
-        this.manager.manageWithdrawalRequest();
+        this.manager.manageWithdrawalRequest(this.database);
     }
 
     public void viewAllEnquiry() {
