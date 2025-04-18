@@ -63,7 +63,10 @@ public class ApplicantProjectHandler extends ProjectHandler {
                 project -> !project.trim().isEmpty(),
                 "Project name cannot be empty.");
 
-        Project project = getProject(appliedProject);
+        Project project = filteredProjects.stream()
+                .filter(p -> p.getName().equalsIgnoreCase(appliedProject))
+                .findFirst()
+                .orElse(null);
 
         if (project == null) {
             System.out.println("Project not found !");
