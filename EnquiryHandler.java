@@ -191,22 +191,30 @@ public class EnquiryHandler {
         }
 
         boolean allAnswered = enqList.stream().allMatch(enquiry -> enquiry.getResponse() != null);
-        if (allAnswered) {
+        if (allAnswered) { // All enquiries have been answered so no action can be done.
             System.out.println("All enquiries have been answered. No further replies can be made.");
+            return;
         }
-        int enquiryID = InputValidation.getValidatedInput("Which enquiry would you like to reply to: ",
-                Integer::parseInt, id -> {
-                    Enquiry found = findEnquiryByID(id);
-                    if (found == null) {
-                        System.out.println("Enquiry ID not found. Please try again.");
-                        return false;
-                    } else if (found.getResponse() != null) {
-                        System.out.println("This enquiry has already been answered.");
-                        return false;
-                    }
-                    return true;
-                }, "Invalid input. Please enter a valid enquiry ID.");
+
+        int enquiryID = InputValidation.getInt(
+                "Please enter the Enquiry ID to reply: ", input -> input > 0,
+                "Enquiry ID must be a positive integer.");
+
         chosen = findEnquiryByID(enquiryID);
+
+        // If the enquiry id does not exist
+        if (chosen == null) {
+            System.out.println("Enquiry ID not found. No reply has been made.");
+            return;
+        }
+
+        // If the enquiry have been answered
+        if (chosen.getResponse() != null) {
+            System.out.println("This enquiry has already been answered. No reply can be made.");
+            return;
+        }
+
+        // Proceed to reply enquiries
         if (chosen.getProjectName().equals("-")) {
             System.out.println("=== General Enquiry ===");
 
@@ -216,7 +224,6 @@ public class EnquiryHandler {
 
         }
         System.out.println("Enquiry: " + chosen.getContent());
-        System.out.print("Response: ");
         String reply = InputValidation.getString("Response: ",
                 input -> !input.trim().isEmpty(),
                 "Response cannot be empty");
