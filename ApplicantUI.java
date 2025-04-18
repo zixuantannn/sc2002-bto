@@ -1,16 +1,13 @@
 
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class ApplicantUI implements ApplicantMenu {
     Applicant applicant = null;
     Database database = null;
-    Scanner scanner = null;
 
-    public ApplicantUI(Applicant applicant, Database database, Scanner scanner) {
+    public ApplicantUI(Applicant applicant, Database database) {
         this.applicant = applicant;
         this.database = database;
-        this.scanner = scanner;
     }
 
     public void logout() {
@@ -37,15 +34,9 @@ public class ApplicantUI implements ApplicantMenu {
             System.out.println("11. Logout\n");
             System.out.print("Choose an option: ");
 
-            try {
-                System.out.print("\nEnter your choice: ");
-                choice = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
-                continue;
-            }
+            choice = InputValidation.getInt("Enter your choice: ",
+                    input -> input >= 1 && input <= 11,
+                    "Please enter a number between 1 and 11.");
 
             switch (choice) {
                 case 1:

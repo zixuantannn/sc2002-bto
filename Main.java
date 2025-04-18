@@ -1,4 +1,3 @@
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -67,46 +66,44 @@ public class Main {
 
             System.out.println();
 
-            Scanner scanner = new Scanner(System.in); 
-
             switch (choice) {
                 case 1:
                     printRoleMenu();
                     int roleChoice = InputValidation.getInt("Enter your role (1-3): ",
                             i -> i >= 1 && i <= 3,
                             "Please enter a valid role number (1-3).");
-            
+
                     String roleStr = getRoleFromChoice(roleChoice);
-            
+
                     String inputNRIC = InputValidation.getString("Enter your NRIC: ",
                             s -> !s.trim().isEmpty(),
                             "NRIC cannot be empty.");
-            
-                    UserAccount user = Login.authenticate(db, inputNRIC, roleStr, scanner);
-            
+
+                    UserAccount user = Login.authenticate(db, inputNRIC, roleStr);
+
                     CommonMenu menu = null;
-            
+
                     if (user instanceof Officer officer) {
                         System.out.println("1. Continue as Officer");
                         System.out.println("2. Switch to Applicant Mode");
-            
+
                         int officerMode = InputValidation.getInt("Choose your role mode: ",
-                                    i -> i == 1 || i == 2, "Only 1 or 2 allowed");
-            
+                                i -> i == 1 || i == 2, "Only 1 or 2 allowed");
+
                         menu = (officerMode == 1)
-                                ? new OfficerUI(officer, db, scanner)
-                                : new ApplicantUI(officer, db, scanner);
-            
+                                ? new OfficerUI(officer, db)
+                                : new ApplicantUI(officer, db);
+
                     } else if (user instanceof Applicant applicant) {
-                        menu = new ApplicantUI(applicant, db, scanner);
-            
+                        menu = new ApplicantUI(applicant, db);
+
                     } else if (user instanceof Manager manager) {
-                        menu = new ManagerUI(manager, db, scanner);
+                        menu = new ManagerUI(manager, db);
                     }
-            
+
                     if (menu != null) {
-                        UserMenuHandler handler = new UserMenuHandler(menu);  
-                        handler.show(); 
+                        UserMenuHandler handler = new UserMenuHandler(menu);
+                        handler.show();
                     }
                     break;
 
@@ -115,18 +112,18 @@ public class Main {
                     break;
 
                 case 3:
-                System.out.println("Saving all data before exit...");
+                    System.out.println("Saving all data before exit...");
 
-                CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
-                CSVWriter.saveApplicants(db.applicantList, "ApplicantList.csv");
-                CSVWriter.saveOfficers(db.officerList, "OfficerList.csv");
-                CSVWriter.saveManagers(db.managerList, "ManagerList.csv");
-                CSVWriter.saveFlatBookings(db.flatBookingList, "FlatBookingList.csv");
-                CSVWriter.saveEnquirieToCSV(db.enquiryList, "EnquiryList.csv");
-                
-                System.out.println("All data saved. Goodbye!");
-                System.exit(0);
-                
+                    CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
+                    CSVWriter.saveApplicants(db.applicantList, "ApplicantList.csv");
+                    CSVWriter.saveOfficers(db.officerList, "OfficerList.csv");
+                    CSVWriter.saveManagers(db.managerList, "ManagerList.csv");
+                    CSVWriter.saveFlatBookings(db.flatBookingList, "FlatBookingList.csv");
+                    CSVWriter.saveEnquirieToCSV(db.enquiryList, "EnquiryList.csv");
+
+                    System.out.println("All data saved. Goodbye!");
+                    System.exit(0);
+
                     System.out.println("Exiting the BTO App. Goodbye!");
                     System.exit(0);
                     break;

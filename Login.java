@@ -1,8 +1,7 @@
-import java.util.Scanner;
 
 public class Login {
 
-    static public UserAccount authenticate(Database db, String input, String position, Scanner scanner) {
+    static public UserAccount authenticate(Database db, String input, String position) {
         UserAccount user = null;
 
         switch (position.toLowerCase()) {
@@ -40,8 +39,9 @@ public class Login {
             return null;
         }
 
-        System.out.print("Enter your password: ");
-        String password = scanner.nextLine();
+        String password = InputValidation.getString("Enter your password: ",
+                pw -> pw != null && !pw.trim().isEmpty(),
+                "Password cannot be empty.");
 
         if (password.equals(user.getPassword())) {
             System.out.println("\nLogin successful! Welcome, " + position + " " + user.getName() + "!");

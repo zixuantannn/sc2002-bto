@@ -4,7 +4,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class Manager extends UserAccount {
     private Project handledProject = null;
@@ -31,7 +30,7 @@ public class Manager extends UserAccount {
         return this.enqHandler;
     }
 
-    public void createProjectListing(Scanner sc, Database db) {
+    public void createProjectListing(Database db) {
         try {
 
             // Check if manager already handling a project
@@ -126,7 +125,7 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void editProjectListing(Scanner sc, Database db) {
+    public void editProjectListing(Database db) {
         String projectName = InputValidation.getString("Enter the name of the project to edit: ", s -> !s.isEmpty(),
                 "Project name cannot be empty.");
         Project target = null;
@@ -276,9 +275,10 @@ public class Manager extends UserAccount {
         System.out.println("Project listing updated successfully.");
     }
 
-    public void deleteProjectListing(Scanner sc, Database db) {
-        System.out.println("Enter the name of the project to delete: ");
-        String projectName = sc.nextLine();
+    public void deleteProjectListing(Database db) {
+        String projectName = InputValidation.getString("Enter the name of the project to delete: ",
+                input -> !input.trim().isEmpty(),
+                "Project name cannot be empty.");
         Project target = null;
 
         for (Project p : db.projectList) {
@@ -298,7 +298,7 @@ public class Manager extends UserAccount {
         System.out.println("Project listing deleted successfully.");
     }
 
-    public void setVisibility(Scanner sc, Database db) {
+    public void setVisibility(Database db) {
         Project target = null;
         String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ",
                 s -> !s.isEmpty(),
@@ -363,9 +363,9 @@ public class Manager extends UserAccount {
         handledProject.viewProjectDetails();
     }
 
-    public void viewFilteredProjects(Scanner scanner, Database db) {
+    public void viewFilteredProjects(Database db) {
         if (!db.projectList.isEmpty()) {
-            db.projectList.get(0).displayProjectsWithFilters(scanner, db);
+            db.projectList.get(0).displayProjectsWithFilters(db);
         } else {
             System.out.println("No projects available.");
         }
@@ -403,7 +403,7 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void assignOfficerToProject(Scanner sc, Database db) {
+    public void assignOfficerToProject(Database db) {
         RegistrationForm registerForm = null;
         List<RegistrationForm> registerList = handledProject.getListOfRegisterForm();
 
@@ -490,7 +490,7 @@ public class Manager extends UserAccount {
         }
     }
 
-    public void manageApplicationForm(Scanner sc) {
+    public void manageApplicationForm() {
 
         ApplicationForm applyForm = null;
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
@@ -543,7 +543,7 @@ public class Manager extends UserAccount {
         return true;
     }
 
-    public void manageWithdrawalRequest(Scanner sc) {
+    public void manageWithdrawalRequest() {
 
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
         ApplicationForm targetForm = null;
@@ -602,7 +602,7 @@ public class Manager extends UserAccount {
         enqHandler.ReplyEnquiry();
     }
 
-    public void generateApplicantBookingReport(Database db, Scanner sc) {
+    public void generateApplicantBookingReport(Database db) {
         if (this.getHandledProject() == null) {
             System.out.println("You are not handling any project, so no report can be generated.");
             return;
@@ -612,20 +612,24 @@ public class Manager extends UserAccount {
 
         System.out.println("\n--- Applicant Flat Booking Report (Project: " + managerProjectName + ") ---");
 
-        System.out.print("Do you want to filter by marital status? (yes/no): ");
-        String filterMarital = sc.nextLine().trim().toLowerCase();
+        String filterMarital = InputValidation.getYesOrNo("Do you want to filter by marital status? (yes/no): ",
+                "Invalid input. Please enter 'yes' or 'no'.");
         String maritalStatusFilter = null;
         if (filterMarital.equals("yes")) {
             System.out.print("Enter marital status to filter (Single/Married): ");
-            maritalStatusFilter = sc.nextLine().trim();
+            maritalStatusFilter = InputValidation.getString("Enter marital status to filter(Single/Married): ",
+                    input -> input.equalsIgnoreCase("Single") || input.equalsIgnoreCase("Married"),
+                    "Please enter a valid marital status ('Single' or 'Married').");
         }
 
-        System.out.print("Do you want to filter by flat type? (yes/no): ");
-        String filterFlatType = sc.nextLine().trim().toLowerCase();
+        String filterFlatType = InputValidation.getYesOrNo("Do you want to filter by flat type? (yes/no): ",
+                "Invalid input. Please enter 'yes' or 'no'.");
         String flatTypeFilter = null;
         if (filterFlatType.equals("yes")) {
-            System.out.print("Enter flat type to filter (e.g., 2-Room, 3-Room): ");
-            flatTypeFilter = sc.nextLine().trim();
+            flatTypeFilter = InputValidation.getString(
+                    "Enter flat type to filter (2-Room / 3-Room): ",
+                    input -> input.equalsIgnoreCase("2-Room") || input.equalsIgnoreCase("3-Room"),
+                    "Invalid flat type. Please enter '2-Room' or '3-Room'.");
         }
 
         boolean found = false;

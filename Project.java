@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class Project {
     private String name;
@@ -225,26 +224,34 @@ public class Project {
         }
     }
 
-    public void displayProjectsWithFilters(Scanner scanner, Database db) {
+    public void displayProjectsWithFilters(Database db) {
         String answer = InputValidation.getYesOrNo("Would you like to filter by neighborhood (yes/no)?\n",
                 "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
-            System.out.println("Enter neighborhood:");
-            savedNeighborhoodFilter = scanner.nextLine();
+            savedNeighborhoodFilter = InputValidation.getString(
+                    "Enter neighborhood: ",
+                    input -> input != null && !input.trim().isEmpty(),
+                    "Neighborhood cannot be empty.");
         }
 
         answer = InputValidation.getYesOrNo("Would you like to filter by 2-Room flats availability (yes/no)?\n",
                 "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
-            System.out.println("Enter 'true' if filtering for projects with 2-Room flats, 'false' otherwise:");
-            savedType1Filter = Boolean.valueOf(scanner.nextLine());
+            String boolInput = InputValidation.getString(
+                    "Enter 'true' to filter for 2-Room availability, 'false' otherwise: ",
+                    input -> input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false"),
+                    "Please enter 'true' or 'false'.");
+            savedType1Filter = Boolean.parseBoolean(boolInput);
         }
 
         answer = InputValidation.getYesOrNo("Would you like to filter by 3-Room flats availability (yes/no)?\n",
                 "Please enter 'yes' or 'no'.");
         if (answer.equalsIgnoreCase("yes")) {
-            System.out.println("Enter 'true' if filtering for projects with 3-Room flats, 'false' otherwise:");
-            savedType2Filter = Boolean.valueOf(scanner.nextLine());
+            String boolInput2 = InputValidation.getString(
+                    "Enter 'true' to filter for projects with 3-Room flats, 'false' otherwise: ",
+                    input -> input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false"),
+                    "Please enter 'true' or 'false'.");
+            savedType2Filter = Boolean.parseBoolean(boolInput2);
         }
 
         List<Project> filteredProjects = new ArrayList<>();

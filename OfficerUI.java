@@ -1,17 +1,14 @@
 import java.util.Date;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 import java.util.Date;
 
 public class OfficerUI implements OfficerMenu {
     Officer officer = null;
     Database db = null;
-    Scanner scanner = new Scanner(System.in);
 
-    public OfficerUI(Officer officer, Database db, Scanner scanner) {
+    public OfficerUI(Officer officer, Database db) {
         this.officer = officer;
         this.db = db;
-        this.scanner = scanner;
     }
 
     public void logout() {
@@ -34,15 +31,9 @@ public class OfficerUI implements OfficerMenu {
             System.out.println("7. Logout\n");
             System.out.print("Choose an option: ");
 
-            try {
-                System.out.print("\nEnter your choice: ");
-                choice = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
-                continue;
-            }
+            choice = InputValidation.getInt("Enter your choice: ",
+                    input -> input >= 1 && input <= 7,
+                    "Please enter a number between 1 and 7.");
 
             switch (choice) {
                 case 1:
@@ -75,7 +66,7 @@ public class OfficerUI implements OfficerMenu {
 
     public void registerProjectAsOfficer() {
         System.out.println("Registering a new project as Officer...");
-        this.officer.registerToProject(this.scanner, this.db);
+        this.officer.registerToProject(this.db);
     }
 
     /*
@@ -133,7 +124,7 @@ public class OfficerUI implements OfficerMenu {
 
     public void handleFlatBook() {
         System.out.println("Handling flat booking process...");
-        this.officer.handleFlatBooking(this.scanner, this.db);
+        this.officer.handleFlatBooking(this.db);
     }
 
 }

@@ -1,21 +1,18 @@
 import java.util.Date;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class ManagerUI implements ManagerMenu {
     Manager manager = null;
     Database database = null;
-    Scanner scanner = null;
 
-    public ManagerUI(Manager manager, Database db, Scanner scanner) {
+    public ManagerUI(Manager manager, Database db) {
         this.manager = manager;
         this.database = db;
-        this.scanner = scanner;
     }
 
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, manager.getEnquiryHandler().getEnquiryList());
-  //    CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
+        // CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
@@ -47,15 +44,9 @@ public class ManagerUI implements ManagerMenu {
             System.out.println("12. View and Reply Enquiries.");
             System.out.println("13. Log out");
 
-            try {
-                System.out.print("\nEnter your choice: ");
-                choice = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
-                continue;
-            }
+            choice = InputValidation.getInt("Enter your choice: ",
+                    input -> input >= 1 && input <= 13,
+                    "Please enter a number between 1 and 13.");
 
             switch (choice) {
                 case 1:
@@ -107,22 +98,22 @@ public class ManagerUI implements ManagerMenu {
 
     public void addNewProjects() {
         System.out.println("Add new project to BTO listing...");
-        this.manager.createProjectListing(this.scanner, this.database);
+        this.manager.createProjectListing(this.database);
     }
 
     public void modifyExistingProjectDetails() {
         System.out.println("Modify existing project detail...");
-        this.manager.editProjectListing(this.scanner, this.database);
+        this.manager.editProjectListing(this.database);
     }
 
     public void removeProjectFromSystem() {
         System.out.println("Remove project from the system...");
-        this.manager.deleteProjectListing(this.scanner, this.database);
+        this.manager.deleteProjectListing(this.database);
     }
 
     public void toggleVisibility() {
         System.out.println("Toggle visibility...");
-        this.manager.setVisibility(this.scanner, this.database);
+        this.manager.setVisibility(this.database);
     }
 
     public void setTheHandledProject() {
@@ -139,8 +130,8 @@ public class ManagerUI implements ManagerMenu {
             Date openDate = project.getOpenDate();
             Date closeDate = project.getCloseDate();
             String visibility = project.getVisibility();
-            String projectManagerName = project.getManager(); 
-            String currentManagerName = this.manager.getName(); 
+            String projectManagerName = project.getManager();
+            String currentManagerName = this.manager.getName();
 
             // Check if the current date is within the application period and visibility is
             // "on"
@@ -149,7 +140,7 @@ public class ManagerUI implements ManagerMenu {
                     visibility.equalsIgnoreCase("on") &&
                     currentManagerName.equalsIgnoreCase(projectManagerName)) {
                 targetProject = project;
-                break; 
+                break;
             }
         }
 
@@ -176,7 +167,7 @@ public class ManagerUI implements ManagerMenu {
                 "Please enter 'yes' or 'no'.");
 
         if (answer.equalsIgnoreCase("yes")) {
-            this.manager.viewFilteredProjects(this.scanner, this.database);
+            this.manager.viewFilteredProjects(this.database);
         }
     }
 
@@ -196,7 +187,7 @@ public class ManagerUI implements ManagerMenu {
         if (!check) {
             return;
         }
-        this.manager.assignOfficerToProject(this.scanner, this.database);
+        this.manager.assignOfficerToProject(this.database);
     }
 
     public void manageBTOApplication() {
@@ -211,7 +202,7 @@ public class ManagerUI implements ManagerMenu {
         if (!check) {
             return;
         }
-        this.manager.manageApplicationForm(this.scanner);
+        this.manager.manageApplicationForm();
     }
 
     public void manageBTOWithdrawal() {
@@ -226,7 +217,7 @@ public class ManagerUI implements ManagerMenu {
         if (!check) {
             return;
         }
-        this.manager.manageWithdrawalRequest(this.scanner);
+        this.manager.manageWithdrawalRequest();
     }
 
     public void viewAllEnquiry() {
@@ -240,6 +231,6 @@ public class ManagerUI implements ManagerMenu {
     }
 
     public void generateReportFlatBooking() {
-        this.manager.generateApplicantBookingReport(this.database, this.scanner);
+        this.manager.generateApplicantBookingReport(this.database);
     }
 }

@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class Officer extends Applicant {
     private Project assignedProject = null;
@@ -35,8 +34,8 @@ public class Officer extends Applicant {
         this.currentBehavior = behavior;
     }
 
-    public void showMenu(Database db, Scanner scanner) {
-        this.currentBehavior.showMenu(this, db, scanner);
+    public void showMenu(Database db) {
+        this.currentBehavior.showMenu(this, db);
     }
 
     public void setEnqHandler(String projectName) {
@@ -59,9 +58,11 @@ public class Officer extends Applicant {
         return this.registrationForms;
     }
 
-    public void registerToProject(Scanner scanner, Database db) {
+    public void registerToProject(Database db) {
         System.out.print("Enter the project name you want to register : ");
-        String project = scanner.nextLine();
+        String project = InputValidation.getString("Enter the project name you want to register: ",
+                input -> !input.trim().isEmpty(),
+                "Project name cannot be empty");
         if (assignedProject != null && assignedProject.getName().equals(project)) {
             System.out.println("You are already handling this project as an officer.");
             return;
@@ -136,14 +137,16 @@ public class Officer extends Applicant {
         enqHandler.ReplyEnquiry();
     }
 
-    public void handleFlatBooking(Scanner scanner, Database db) {
+    public void handleFlatBooking(Database db) {
         if (assignedProject == null) {
             System.out.println("No project is currently assigned to you.");
             return;
         }
 
-        System.out.print("Enter applicant NRIC: ");
-        String applicantNRIC = scanner.nextLine().trim();
+        String applicantNRIC = InputValidation.getString(
+                "Enter applicant NRIC: ",
+                input -> !input.trim().isEmpty(),
+                "NRIC cannot be empty.");
 
         ApplicationForm targetApplication = null;
         for (ApplicationForm app : assignedProject.getListOfApplyForm()) {
@@ -160,7 +163,9 @@ public class Officer extends Applicant {
         }
 
         System.out.print("Enter flat type to book (2-Room / 3-Room): ");
-        String flatType = scanner.nextLine().trim();
+        String flatType = InputValidation.getString("Enter flat type to book (2-Room / 3-Room): ",
+                input -> !input.trim().isEmpty(),
+                "Flat type cannot be empty");
 
         if (flatType.equalsIgnoreCase("2-Room")) {
             if (assignedProject.getNumType1() <= 0) {
