@@ -10,7 +10,7 @@ public class ProjectHandler {
 
     public Project getProject(String name) {
         for (Project project : projectList) {
-            if (project.getName().equals(name)) {
+            if (project.getName().equalsIgnoreCase(name)) {
                 return project;
             }
         }

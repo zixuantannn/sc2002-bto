@@ -6,28 +6,28 @@ public class EnquiryHandler {
     public static final String FILTER_BY_NRIC = "by_nric";
     public static final String FILTER_BY_PROJECT = "by_project_name";
 
-    private List<Enquiry> allEnquries;
+    private List<Enquiry> allEnquiries;
 
     public EnquiryHandler(String filter, List<Enquiry> enquiryList, String filterType) {
-        this.allEnquries = new ArrayList<>();
+        this.allEnquiries = new ArrayList<>();
         for (Enquiry enquiry : Database.enquiryList) {
             if (filterType.equals(FILTER_BY_NRIC) && enquiry.getNRIC().equalsIgnoreCase(filter)) {
-                this.allEnquries.add(enquiry);
+                this.allEnquiries.add(enquiry);
             } else if (filterType.equals(FILTER_BY_PROJECT) && enquiry.getProjectName().equalsIgnoreCase(filter)) {
-                this.allEnquries.add(enquiry);
+                this.allEnquiries.add(enquiry);
             }
         }
 
     }
 
     public EnquiryHandler(List<Enquiry> enquiryList) {
-        this.allEnquries = enquiryList;
+        this.allEnquiries = enquiryList;
     }
 
     // project enquiries
     public void createEnquiry(String nric, String content, String projectName) {
         Enquiry newEnquiry = new Enquiry(nric, content, projectName);
-        allEnquries.add(newEnquiry);
+        allEnquiries.add(newEnquiry);
         Database.enquiryList.add(newEnquiry);
         System.out.println("New Enquiry submitted.");
 
@@ -36,7 +36,7 @@ public class EnquiryHandler {
     // general enquiries
     public void createEnquiry(String nric, String content) {
         Enquiry newEnquiry = new Enquiry(nric, content);
-        allEnquries.add(newEnquiry);
+        allEnquiries.add(newEnquiry);
         // CSVWriter.submitEnquiry(newEnquiry, "EnquiryList.csv");
         Database.enquiryList.add(newEnquiry);
         System.out.println("New Enquiry submitted.");
@@ -44,12 +44,12 @@ public class EnquiryHandler {
     }
 
     public List<Enquiry> getEnquiryList() {
-        return this.allEnquries;
+        return this.allEnquiries;
     }
 
     public void displayMyEnquiries() {
-        if (!allEnquries.isEmpty()) {
-            for (Enquiry each : allEnquries) {
+        if (!allEnquiries.isEmpty()) {
+            for (Enquiry each : allEnquiries) {
                 each.viewDetails();
             }
         } else {
@@ -59,7 +59,7 @@ public class EnquiryHandler {
     }
 
     public void modifyEnquiry() {
-        if (allEnquries.isEmpty()) {
+        if (allEnquiries.isEmpty()) {
             System.out.println("You have no enquiries to edit.");
             return;
         }
@@ -70,7 +70,7 @@ public class EnquiryHandler {
                 "Enquiry ID must be a positive integer.");
 
         boolean found = false;
-        for (Enquiry enquiry : allEnquries) {
+        for (Enquiry enquiry : allEnquiries) {
             if (enquiry.getID() == id) {
                 found = true;
                 if (enquiry.getResponse() == null) { // Enquiry have not been answered
@@ -92,8 +92,8 @@ public class EnquiryHandler {
 
     }
 
-    public void removeEnquriy() {
-        if (allEnquries.isEmpty()) {
+    public void removeEnquiry() {
+        if (allEnquiries.isEmpty()) {
             System.out.println("You have no enquiries to edit.");
             return;
         }
@@ -105,8 +105,8 @@ public class EnquiryHandler {
                 "Please enter the Enquiry ID to delete: ", input -> input > 0,
                 "Enquiry ID must be a positive integer.");
 
-        boolean found = false;
         Enquiry enquiryToRemove = findEnquiryByID(id);
+
         if (enquiryToRemove != null) {
             if (enquiryToRemove.getResponse() == null) {
                 System.out.println("Chosen Enquiry: \nEnquiry ID:" + enquiryToRemove.getID() + " | Content: "
@@ -116,7 +116,7 @@ public class EnquiryHandler {
                         "Please enter 'yes' or 'no'. ");
 
                 if (choice.equals("yes")) {
-                    allEnquries.remove(enquiryToRemove);
+                    allEnquiries.remove(enquiryToRemove);
                     Database.enquiryList.remove(enquiryToRemove);
                     System.out.println("Enquiry have been removed.");
                 } else {
@@ -131,15 +131,15 @@ public class EnquiryHandler {
         }
     }
 
-    public static void syncEnquiriesOnLogout(List<Enquiry> allEnquries, List<Enquiry> filteredList) {
+    public static void syncEnquiriesOnLogout(List<Enquiry> allEnquiries, List<Enquiry> filteredList) {
         if (filteredList == null || filteredList.isEmpty()) {
             return;
         }
         for (Enquiry updated : filteredList) {
-            for (int i = 0; i < allEnquries.size(); i++) {
-                Enquiry original = allEnquries.get(i);
+            for (int i = 0; i < allEnquiries.size(); i++) {
+                Enquiry original = allEnquiries.get(i);
                 if (original.getID() == updated.getID()) {
-                    allEnquries.set(i, updated);
+                    allEnquiries.set(i, updated);
                     break;
                 }
             }
@@ -147,7 +147,7 @@ public class EnquiryHandler {
     }
 
     public Enquiry findEnquiryByID(int id) {
-        for (Enquiry each : allEnquries) {
+        for (Enquiry each : allEnquiries) {
             if (each.getID() == id) {
                 return each;
             }
@@ -170,7 +170,7 @@ public class EnquiryHandler {
         List<Enquiry> projectEnquiries = new ArrayList<>();
 
         // Filter enquiries by project name
-        for (Enquiry enquiry : allEnquries) {
+        for (Enquiry enquiry : allEnquiries) {
             if (enquiry.getProjectName().equalsIgnoreCase(projectName)) {
                 projectEnquiries.add(enquiry);
             }
@@ -180,7 +180,7 @@ public class EnquiryHandler {
 
     public void ReplyEnquiry() {
         Enquiry chosen = null;
-        List<Enquiry> enqList = this.allEnquries;
+        List<Enquiry> enqList = this.allEnquiries;
         if (enqList == null || enqList.isEmpty()) {
             System.out.println("There are no enquiries to reply to.");
             return;
@@ -232,7 +232,7 @@ public class EnquiryHandler {
     }
 
     public void viewProjectEnquiries() {
-        for (Enquiry enquiry : allEnquries) {
+        for (Enquiry enquiry : allEnquiries) {
             enquiry.viewDetails();
         }
     }

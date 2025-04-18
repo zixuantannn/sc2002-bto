@@ -108,7 +108,8 @@ public class Applicant extends UserAccount {
             // Project-related enquiry
             List<Project> availableProjects = applicantProjHandler.filterAvailableProject(db, this);
             if (availableProjects.isEmpty()) {
-                System.out.println("No available projects to make an enquiry about.");
+                System.out.println(
+                        "No available projects to make an enquiry about. You may make a general enquiry instead.");
                 return;
             }
 
@@ -133,7 +134,7 @@ public class Applicant extends UserAccount {
     }
 
     public void removeEnquiry() {
-        enqHandler.removeEnquriy();
+        enqHandler.removeEnquiry();
 
     }
 
