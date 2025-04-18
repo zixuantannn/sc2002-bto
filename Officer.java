@@ -128,6 +128,11 @@ public class Officer extends Applicant {
     }
 
     public void viewAndReplyEnquiries() {
+        if (assignedProject == null) {
+            System.out.println("No project assigned. Cannot view or reply to project enquiries.");
+            return;
+        }
+        enqHandler.reloadFilteredEnquiries(Database.enquiryList, assignedProject.getName());
         enqHandler.ReplyEnquiry();
     }
 

@@ -1,27 +1,42 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class EnquiryHandler {
     public static final String FILTER_BY_NRIC = "by_nric";
     public static final String FILTER_BY_PROJECT = "by_project_name";
 
     private List<Enquiry> allEnquiries;
+    private String filterCriteria = null;
 
     public EnquiryHandler(String filter, List<Enquiry> enquiryList, String filterType) {
-        this.allEnquiries = new ArrayList<>();
-        for (Enquiry enquiry : Database.enquiryList) {
-            if (filterType.equals(FILTER_BY_NRIC) && enquiry.getNRIC().equalsIgnoreCase(filter)) {
-                this.allEnquiries.add(enquiry);
-            } else if (filterType.equals(FILTER_BY_PROJECT) && enquiry.getProjectName().equalsIgnoreCase(filter)) {
-                this.allEnquiries.add(enquiry);
-            }
-        }
+
+        this.filterCriteria = filterType;
+        this.allEnquiries = filterEnquiries(enquiryList, filterType, filter);
 
     }
 
     public EnquiryHandler(List<Enquiry> enquiryList) {
         this.allEnquiries = enquiryList;
+    }
+
+    private List<Enquiry> filterEnquiries(List<Enquiry> allEnquiries, String filterCriteria, String filterValue) {
+        if (filterCriteria.equals(FILTER_BY_NRIC)) {
+            return allEnquiries.stream().filter(enquiry -> enquiry.getNRIC().equalsIgnoreCase(filterValue))
+                    .collect(Collectors.toList());
+        } else if (filterCriteria.equals(FILTER_BY_PROJECT)) {
+            return allEnquiries.stream()
+                    .filter(enquiry -> enquiry.getProjectName() != null
+                            && enquiry.getProjectName().equalsIgnoreCase(filterValue))
+                    .collect(Collectors.toList());
+
+        } else
+            return new ArrayList<>();
+    }
+
+    public void reloadFilteredEnquiries(List<Enquiry> allEnquiries, String filterValue) {
+        this.allEnquiries = filterEnquiries(allEnquiries, filterCriteria, filterValue);
     }
 
     // project enquiries
@@ -131,21 +146,6 @@ public class EnquiryHandler {
         }
     }
 
-    public static void syncEnquiriesOnLogout(List<Enquiry> allEnquiries, List<Enquiry> filteredList) {
-        if (filteredList == null || filteredList.isEmpty()) {
-            return;
-        }
-        for (Enquiry updated : filteredList) {
-            for (int i = 0; i < allEnquiries.size(); i++) {
-                Enquiry original = allEnquiries.get(i);
-                if (original.getID() == updated.getID()) {
-                    allEnquiries.set(i, updated);
-                    break;
-                }
-            }
-        }
-    }
-
     public Enquiry findEnquiryByID(int id) {
         for (Enquiry each : allEnquiries) {
             if (each.getID() == id) {
@@ -234,6 +234,21 @@ public class EnquiryHandler {
     public void viewProjectEnquiries() {
         for (Enquiry enquiry : allEnquiries) {
             enquiry.viewDetails();
+        }
+    }
+
+    public static void syncEnquiriesOnLogout(List<Enquiry> allEnquiries, List<Enquiry> filteredList) {
+        if (filteredList == null || filteredList.isEmpty()) {
+            return;
+        }
+        for (Enquiry updated : filteredList) {
+            for (int i = 0; i < allEnquiries.size(); i++) {
+                Enquiry original = allEnquiries.get(i);
+                if (original.getID() == updated.getID()) {
+                    allEnquiries.set(i, updated);
+                    break;
+                }
+            }
         }
     }
 
