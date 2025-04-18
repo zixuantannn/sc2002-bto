@@ -32,8 +32,8 @@ public class OfficerUI implements OfficerMenu {
             System.out.println("8. Logout\n");
 
             choice = InputValidation.getInt("Choose an option: ",
-                    input -> input >= 1 && input <= 7,
-                    "Please enter a number between 1 and 7.");
+                    input -> input >= 1 && input <= 8,
+                    "Please enter a number between 1 and 8.");
 
             switch (choice) {
                 case 1:
@@ -63,7 +63,7 @@ public class OfficerUI implements OfficerMenu {
                 default:
                     System.out.println("Invalid choice! Please choose a valid option.");
             }
-        } while (choice != 7);
+        } while (choice != 8);
         System.out.println("\n");
     }
 
