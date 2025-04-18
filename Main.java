@@ -67,45 +67,46 @@ public class Main {
 
             System.out.println();
 
+            Scanner scanner = new Scanner(System.in); 
+
             switch (choice) {
                 case 1:
                     printRoleMenu();
                     int roleChoice = InputValidation.getInt("Enter your role (1-3): ",
                             i -> i >= 1 && i <= 3,
                             "Please enter a valid role number (1-3).");
-
-                    String role = getRoleFromChoice(roleChoice);
-
+            
+                    String roleStr = getRoleFromChoice(roleChoice);
+            
                     String inputNRIC = InputValidation.getString("Enter your NRIC: ",
                             s -> !s.trim().isEmpty(),
                             "NRIC cannot be empty.");
-
-                    UserAccount user = Login.authenticate(db, inputNRIC, role, new Scanner(System.in));
-
-                    if (user instanceof Officer) {
-                        Officer officer = (Officer) user;
-                        officer.setBehavior(new OfficerBehavior());
-
-                        while (true) {
-                            System.out.println("1. Continue as Officer");
-                            System.out.println("2. Switch to Applicant Mode");
-                            int r = InputValidation.getInt("Choose your role mode: ", i -> i == 1 || i == 2,
-                                    "1 or 2 only!");
-
-                            if (r == 1) {
-                                officer.setBehavior(new OfficerBehavior());
-                            } else {
-                                officer.setBehavior(new ApplicantBehavior());
-                            }
-
-                            officer.showMenu(db, new Scanner(System.in));
-                            officer.setBehavior(new OfficerBehavior());
-                            break;
-                        }
-                    } else if (user instanceof Applicant) {
-                        new ApplicantUI((Applicant) user, db, new Scanner(System.in)).displayMenu();
-                    } else if (user instanceof Manager) {
-                        new ManagerUI((Manager) user, db, new Scanner(System.in)).displayMenu();
+            
+                    UserAccount user = Login.authenticate(db, inputNRIC, roleStr, scanner);
+            
+                    CommonMenu menu = null;
+            
+                    if (user instanceof Officer officer) {
+                        System.out.println("1. Continue as Officer");
+                        System.out.println("2. Switch to Applicant Mode");
+            
+                        int officerMode = InputValidation.getInt("Choose your role mode: ",
+                                    i -> i == 1 || i == 2, "Only 1 or 2 allowed");
+            
+                        menu = (officerMode == 1)
+                                ? new OfficerUI(officer, db, scanner)
+                                : new ApplicantUI(officer, db, scanner);
+            
+                    } else if (user instanceof Applicant applicant) {
+                        menu = new ApplicantUI(applicant, db, scanner);
+            
+                    } else if (user instanceof Manager manager) {
+                        menu = new ManagerUI(manager, db, scanner);
+                    }
+            
+                    if (menu != null) {
+                        UserMenuHandler handler = new UserMenuHandler(menu);  
+                        handler.show(); 
                     }
                     break;
 
