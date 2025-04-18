@@ -10,6 +10,7 @@ public class Applicant extends UserAccount {
     private ApplicationForm applyForm = null;
     private EnquiryHandler enqHandler;
     private ApplicantProjectHandler applicantProjHandler;
+    private FlatBooking flatBooking;
 
     private List<ApplicationForm> projectApplied;
 
@@ -50,6 +51,14 @@ public class Applicant extends UserAccount {
 
     public void setAvailability() {
         this.appliedForProject = true;
+    }
+
+    public FlatBooking getFlatBooking() {
+        return flatBooking;
+    }
+
+    public void setFlatBooking(FlatBooking flatBooking) {
+        this.flatBooking = flatBooking;
     }
 
     public void resetAvailablilty() {
