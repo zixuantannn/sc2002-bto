@@ -220,4 +220,23 @@ public class Officer extends Applicant {
         flatBooking.viewFlatBookingDetails();
     }
 
+    public void viewApplicationsInHandledProject() {
+        if (assignedProject == null) {
+            System.out.println("You are not assigned to any project.");
+            return;
+        }
+    
+        List<ApplicationForm> applicationList = assignedProject.getListOfApplyForm();
+        if (applicationList.isEmpty()) {
+            System.out.println("No application forms have been submitted for this project.");
+            return;
+        }
+    
+        System.out.println("=== Application Forms for Project: " + assignedProject.getName() + " ===");
+        for (ApplicationForm app : applicationList) {
+            app.viewDetails();
+        }
+    }
+
+
 }
