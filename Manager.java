@@ -597,10 +597,10 @@ public class Manager extends UserAccount {
                         break; // found the project, no need to continue loop
                     }
                 }
-            }            
+            }
             targetForm.updateStatus("Pending");
             ap.resetAvailablilty();
-            ap.setApplyForm(null);
+            ap.getApplyForm().updateStatus("Unsuccessful");
             applyList.remove(targetForm);
             System.out.println(" Withdrawal request approved. Application removed.");
         } else {
