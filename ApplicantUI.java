@@ -80,7 +80,7 @@ public class ApplicantUI implements ApplicantMenu {
                 default:
                     System.out.println("Invalid choice! Please choose a valid option.");
             }
-        } while (choice != 11);
+        } while (choice != 12);
         System.out.println("\n");
     }
 
