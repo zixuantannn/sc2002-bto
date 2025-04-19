@@ -148,13 +148,17 @@ public class Applicant extends UserAccount {
     }
 
     public void viewTheFlatBooking(Database database) {
+        boolean found = false;
         for (FlatBooking booking : database.flatBookingList) {
             if (booking.getApplicantNRIC().equals(this.getNRIC())) {
                 booking.viewFlatBookingDetails();
+                found = true;
+                break;
             }
-            return;
         }
-        System.out.println("You have no flat booking!");
+        if (!found) {
+            System.out.println("You have no flat booking!\n");
+        }
     }
 
     public void viewAllApplicationForms() {
