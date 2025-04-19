@@ -50,7 +50,7 @@ public class Login {
                 System.out.println("You are using a default password.");
                 String answer = InputValidation.getYesOrNo("Do you want to change password (yes/no)?\n",
                         "Please enter 'yes' or 'no'.");
-
+            
                 if (answer.equalsIgnoreCase("yes")) {
                     // Prompt user for a new strong password
                     String newPassword = InputValidation.getStrongPassword("Enter your new strong password: ",
@@ -58,6 +58,8 @@ public class Login {
                     if (newPassword != null) {
                         user.changePassword(newPassword); // Change the password if it's strong
                         System.out.println("Password changed successfully.");
+                        System.out.println("Please login again with your new password.\n");
+                        return null; // Forces relogin
                     }
                 }
             }
