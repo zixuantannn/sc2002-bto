@@ -599,7 +599,6 @@ public class Manager extends UserAccount {
                     }
                 }
             }
-            targetForm.updateStatus("Pending");
             ap.resetAvailablilty();
             ap.getApplyForm().updateStatus("Unsuccessful");
             applyList.remove(targetForm);
