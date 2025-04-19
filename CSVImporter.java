@@ -282,5 +282,30 @@ public class CSVImporter {
             e.printStackTrace();
         }
     }
-
+    public static void importApplicationHistory(String filepath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            br.readLine(); // skip header
+    
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(",");
+                if (tokens.length < 7) continue;
+    
+                int applicationID = Integer.parseInt(tokens[0].trim());
+                String applicantName = tokens[1].trim();
+                String nric = tokens[2].trim();
+                int age = Integer.parseInt(tokens[3].trim());
+                String maritalStatus = tokens[4].trim();
+                String projectName = tokens[5].trim();
+                String status = tokens[6].trim();
+    
+                Applicant dummyApplicant = new Applicant(applicantName, nric, age, maritalStatus);
+                ApplicationForm form = new ApplicationForm(applicationID, dummyApplicant, projectName, status);
+                Database.applicationHistory.add(form);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading application history from file.");
+            e.printStackTrace();
+        }
+    }
 }
