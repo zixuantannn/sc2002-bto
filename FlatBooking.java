@@ -122,7 +122,7 @@ public class FlatBooking {
         System.out.printf("| %-20s: %-28s |\n", "Project Name", projectName);
         System.out.printf("| %-20s: %-28s |\n", "Neighborhood", neighborhood);
         System.out.printf("| %-20s: %-28s |\n", "Flat Type", flatType);
-        System.out.printf("| %-20s: %-28s |\n", "Selling Price", sellPrice);
+        System.out.printf("| %-20s: $%-27s |\n", "Selling Price", sellPrice);
         System.out.println(line);
     }
 
