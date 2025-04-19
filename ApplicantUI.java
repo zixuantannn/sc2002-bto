@@ -23,15 +23,16 @@ public class ApplicantUI implements ApplicantMenu {
             System.out.println("\n--- Applicant Menu ---");
             System.out.println("1. View All Available Projects");
             System.out.println("2. Apply for BTO Project");
-            System.out.println("3. View Application Status");
-            System.out.println("4. View the Applied Project");
-            System.out.println("5. Withdrawal Apply Form");
-            System.out.println("6. Submit Enquiry");
-            System.out.println("7. Display All Enquiries");
-            System.out.println("8. Edit Enquiries");
-            System.out.println("9. Remove Enquiry");
-            System.out.println("10. View your Flat Booking.");
-            System.out.println("11. Logout\n");
+            System.out.println("3. View All Application Forms (Latest and History)");
+            System.out.println("4. View Application Status");
+            System.out.println("5. View the Applied Project");
+            System.out.println("6. Withdrawal Apply Form");
+            System.out.println("7. Submit Enquiry");
+            System.out.println("8. Display All Enquiries");
+            System.out.println("9. Edit Enquiries");
+            System.out.println("10. Remove Enquiry");
+            System.out.println("11. View your Flat Booking.");
+            System.out.println("12. Logout\n");
 
             choice = InputValidation.getInt("Choose an option: ",
                     input -> input >= 1 && input <= 11,
