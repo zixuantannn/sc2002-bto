@@ -109,8 +109,8 @@ public class ApplicantProjectHandler extends ProjectHandler {
     }
 
     public void withdrawalApplication(Applicant ap) {
-        // If there are no projects
-        if (ap.getApplyForm() == null) {
+        // If there are no current project
+        if (!ap.getAvailability()) {
             System.out.println("You have not applied for any project. ");
 
         } else {
