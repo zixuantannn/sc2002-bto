@@ -340,5 +340,25 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
-
+    public static void saveApplicationHistory(String filePath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, false))) {
+            bw.write("ApplicationID,ApplicantName,NRIC,Age,MaritalStatus,AppliedProject,Status");
+            bw.newLine();
+            for (ApplicationForm form : Database.applicationHistory) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(form.getApplicationID()).append(",");
+                sb.append(form.getApplicantName()).append(",");
+                sb.append(form.getApplicantNRIC()).append(",");
+                sb.append(form.getApplicant().getAge()).append(",");
+                sb.append(form.getApplicant().getMaritalStatus()).append(",");
+                sb.append(form.getAppliedProjectName()).append(",");
+                sb.append(form.getApplicationStatus());
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing application history to file.");
+            e.printStackTrace();
+        }
+    }
 }
