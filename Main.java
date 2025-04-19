@@ -10,6 +10,7 @@ public class Main {
         CSVImporter.importOfficers(db, "OfficerList.csv");
         CSVImporter.importProjects(db, "ProjectList.csv");
         CSVImporter.importFlatBookings(db, "FlatBookingList.csv");
+        CSVImporter.importApplicationHistory("applicationHistory.csv");
 
         // Display loading confirmation
         System.out.println("Data loaded successfully.");
@@ -119,6 +120,7 @@ public class Main {
                     CSVWriter.saveOfficers(db.officerList, "OfficerList.csv");
                     CSVWriter.saveManagers(db.managerList, "ManagerList.csv");
                     CSVWriter.saveFlatBookings(db.flatBookingList, "FlatBookingList.csv");
+                    CSVWriter.saveApplicationHistory("applicationHistory.csv");
                     CSVWriter.saveEnquirieToCSV(db.enquiryList, "EnquiryList.csv");
 
                     System.out.println("All data saved. Goodbye!");
