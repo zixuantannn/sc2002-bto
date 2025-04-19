@@ -57,16 +57,6 @@ public class Login {
                             "Password must be at least 8 characters long and contain letters and digits.");
                     if (newPassword != null) {
                         user.changePassword(newPassword); // Change the password if it's strong
-
-                        if (user instanceof Officer) {
-                            CSVWriter.updatePassword("OfficerList.csv", db, user);
-                        } else if (user instanceof Applicant) {
-                            CSVWriter.updatePassword("ApplicantList.csv", db, user);
-
-                        } else if (user instanceof Manager) {
-                            CSVWriter.updatePassword("ManagerList.csv", db, user);
-                        }
-
                         System.out.println("Password changed successfully.");
                     }
                 }
