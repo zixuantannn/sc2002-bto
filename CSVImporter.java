@@ -18,8 +18,10 @@ public class CSVImporter {
                 String nric = tokens[1].trim();
                 int age = Integer.parseInt(tokens[2].trim());
                 String maritalStatus = tokens[3].trim();
-                String password = tokens[4].trim();
-
+                //String password = tokens[4].trim();
+                String encryptedPassword = tokens[4].trim();
+                String password = AESUtils.decrypt(encryptedPassword); // << EDITED
+                
                 Applicant applicant = new Applicant(name, nric, age, maritalStatus, password);
 
                 // ApplicationForm
@@ -72,7 +74,9 @@ public class CSVImporter {
                 String nric = tokens[1];
                 int age = Integer.parseInt(tokens[2]);
                 String maritalStatus = tokens[3];
-                String password = tokens.length > 4 ? tokens[4] : "";
+                //String password = tokens.length > 4 ? tokens[4] : "";
+                String encryptedPassword = tokens[4].trim();
+                String password = AESUtils.decrypt(encryptedPassword); // << EDITED
 
                 Manager manager = new Manager(name, nric, age, maritalStatus, password);
                 db.managerList.add(manager);
@@ -94,7 +98,10 @@ public class CSVImporter {
                 String nric = tokens[1].trim();
                 int age = Integer.parseInt(tokens[2].trim());
                 String maritalStatus = tokens[3].trim();
-                String password = tokens.length > 4 ? tokens[4].trim() : "";
+                //String password = tokens.length > 4 ? tokens[4].trim() : "";
+                String encryptedPassword = tokens[4].trim();
+                String password = AESUtils.decrypt(encryptedPassword); // << EDITED
+
 
                 Officer officer = new Officer(name, nric, age, maritalStatus, password);
 
