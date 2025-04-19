@@ -195,7 +195,7 @@ public class Officer extends Applicant {
         }
 
         targetApplication.updateStatus("Booked");
-
+        Database.applicationHistory.add(targetApplication);
         Applicant applicant = null;
         for (Applicant a : db.applicantList) {
             if (a.getNRIC().equalsIgnoreCase(applicantNRIC)) {
