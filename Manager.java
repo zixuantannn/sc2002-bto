@@ -599,6 +599,12 @@ public class Manager extends UserAccount {
                     }
                 }
             }
+            String applicantNRIC = ap.getNRIC();
+            String managerProject = this.getHandledProject().getName();
+            Database.flatBookingList.removeIf(booking -> 
+            booking.getApplicantNRIC().equalsIgnoreCase(applicantNRIC)
+            && booking.getProjectName().equalsIgnoreCase(managerProject)
+        );
             ap.resetAvailablilty();
             ap.getApplyForm().updateStatus("Unsuccessful");
             applyList.remove(targetForm);
