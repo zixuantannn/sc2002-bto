@@ -1,11 +1,10 @@
-import java.io.BufferedWriter;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CSVWriter {
@@ -178,69 +177,6 @@ public class CSVWriter {
         }
     }
 
-    public static void updatePassword(String filepath, Database db, UserAccount user) {
-
-        List<?> userList = null;
-
-        if (user instanceof Officer) {
-            userList = db.officerList;
-        } else if (user instanceof Applicant) {
-            userList = db.applicantList;
-        } else if (user instanceof Manager) {
-            userList = db.managerList;
-        }
-
-        // Find the user and update the password
-        boolean userFound = false;
-        if (userList != null) {
-            for (Object currentUser : userList) {
-                if (currentUser instanceof UserAccount) {
-                    UserAccount currentUserAccount = (UserAccount) currentUser;
-                    if (currentUserAccount.getNRIC().equals(user.getNRIC())) {
-                        userFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!userFound) {
-                System.out.println("NRIC not found in CSV file.");
-                return;
-            }
-
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
-                bw.write("Name,NRIC,Age,Marital Status,Password");
-                bw.newLine();
-
-                // Write all updated users back into the CSV file
-                if (userList instanceof List<?>) {
-                    for (Object currentUser : userList) {
-                        if (currentUser instanceof UserAccount) {
-                            UserAccount currentUserAccount = (UserAccount) currentUser;
-                            StringBuilder sb = new StringBuilder();
-                            sb.append(currentUserAccount.getName()).append(",");
-                            sb.append(currentUserAccount.getNRIC()).append(",");
-                            sb.append(currentUserAccount.getAge()).append(",");
-                            sb.append(currentUserAccount.getMaritalStatus()).append(",");
-                            sb.append(currentUserAccount.getPassword()).append(",");
-
-                            bw.write(sb.toString());
-                            bw.newLine();
-                        }
-                    }
-                }
-
-                bw.close();
-                System.out.println("Password saved to CSV file.");
-
-            } catch (IOException e) {
-                System.out.println("Error reading or writing CSV file.");
-                e.printStackTrace();
-            }
-        }
-
-    }
-
     public static void saveApplicants(List<Applicant> applicants, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write("Name,NRIC,Age,MaritalStatus,Password,ApplicationID,AppliedProject,RegistrationStatus");
@@ -252,7 +188,9 @@ public class CSVWriter {
                 sb.append(a.getNRIC()).append(",");
                 sb.append(a.getAge()).append(",");
                 sb.append(a.getMaritalStatus()).append(",");
-                sb.append(a.getPassword()).append(",");
+               // sb.append(a.getPassword()).append(",");
+               sb.append(AESUtils.encrypt(a.getPassword())).append(","); // << EDITED
+
 
                 ApplicationForm form = a.getApplyForm();
                 if (form != null) {
@@ -282,7 +220,9 @@ public class CSVWriter {
                 sb.append(o.getNRIC()).append(",");
                 sb.append(o.getAge()).append(",");
                 sb.append(o.getMaritalStatus()).append(",");
-                sb.append(o.getPassword()).append(",");
+                //sb.append(o.getPassword()).append(",");
+                sb.append(AESUtils.encrypt(o.getPassword())).append(","); // << EDITED
+
 
                 RegistrationForm reg = o.getRegistrationForms().isEmpty() ? null : o.getRegistrationForms().get(0);
                 if (reg != null) {
@@ -314,8 +254,13 @@ public class CSVWriter {
             bw.write("Name,NRIC,Age,MaritalStatus,Password");
             bw.newLine();
             for (Manager m : managers) {
-                bw.write(m.getName() + "," + m.getNRIC() + "," + m.getAge() + "," +
-                        m.getMaritalStatus() + "," + m.getPassword());
+                StringBuilder sb = new StringBuilder();
+                sb.append(m.getName()).append(",");
+                sb.append(m.getNRIC()).append(",");
+                sb.append(m.getAge()).append(",");
+                sb.append(m.getMaritalStatus()).append(",");
+                sb.append(AESUtils.encrypt(m.getPassword())); // << EDITED
+                bw.write(sb.toString());
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -323,6 +268,7 @@ public class CSVWriter {
             e.printStackTrace();
         }
     }
+    
 
     public static void saveFlatBookings(List<FlatBooking> bookings, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
