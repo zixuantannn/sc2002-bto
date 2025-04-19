@@ -157,4 +157,29 @@ public class Applicant extends UserAccount {
         System.out.println("You have no flat booking!");
     }
 
+    public void viewAllApplicationForms() {
+        boolean hasAny = false;
+        System.out.println("=== Your Latest Application Form (if any) ===");
+        if (this.getApplyForm() != null) {
+            this.getApplyForm().viewDetails();
+            hasAny = true;
+        } else {
+            System.out.println("You do not have any active application form.");
+        }
+
+        String viewHistory = InputValidation.getYesOrNo("\nWould you like to view your application history? (yes/no): ", "Please enter 'yes' or 'no'.");
+        if (viewHistory.equalsIgnoreCase("yes")) {
+            System.out.println("\n=== Your Application History ===");
+            for (ApplicationForm form : Database.applicationHistory) {
+                if (form.getApplicantNRIC().equals(this.getNRIC())) {
+                    form.viewDetails();
+                    hasAny = true;
+                }
+            }
+        }
+
+        if (!hasAny) {
+            System.out.println("You have no application form records to display.\n");
+        }
+    }
 }
