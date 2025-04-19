@@ -34,7 +34,8 @@ public class ApplicantProjectHandler extends ProjectHandler {
 
         if (filteredProjects.isEmpty()) {
             System.out.println("No projects available.");
-        } else {
+            return;
+        } else { // check for project with visibility on
             boolean check = false;
             for (Project project : filteredProjects) {
                 if (project.getVisibility().equals("on")) {
