@@ -81,6 +81,11 @@ public class Main {
                             "NRIC cannot be empty.");
 
                     UserAccount user = Login.authenticate(db, inputNRIC, roleStr);
+                    
+                    if (user == null) {
+                        System.out.println("Redirecting to login...\n");
+                        continue; // Go back to role selection
+                    }
 
                     CommonMenu menu = null;
 
