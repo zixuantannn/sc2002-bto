@@ -14,7 +14,7 @@ public class Officer extends Applicant {
             this.enqHandler = new EnquiryHandler(assignedProject.getName(), Database.enquiryList,
                     EnquiryHandler.FILTER_BY_PROJECT);
         } else {
-            this.enqHandler = new EnquiryHandler(null);
+            this.enqHandler = new EnquiryHandler(null, EnquiryHandler.FILTER_BY_PROJECT);
         }
         this.currentBehavior = new OfficerBehavior();
     }
@@ -25,7 +25,7 @@ public class Officer extends Applicant {
             this.enqHandler = new EnquiryHandler(assignedProject.getName(), Database.enquiryList,
                     EnquiryHandler.FILTER_BY_PROJECT);
         } else {
-            this.enqHandler = new EnquiryHandler(null);
+            this.enqHandler = new EnquiryHandler(null, EnquiryHandler.FILTER_BY_PROJECT);
         }
         this.currentBehavior = new OfficerBehavior();
     }
@@ -226,18 +226,17 @@ public class Officer extends Applicant {
             System.out.println("You are not assigned to any project.");
             return;
         }
-    
+
         List<ApplicationForm> applicationList = assignedProject.getListOfApplyForm();
         if (applicationList.isEmpty()) {
             System.out.println("No application forms have been submitted for this project.");
             return;
         }
-    
+
         System.out.println("=== Application Forms for Project: " + assignedProject.getName() + " ===");
         for (ApplicationForm app : applicationList) {
             app.viewDetails();
         }
     }
-
 
 }

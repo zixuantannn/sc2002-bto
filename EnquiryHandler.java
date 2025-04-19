@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 public class EnquiryHandler {
     public static final String FILTER_BY_NRIC = "by_nric";
     public static final String FILTER_BY_PROJECT = "by_project_name";
+    public static final String FILTER_BY_MANAGER = "by_manager";
 
     private List<Enquiry> allEnquiries;
     private String filterCriteria = null;
@@ -16,20 +17,35 @@ public class EnquiryHandler {
 
     }
 
-    public EnquiryHandler(List<Enquiry> enquiryList) {
-        this.allEnquiries = enquiryList;
+    public EnquiryHandler(List<Enquiry> enquiryList, String filtertype) {
+        // Only manager can reply to general enquiries (project name = "-")
+        if (filtertype.equals(FILTER_BY_MANAGER)) {
+            this.allEnquiries = Database.enquiryList.stream()
+                    .filter(enquiry -> enquiry.getProjectName() != null && enquiry.getProjectName().equals("-"))
+                    .collect(Collectors.toList());
+        } else {
+            this.allEnquiries = enquiryList;
+        }
+        this.filterCriteria = filtertype;
     }
 
     private List<Enquiry> filterEnquiries(List<Enquiry> allEnquiries, String filterCriteria, String filterValue) {
         if (filterCriteria.equals(FILTER_BY_NRIC)) {
             return allEnquiries.stream().filter(enquiry -> enquiry.getNRIC().equalsIgnoreCase(filterValue))
                     .collect(Collectors.toList());
+
         } else if (filterCriteria.equals(FILTER_BY_PROJECT)) {
             return allEnquiries.stream()
                     .filter(enquiry -> enquiry.getProjectName() != null
                             && enquiry.getProjectName().equalsIgnoreCase(filterValue))
                     .collect(Collectors.toList());
 
+        } else if (filterCriteria.equals(FILTER_BY_MANAGER)) {
+            return allEnquiries.stream()
+                    .filter(enquiry -> enquiry.getProjectName() != null &&
+                            (enquiry.getProjectName().equals("-")
+                                    || enquiry.getProjectName().equalsIgnoreCase(filterValue)))
+                    .collect(Collectors.toList());
         } else
             return new ArrayList<>();
     }
@@ -231,7 +247,7 @@ public class EnquiryHandler {
     }
 
     public void viewProjectEnquiries() {
-        for (Enquiry enquiry : allEnquiries) {
+        for (Enquiry enquiry : Database.enquiryList) {
             enquiry.viewDetails();
         }
     }

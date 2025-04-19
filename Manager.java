@@ -15,7 +15,12 @@ public class Manager extends UserAccount {
 
     public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
-        this.enqHandler = new EnquiryHandler(Database.enquiryList);
+        if (handledProject != null) {
+            this.enqHandler = new EnquiryHandler(handledProject.getName(), Database.enquiryList,
+                    EnquiryHandler.FILTER_BY_MANAGER);
+        } else {
+            this.enqHandler = new EnquiryHandler(null, EnquiryHandler.FILTER_BY_MANAGER);
+        }
     }
 
     public void setHandledProject(Project p) {
@@ -601,10 +606,8 @@ public class Manager extends UserAccount {
             }
             String applicantNRIC = ap.getNRIC();
             String managerProject = this.getHandledProject().getName();
-            Database.flatBookingList.removeIf(booking -> 
-            booking.getApplicantNRIC().equalsIgnoreCase(applicantNRIC)
-            && booking.getProjectName().equalsIgnoreCase(managerProject)
-        );
+            Database.flatBookingList.removeIf(booking -> booking.getApplicantNRIC().equalsIgnoreCase(applicantNRIC)
+                    && booking.getProjectName().equalsIgnoreCase(managerProject));
             ap.resetAvailablilty();
             ap.getApplyForm().updateStatus("Unsuccessful");
             applyList.remove(targetForm);
@@ -619,6 +622,9 @@ public class Manager extends UserAccount {
     }
 
     public void ReplyEnquiries() {
+        if (handledProject != null) {
+            enqHandler.reloadFilteredEnquiries(Database.enquiryList, handledProject.getName());
+        }
         enqHandler.ReplyEnquiry();
     }
 
