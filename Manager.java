@@ -528,6 +528,7 @@ public class Manager extends UserAccount {
                 applyForm.getApplicant().resetAvailablilty();
                 System.out.println("Applicant " + applyForm.getApplicantName() + " rejected from project "
                         + handledProject.getName());
+                Database.applicationHistory.add(applyForm);
             }
 
         }
