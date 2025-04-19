@@ -59,7 +59,6 @@ public class Officer extends Applicant {
     }
 
     public void registerToProject(Database db) {
-        System.out.print("Enter the project name you want to register : ");
         String project = InputValidation.getString("Enter the project name you want to register: ",
                 input -> !input.trim().isEmpty(),
                 "Project name cannot be empty");
