@@ -8,4 +8,5 @@ public class Database {
     static public List<Project> projectList = new ArrayList<>();
     static public List<Enquiry> enquiryList = new ArrayList<>();
     static public List<FlatBooking> flatBookingList = new ArrayList<>();
+    public static List<ApplicationForm> applicationHistory = new ArrayList<>();
 }
