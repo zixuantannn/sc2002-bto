@@ -35,10 +35,11 @@ public class ApplicantUI implements ApplicantMenu {
             System.out.println("12. Logout\n");
 
             choice = InputValidation.getInt("Choose an option: ",
-                    input -> input >= 1 && input <= 11,
-                    "Please enter a number between 1 and 11.");
+                    input -> input >= 1 && input <= 12,
+                    "Please enter a number between 1 and 12.");
 
             switch (choice) {
+
                 case 1:
                     viewAllAvailableProjects();
                     break;
@@ -46,31 +47,35 @@ public class ApplicantUI implements ApplicantMenu {
                     applyForBTOProject();
                     break;
                 case 3:
-                    viewApplyFormStatus();
+                    viewAllApplicationForms();
                     break;
                 case 4:
-                    viewTheAppliedProject();
+                    viewApplyFormStatus();
                     break;
                 case 5:
-                    withdrawalApplyForm();
+                    viewTheAppliedProject();
                     break;
                 case 6:
-                    submitEnquiry();
+                    withdrawalApplyForm();
                     break;
                 case 7:
-                    displayEnquiries();
+                    submitEnquiry();
                     break;
                 case 8:
-                    editEnquiries();
+                    displayEnquiries();
                     break;
                 case 9:
-                    removeEnquiries();
+                    editEnquiries();
                     break;
                 case 10:
-                    viewFlatBooking();
+                    removeEnquiries();
                     break;
                 case 11:
+                    viewFlatBooking();
+                    break;
+                case 12:
                     logout();
+                    CSVWriter.saveApplicationHistory("applicationHistory.csv");
                     return;
                 default:
                     System.out.println("Invalid choice! Please choose a valid option.");
@@ -129,4 +134,7 @@ public class ApplicantUI implements ApplicantMenu {
         this.applicant.viewTheFlatBooking(this.database);
     }
 
+    public void viewAllApplicationForms() {
+        this.applicant.viewAllApplicationForms();
+    }
 }
