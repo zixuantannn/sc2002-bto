@@ -61,7 +61,7 @@ public class Login {
                         if (user instanceof Officer) {
                             CSVWriter.updatePassword("OfficerList.csv", db, user);
                         } else if (user instanceof Applicant) {
-                            CSVWriter.updatePassword("Applicant.csv", db, user);
+                            CSVWriter.updatePassword("ApplicantList.csv", db, user);
 
                         } else if (user instanceof Manager) {
                             CSVWriter.updatePassword("ManagerList.csv", db, user);
