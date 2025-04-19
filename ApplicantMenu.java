@@ -11,4 +11,5 @@ interface ApplicantMenu extends CommonMenu{
     public void editEnquiries();
     public void removeEnquiries();
     public void viewFlatBooking();
+    public void viewAllApplicationForms();
 }
