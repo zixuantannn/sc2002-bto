@@ -1,0 +1,5 @@
+NRIC,Enquiry ID,content,response,Project Name,date created
+S1234567A,1,how old can I apply bto,21,null,2025-02-15
+T7654321B,2,are there 3-room flats,yes,null,2025-04-12
+S9876543C,4,how far is the bus stop?,,Acacia Breeze,2025-04-19
+S9876543C,5,how old can i apply bto?,,null,2025-04-19
