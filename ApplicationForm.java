@@ -67,7 +67,6 @@ public class ApplicationForm {
     }
 
     public static void deleteApplication(ApplicationForm form) {
-        // need the code to access db
         System.out.println("Your application have been cancelled.");
     }
 

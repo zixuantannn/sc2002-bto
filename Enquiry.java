@@ -87,16 +87,14 @@ public class Enquiry {
 
     public void viewDetails() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // Define a format string for the table rows with the new "Project Name" column
+
         String rowFormat = "| %-10s | %-10s | %-18s | %-30s | %-30s |%n";
-        // Print the table header with a more defined border
         System.out.format(
                 "+------------+------------+--------------------+--------------------------------+--------------------------------+%n");
         System.out.format(rowFormat, "Enquiry ID", "Created On", "Project Name", "Content", "Response");
         System.out.format(
                 "+------------+------------+--------------------+--------------------------------+--------------------------------+%n");
 
-        // Print the enquiry details in a row
         System.out.format(rowFormat,
                 enquiryID,
                 dateFormat.format(date),
@@ -104,7 +102,6 @@ public class Enquiry {
                 content,
                 (response != null ? response : "No response yet"));
 
-        // Print the closing border with a clear end line
         System.out.format(
                 "+------------+------------+--------------------+--------------------------------+--------------------------------+%n");
 

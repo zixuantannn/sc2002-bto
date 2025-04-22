@@ -18,7 +18,7 @@ public class EnquiryHandler {
     }
 
     public EnquiryHandler(List<Enquiry> enquiryList, String filtertype) {
-        // Only manager can reply to general enquiries (project name = "-")
+        // Only manager can access general enquiries (project name = "-")
         if (filtertype.equals(FILTER_BY_MANAGER)) {
             this.allEnquiries = Database.enquiryList.stream()
                     .filter(enquiry -> enquiry.getProjectName() != null && enquiry.getProjectName().equals("-"))
