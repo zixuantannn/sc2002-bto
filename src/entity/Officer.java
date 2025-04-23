@@ -77,6 +77,7 @@ public class Officer extends Applicant {
 
         if (assignedProject != null) {
             System.out.println("Cannot register to handle another project as you are currently handling a project.");
+            return;
         }
 
         ApplicationForm form = this.getApplyForm();
