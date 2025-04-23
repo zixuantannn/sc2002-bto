@@ -35,52 +35,6 @@ public class BTO_app {
         CSVImporter.importFlatBookings(db, "data/FlatBookingList.csv");
         CSVImporter.importApplicationHistory("data/ApplicationHistory.csv");
 
-        // Display loading confirmation
-        System.out.println("Data loaded successfully.");
-        System.out.println("=== Applicants ===");
-        for (Applicant a : db.applicantList) {
-            if (a != null)
-                System.out.println(a.getName());
-        }
-
-        System.out.println("\n=== Managers ===");
-        for (Manager m : db.managerList) {
-            if (m != null)
-                System.out.println(m.getName());
-        }
-
-        System.out.println("\n=== Officers ===");
-        int officerCount = 0;
-        for (Officer o : db.officerList) {
-            if (o != null) {
-                System.out.println(o.getName());
-                officerCount++;
-            }
-        }
-        System.out.println("Total officers loaded: " + officerCount);
-
-        int projectCount = 0;
-        System.out.println("\n=== Project Details ===");
-        for (Project p : db.projectList) {
-            if (p != null) {
-                p.viewProjectDetails();
-                projectCount++;
-            }
-        }
-        System.out.println("Total projects loaded: " + projectCount);
-        System.out.println("\n");
-
-        int enquiryCount = 0;
-        System.out.println("\n=== Enquiry Details ===");
-        for (Enquiry e : db.enquiryList) {
-            if (e != null) {
-                e.viewDetails();
-                enquiryCount++;
-            }
-        }
-        System.out.println("Total enquiry loaded: " + enquiryCount);
-        System.out.println("Next enquiry ID: " + Enquiry.getCount());
-
         while (true) {
             printMainMenu();
 
