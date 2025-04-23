@@ -110,18 +110,18 @@ public class Project {
     }
 
     /**
-     * Gets the availability of type 1 units.
+     * Gets the availability of type 1 (2-room) units.
      *
-     * @return {@code true} if type 1 units are available, {@code false} otherwise.
+     * @return {@code true} if 2-room units are available, {@code false} otherwise.
      */
     public boolean getType1() {
         return type1;
     }
 
     /**
-     * Sets the availability of type 1 units.
+     * Sets the availability of type 1 (2-room) units.
      *
-     * @param type1 {@code true} if type 1 units are available, {@code false}
+     * @param type1 {@code true} if 2-room units are available, {@code false}
      *              otherwise.
      */
     public void setType1(boolean type1) {
@@ -129,18 +129,18 @@ public class Project {
     }
 
     /**
-     * Gets the availability of type 2 units.
+     * Gets the availability of type 2 (3-room) units.
      *
-     * @return {@code true} if type 2 units are available, {@code false} otherwise.
+     * @return {@code true} if 3-room units are available, {@code false} otherwise.
      */
     public boolean getType2() {
         return type2;
     }
 
     /**
-     * Sets the availability of type 2 units.
+     * Sets the availability of type 2 (3-room) units.
      *
-     * @param type2 {@code true} if type 2 units are available, {@code false}
+     * @param type2 {@code true} if 3-room units are available, {@code false}
      *              otherwise.
      */
     public void setType2(boolean type2) {
@@ -148,72 +148,72 @@ public class Project {
     }
 
     /**
-     * Gets the number of type 1 units.
+     * Gets the number of type 1 (2-room) units.
      *
-     * @return The number of type 1 units.
+     * @return The number of 2-room units.
      */
     public int getNumType1() {
         return numType1;
     }
 
     /**
-     * Sets the number of type 1 units.
+     * Sets the number of type 1 (2-room) units.
      *
-     * @param numType1 The number of type 1 units.
+     * @param numType1 The number of 2-room units.
      */
     public void setNumType1(int numType1) {
         this.numType1 = numType1;
     }
 
     /**
-     * Gets the selling price of type 1 units.
+     * Gets the selling price of type 1 (2-room) units.
      *
-     * @return The selling price of type 1 units.
+     * @return The selling price of 2-room units.
      */
     public int getSellPriceType1() {
         return sellPriceType1;
     }
 
     /**
-     * Sets the selling price of type 1 units.
+     * Sets the selling price of type 1 (2-room) units.
      *
-     * @param sellPriceType1 The selling price of type 1 units.
+     * @param sellPriceType1 The selling price of 2-room units.
      */
     public void setSellPriceType1(int sellPriceType1) {
         this.sellPriceType1 = sellPriceType1;
     }
 
     /**
-     * Gets the number of type 2 units.
+     * Gets the number of type 2 (3-room) units.
      *
-     * @return The number of type 2 units.
+     * @return The number of 3-room units.
      */
     public int getNumType2() {
         return numType2;
     }
 
     /**
-     * Sets the number of type 2 units.
+     * Sets the number of type 2 (3-room) units.
      *
-     * @param numType2 The number of type 2 units.
+     * @param numType2 The number of 3-room units.
      */
     public void setNumType2(int numType2) {
         this.numType2 = numType2;
     }
 
     /**
-     * Gets the selling price of type 2 units.
+     * Gets the selling price of type 2 (3-room) units.
      *
-     * @return The selling price of type 2 units.
+     * @return The selling price of 3-room units.
      */
     public int getSellPriceType2() {
         return sellPriceType2;
     }
 
     /**
-     * Sets the selling price of type 2 units.
+     * Sets the selling price of type 2 (3-room) units.
      *
-     * @param sellPriceType2 The selling price of type 2 units.
+     * @param sellPriceType2 The selling price of 3-room units.
      */
     public void setSellPriceType2(int sellPriceType2) {
         this.sellPriceType2 = sellPriceType2;
