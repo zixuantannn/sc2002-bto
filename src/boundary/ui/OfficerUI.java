@@ -11,21 +11,42 @@ import controller.EnquiryHandler;
 import entity.Project;
 import boundary.menu.OfficerMenu;
 
+/**
+ * The {@code OfficerUI} class implements the {@link OfficerMenu} interface
+ * and handles the user interface for an officer. It provides the officer with
+ * various options such as registering a project, viewing available projects,
+ * checking registration status, and more.
+ */
 public class OfficerUI implements OfficerMenu {
     Officer officer = null;
     Database db = null;
 
+    /**
+     * Constructs a {@code OfficerUI} instance with the given officer and database.
+     *
+     * @param officer The officer interacting with the system.
+     * @param db      The database instance providing access to system data.
+     */
     public OfficerUI(Officer officer, Database db) {
         this.officer = officer;
         this.db = db;
     }
 
+    /**
+     * Logs out the current officer, syncing any pending enquiries and
+     * displaying a logout message.
+     */
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, officer.getEnquiryHandler().getEnquiryList());
-        // CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
+    /**
+     * Displays the menu options for the officer, allowing them to choose actions
+     * related to project registration, viewing projects, checking registration
+     * status,
+     * handling enquiries, and managing flat bookings.
+     */
     public void displayMenu() {
         int choice = 0;
 
@@ -76,28 +97,18 @@ public class OfficerUI implements OfficerMenu {
         System.out.println("\n");
     }
 
+    /**
+     * Registers the officer for a project.
+     */
     public void registerProjectAsOfficer() {
         System.out.println("Registering a new project as Officer...");
         this.officer.registerToProject(this.db);
     }
 
-    /*
-     * public void viewProjectsForApplyOfficer() {
-     * System.out.println("View all available projects for apply officer...");
-     * boolean check = false;
-     * for (Project project : this.db.projectList) {
-     * if (project.getNumOfficerSlots() > 0) {
-     * project.viewProjectDetails();
-     * check = true;
-     * }
-     * }
-     * if (!check) {
-     * System.out.println("There is no available project fo registering as Officer!"
-     * );
-     * }
-     * }
+    /**
+     * Displays all available projects for the officer to apply to, based on
+     * visibility, open/close dates, and available officer slots.
      */
-
     public void viewProjectsForApplyOfficer() {
         System.out.println("View all available projects for apply officer...");
         boolean check = false;
@@ -119,26 +130,42 @@ public class OfficerUI implements OfficerMenu {
         }
     }
 
+    /**
+     * Display the registration status of the officer.
+     */
     public void checkRegistrationStatus() {
         System.out.println("Checking registration status...");
         this.officer.viewRegistrationStatus();
     }
 
+    /**
+     * Displays the details of the project that the officer is currently handling.
+     */
     public void viewHandledProject() {
         System.out.println("Viewing handled projects...");
         this.officer.viewHandledProjectDetails();
     }
+
+    /**
+     * Allows the officer to view and reply to project-related enquiries.
+     */
 
     public void viewAndReplyEnquiryList() {
         System.out.println("Viewing and replying to enquiry list...");
         this.officer.viewAndReplyEnquiries();
     }
 
+    /**
+     * Manages the flat booking process for the officer.
+     */
     public void handleFlatBook() {
         System.out.println("Handling flat booking process...");
         this.officer.handleFlatBooking(this.db);
     }
 
+    /**
+     * Displays the application forms for the projects that the officer is handling.
+     */
     public void viewApplicationForms() {
         officer.viewApplicationsInHandledProject();
     }

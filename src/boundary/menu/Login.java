@@ -7,7 +7,27 @@ import entity.Officer;
 import entity.Manager;
 import utility.InputValidation;
 
+/**
+ * Handles the login functionality for different types of users including
+ * applicants, officers, and managers.
+ */
 public class Login {
+    /**
+     * Authenticates a user based on their NRIC and password, depending on their
+     * role.
+     * <p>
+     * If the login is successful, it returns the corresponding {@link UserAccount}
+     * object.
+     * If the user is using a default password, they will be prompted to change it.
+     * If the login fails (invalid ID or password), {@code null} is returned.
+     *
+     * @param db       the {@link Database} instance containing user lists
+     * @param input    the user's NRIC (used as login ID)
+     * @param position the role of the user attempting to log in (e.g., "applicant",
+     *                 "officer", "manager")
+     * @return the authenticated {@link UserAccount}, or {@code null} if
+     *         authentication fails
+     */
 
     static public UserAccount authenticate(Database db, String input, String position) {
         UserAccount user = null;

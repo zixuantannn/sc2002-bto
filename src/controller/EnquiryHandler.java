@@ -7,6 +7,11 @@ import entity.Enquiry;
 import database.Database;
 import utility.InputValidation;
 
+/**
+ * The {@code EnquiryHandler} class is responsible for managing enquiries
+ * related to projects
+ * or general queries.
+ */
 public class EnquiryHandler {
     public static final String FILTER_BY_NRIC = "by_nric";
     public static final String FILTER_BY_PROJECT = "by_project_name";
@@ -15,6 +20,15 @@ public class EnquiryHandler {
     private List<Enquiry> allEnquiries;
     private String filterCriteria = null;
 
+    /**
+     * Constructor for creating an EnquiryHandler with a specific filter type and
+     * filter value.
+     *
+     * @param filter      The value to filter by (NRIC, project name, etc.).
+     * @param enquiryList The list of enquiries to be filtered.
+     * @param filterType  The type of filter (e.g., FILTER_BY_NRIC,
+     *                    FILTER_BY_PROJECT).
+     */
     public EnquiryHandler(String filter, List<Enquiry> enquiryList, String filterType) {
 
         this.filterCriteria = filterType;
@@ -22,6 +36,13 @@ public class EnquiryHandler {
 
     }
 
+    /**
+     * Constructor for creating an EnquiryHandler with access based on the user's
+     * role.
+     *
+     * @param enquiryList The list of enquiries to be displayed.
+     * @param filtertype  The type of filter (for manager access).
+     */
     public EnquiryHandler(List<Enquiry> enquiryList, String filtertype) {
         // Only manager can access general enquiries (project name = "-")
         if (filtertype.equals(FILTER_BY_MANAGER)) {
@@ -34,6 +55,14 @@ public class EnquiryHandler {
         this.filterCriteria = filtertype;
     }
 
+    /**
+     * Filters enquiries based on the specified criteria and value.
+     *
+     * @param allEnquiries   The list of all enquiries.
+     * @param filterCriteria The filter criterion (e.g., NRIC, project name).
+     * @param filterValue    The value to filter by.
+     * @return A filtered list of enquiries.
+     */
     private List<Enquiry> filterEnquiries(List<Enquiry> allEnquiries, String filterCriteria, String filterValue) {
         if (filterCriteria.equals(FILTER_BY_NRIC)) {
             return allEnquiries.stream().filter(enquiry -> enquiry.getNRIC().equalsIgnoreCase(filterValue))
@@ -55,11 +84,23 @@ public class EnquiryHandler {
             return new ArrayList<>();
     }
 
+    /**
+     * Reloads and update the filtered enquiries.
+     *
+     * @param allEnquiries The list of all enquiries.
+     * @param filterValue  The new filter value to apply.
+     */
     public void reloadFilteredEnquiries(List<Enquiry> allEnquiries, String filterValue) {
         this.allEnquiries = filterEnquiries(allEnquiries, filterCriteria, filterValue);
     }
 
-    // project enquiries
+    /**
+     * Creates a new enquiry for a specific project and adds it to the list.
+     *
+     * @param nric        The NRIC of the user creating the enquiry.
+     * @param content     The content of the enquiry.
+     * @param projectName The project name associated with the enquiry.
+     */
     public void createEnquiry(String nric, String content, String projectName) {
         Enquiry newEnquiry = new Enquiry(nric, content, projectName);
         allEnquiries.add(newEnquiry);
@@ -68,7 +109,12 @@ public class EnquiryHandler {
 
     }
 
-    // general enquiries
+    /**
+     * Creates a new general enquiry and adds it to the list.
+     *
+     * @param nric    The NRIC of the user creating the enquiry.
+     * @param content The content of the enquiry.
+     */
     public void createEnquiry(String nric, String content) {
         Enquiry newEnquiry = new Enquiry(nric, content);
         allEnquiries.add(newEnquiry);
@@ -78,10 +124,18 @@ public class EnquiryHandler {
 
     }
 
+    /**
+     * Retrieves the list of all enquiries.
+     *
+     * @return The list of all enquiries.
+     */
     public List<Enquiry> getEnquiryList() {
         return this.allEnquiries;
     }
 
+    /**
+     * Displays all the enquiries created by the user.
+     */
     public void displayMyEnquiries() {
         if (!allEnquiries.isEmpty()) {
             for (Enquiry each : allEnquiries) {
@@ -93,6 +147,9 @@ public class EnquiryHandler {
 
     }
 
+    /**
+     * Modifies the content of an enquiry if it has not been answered.
+     */
     public void modifyEnquiry() {
         if (allEnquiries.isEmpty()) {
             System.out.println("You have no enquiries to edit.");
@@ -127,6 +184,9 @@ public class EnquiryHandler {
 
     }
 
+    /**
+     * Removes an enquiry from the list if it hasn't been answered.
+     */
     public void removeEnquiry() {
         if (allEnquiries.isEmpty()) {
             System.out.println("You have no enquiries to edit.");
@@ -166,6 +226,12 @@ public class EnquiryHandler {
         }
     }
 
+    /**
+     * Finds an enquiry by its ID.
+     *
+     * @param id The ID of the enquiry to find.
+     * @return The enquiry with the matching ID, or null if not found.
+     */
     public Enquiry findEnquiryByID(int id) {
         for (Enquiry each : allEnquiries) {
             if (each.getID() == id) {
@@ -175,6 +241,11 @@ public class EnquiryHandler {
         return null;
     }
 
+    /**
+     * Displays the enquiries related to a specific project.
+     *
+     * @param projectName The name of the project.
+     */
     public void viewProjectEnquiries(String projectName) {
         List<Enquiry> projectEnquiries = getProjectEnquiries(projectName);
         if (projectEnquiries.isEmpty()) {
@@ -186,6 +257,12 @@ public class EnquiryHandler {
         }
     }
 
+    /**
+     * Retrieves the list of enquiries related to a specific project.
+     *
+     * @param projectName The name of the project.
+     * @return A list of project-related enquiries.
+     */
     public List<Enquiry> getProjectEnquiries(String projectName) {
         List<Enquiry> projectEnquiries = new ArrayList<>();
 
@@ -198,6 +275,9 @@ public class EnquiryHandler {
         return projectEnquiries;
     }
 
+    /**
+     * Responds to an enquiry and updates its response.
+     */
     public void ReplyEnquiry() {
         Enquiry chosen = null;
         List<Enquiry> enqList = this.allEnquiries;
@@ -251,12 +331,24 @@ public class EnquiryHandler {
         System.out.println("Response saved.");
     }
 
+    /**
+     * Displays the details of all enquiries stored in the database.
+     */
     public void viewProjectEnquiries() {
         for (Enquiry enquiry : Database.enquiryList) {
             enquiry.viewDetails();
         }
     }
 
+    /**
+     * Synchronizes the updated list of filtered enquiries with the original list of
+     * all enquiries
+     * when the user logs out and updates any changes made.
+     * 
+     * @param allEnquiries The original list of all enquiries in the system.
+     * @param filteredList The updated list of enquiries that may have been modified
+     *                     by the user.
+     */
     public static void syncEnquiriesOnLogout(List<Enquiry> allEnquiries, List<Enquiry> filteredList) {
         if (filteredList == null || filteredList.isEmpty()) {
             return;

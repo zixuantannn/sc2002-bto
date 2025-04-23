@@ -4,9 +4,22 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * The {@code AESUtils} class provides utility methods for encrypting and
+ * decrypting strings using the AES (Advanced Encryption Standard) symmetric
+ * encryption algorithm.
+ * 
+ */
 public class AESUtils {
     private static final String SECRET_KEY = "1234567890abcdef"; // 16-char key = 128-bit
 
+    /**
+     * Encrypts the given string using AES encryption with a fixed secret key.
+     *
+     * @param data the plaintext string to encrypt.
+     * @return the encrypted string in Base64 encoding.
+     * @throws RuntimeException if encryption fails.
+     */
     public static String encrypt(String data) {
         try {
             SecretKeySpec key = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
@@ -19,6 +32,13 @@ public class AESUtils {
         }
     }
 
+    /**
+     * Decrypts the given Base64-encoded string that was encrypted using AES.
+     *
+     * @param encryptedData the encrypted string in Base64 encoding.
+     * @return the original decrypted plaintext string.
+     * @throws RuntimeException if decryption fails.
+     */
     public static String decrypt(String encryptedData) {
         try {
             SecretKeySpec key = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
@@ -31,10 +51,4 @@ public class AESUtils {
         }
     }
 
-    /*
-     * public static void main(String[] args) {
-     * String encryptedPassword = encrypt("password");
-     * System.out.println("Encrypted password: " + encryptedPassword);
-     * }
-     */
 }

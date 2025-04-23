@@ -17,8 +17,22 @@ import entity.Project;
 import entity.FlatBooking;
 import entity.Enquiry;
 
+/**
+ * The {@code CSVImporter} class is responsible for importing various entities
+ * from CSV files
+ * into the system. It processes applicants, officers, managers, projects,
+ * enquiries, and other
+ * relevant data from the provided CSV file paths and adds them to the
+ * {@link Database}.
+ */
 public class CSVImporter {
 
+    /**
+     * Imports applicant data from a CSV file and adds it to the database.
+     *
+     * @param db       The {@link Database} where the applicant data will be stored.
+     * @param filepath The path to the CSV file containing applicant data.
+     */
     public static void importApplicants(Database db, String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
@@ -77,6 +91,12 @@ public class CSVImporter {
         }
     }
 
+    /**
+     * Imports manager data from a CSV file and adds it to the database.
+     *
+     * @param db       The {@link Database} where the manager data will be stored.
+     * @param filepath The path to the CSV file containing manager data.
+     */
     public static void importManagers(Database db, String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
@@ -99,6 +119,12 @@ public class CSVImporter {
         }
     }
 
+    /**
+     * Imports officer data from a CSV file and adds it to the database.
+     *
+     * @param db       The {@link Database} where the officer data will be stored.
+     * @param filepath The path to the CSV file containing officer data.
+     */
     public static void importOfficers(Database db, String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
@@ -172,6 +198,12 @@ public class CSVImporter {
         }
     }
 
+    /**
+     * Imports project data from a CSV file and adds it to the database.
+     *
+     * @param db       The {@link Database} where the project data will be stored.
+     * @param filepath The path to the CSV file containing project data.
+     */
     public static void importProjects(Database db, String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
@@ -237,6 +269,12 @@ public class CSVImporter {
         }
     }
 
+    /**
+     * Imports enquiry data from a CSV file and adds it to the database.
+     *
+     * @param db       The {@link Database} where the enquiry data will be stored.
+     * @param filepath The path to the CSV file containing enquiry data.
+     */
     public static void importEnquiry(Database db, String filepath) {
         int maxID = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
@@ -266,6 +304,13 @@ public class CSVImporter {
         Enquiry.setCountEnquiry(maxID);
     }
 
+    /**
+     * Imports flat booking data from a CSV file and adds it to the database.
+     *
+     * @param db       The {@link Database} where the flat booking data will be
+     *                 stored.
+     * @param filepath The path to the CSV file containing flat booking data.
+     */
     public static void importFlatBookings(Database db, String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
@@ -302,6 +347,11 @@ public class CSVImporter {
         }
     }
 
+    /**
+     * Imports application history data from a CSV file and adds it to the database.
+     *
+     * @param filepath The path to the CSV file containing application history data.
+     */
     public static void importApplicationHistory(String filepath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;

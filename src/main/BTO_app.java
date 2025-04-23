@@ -15,6 +15,13 @@ import boundary.menu.CommonMenu;
 import controller.UserMenuHandler;
 import boundary.menu.Login;
 
+/**
+ * The {@code BTO_app} class serves as the entry point for the Build-To-Order
+ * (BTO) application system.
+ * It initializes the application by loading data from CSV files, authenticates
+ * users, and navigates
+ * them through role-based interfaces (Applicant, Officer, Manager).
+ */
 public class BTO_app {
     public static void main(String[] args) {
         Database db = new Database();

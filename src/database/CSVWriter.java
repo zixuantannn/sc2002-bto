@@ -19,7 +19,20 @@ import entity.RegistrationForm;
 import entity.Project;
 import entity.FlatBooking;
 
+/**
+ * The CSVWriter class provides methods for writing different entities to CSV
+ * files.
+ * It supports saving, overwriting, and deleting projects, saving enquiries,
+ * applicants, officers, managers,
+ * flat bookings, and application history to CSV files.
+ */
 public class CSVWriter {
+    /**
+     * Saves a single project to a CSV file.
+     * 
+     * @param project  The project to be saved.
+     * @param filepath The path of the CSV file to write to.
+     */
     public static void saveProject(Project project, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, true))) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -58,6 +71,12 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Overwrites a CSV file with a list of projects.
+     * 
+     * @param projects The list of projects to be written to the file.
+     * @param filepath The path of the CSV file to overwrite.
+     */
     public static void overwriteProjects(List<Project> projects, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) { // false = overwrite
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -94,6 +113,11 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Deletes a project from the CSV file by name.
+     * 
+     * @param projectNameToDelete The name of the project to delete.
+     */
     public static void deleteProject(String projectNameToDelete) {
         File inputFile = new File("ProjectList.csv");
         File tempFile = new File("ProjectList_temp.csv");
@@ -137,6 +161,12 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Submits an enquiry by saving it to a CSV file.
+     * 
+     * @param enquiry  The enquiry to be saved.
+     * @param filepath The path of the CSV file to write to.
+     */
     public static void submitEnquiry(Enquiry enquiry, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, true))) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -161,6 +191,12 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Overwrites a CSV file with a list of enquiries.
+     * 
+     * @param enquiryList The list of enquiries to be written to the file.
+     * @param filepath    The path of the CSV file to overwrite.
+     */
     public static void saveEnquirieToCSV(List<Enquiry> enquiryList, String filepath) {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) { // false = overwrite
@@ -189,6 +225,12 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Saves a list of applicants to a CSV file, including encrypted passwords.
+     * 
+     * @param applicants The list of applicants to be saved.
+     * @param filepath   The path of the CSV file to write to.
+     */
     public static void saveApplicants(List<Applicant> applicants, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write("Name,NRIC,Age,MaritalStatus,Password,ApplicationID,AppliedProject,RegistrationStatus");
@@ -219,6 +261,13 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Saves a list of officers to a CSV file, including encrypted passwords and
+     * registration details.
+     * 
+     * @param officers The list of officers to be saved.
+     * @param filepath The path of the CSV file to write to.
+     */
     public static void saveOfficers(List<Officer> officers, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write(
@@ -259,6 +308,12 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Saves a list of managers to a CSV file, including encrypted passwords.
+     * 
+     * @param managers The list of managers to be saved.
+     * @param filepath The path of the CSV file to write to.
+     */
     public static void saveManagers(List<Manager> managers, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write("Name,NRIC,Age,MaritalStatus,Password");
@@ -279,6 +334,12 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Saves a list of flat bookings to a CSV file.
+     * 
+     * @param bookings The list of flat bookings to be saved.
+     * @param filepath The path of the CSV file to write to.
+     */
     public static void saveFlatBookings(List<FlatBooking> bookings, String filepath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, false))) {
             bw.write("BookingID,ApplicantName,NRIC,Age,MaritalStatus,ProjectName,FlatType,Neighborhood,SellPrice");
@@ -296,6 +357,11 @@ public class CSVWriter {
         }
     }
 
+    /**
+     * Saves the application history to a CSV file.
+     * 
+     * @param filePath The path of the CSV file to write to.
+     */
     public static void saveApplicationHistory(String filePath) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, false))) {
             bw.write("ApplicationID,ApplicantName,NRIC,Age,MaritalStatus,AppliedProject,Status");

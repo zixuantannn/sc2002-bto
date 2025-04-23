@@ -1,26 +1,62 @@
 package boundary.menu;
 
+/**
+ * Interface representing the menu options available to applicant.
+ */
 public interface ApplicantMenu extends CommonMenu {
 
-    public void viewAllAvailableProjects();
+    /**
+     * Displays all available BTO projects to the applicant.
+     */
+    void viewAllAvailableProjects();
 
-    public void applyForBTOProject();
+    /**
+     * Allows the applicant to apply for a selected BTO project.
+     */
+    void applyForBTOProject();
 
-    public void viewApplyFormStatus();
+    /**
+     * Allows the applicant to view the status of their application form.
+     */
+    void viewApplyFormStatus();
 
-    public void viewTheAppliedProject();
+    /**
+     * Displays details of the project that the applicant has applied for.
+     */
+    void viewTheAppliedProject();
 
-    public void withdrawalApplyForm();
+    /**
+     * Allows the applicant to withdraw their application form.
+     */
+    void withdrawalApplyForm();
 
-    public void submitEnquiry();
+    /**
+     * Enables the applicant to submit an enquiry
+     */
+    void submitEnquiry();
 
-    public void displayEnquiries();
+    /**
+     * Displays all enquiries submitted by the applicant.
+     */
+    void displayEnquiries();
 
-    public void editEnquiries();
+    /**
+     * Allows the applicant to edit a previously submitted enquiry.
+     */
+    void editEnquiries();
 
-    public void removeEnquiries();
+    /**
+     * Allows the applicant to remove a previously submitted enquiry.
+     */
+    void removeEnquiries();
 
-    public void viewFlatBooking();
+    /**
+     * Displays flat booking information associated with the applicant.
+     */
+    void viewFlatBooking();
 
-    public void viewAllApplicationForms();
+    /**
+     * Displays all application forms submitted by the applicant.
+     */
+    void viewAllApplicationForms();
 }

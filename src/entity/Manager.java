@@ -11,14 +11,42 @@ import utility.InputValidation;
 import database.Database;
 import database.CSVWriter;
 
+/**
+ * The {@code Manager} class extends the {@link UserAccount} class
+ * and represents a manager responsible for overseeing a housing project.
+ * It contains methods to handle tasks such as creating and editing project
+ * listings, managing assigned projects and many more
+ * The manager can only handle one project at a time, and any new project
+ * creation will be
+ * restricted if they are already managing an existing project.
+ * 
+ */
 public class Manager extends UserAccount {
     private Project handledProject = null;
     private EnquiryHandler enqHandler;
 
+    /**
+     * Constructs a new {@code Manager} with the specified personal details.
+     *
+     * @param name          the name of the manager
+     * @param NRIC          the NRIC of the manager
+     * @param age           the age of the manager
+     * @param maritalStatus the marital status of the manager
+     */
     public Manager(String name, String NRIC, int age, String maritalStatus) {
         super(name, NRIC, age, maritalStatus);
     }
 
+    /**
+     * Constructs a new {@code Manager} with the specified personal details and
+     * password. Used when loading from csv.
+     *
+     * @param name          the name of the manager
+     * @param NRIC          the NRIC of the manager
+     * @param age           the age of the manager
+     * @param maritalStatus the marital status of the manager
+     * @param password      the password for the manager's account
+     */
     public Manager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password);
         if (handledProject != null) {
@@ -29,18 +57,39 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Sets the project that the manager is handling.
+     *
+     * @param p the project to be managed
+     */
     public void setHandledProject(Project p) {
         this.handledProject = p;
     }
 
+    /**
+     * Returns the project that the manager is currently handling.
+     *
+     * @return the project being managed
+     */
     public Project getHandledProject() {
         return this.handledProject;
     }
 
+    /**
+     * Returns the {@code EnquiryHandler} instance associated with the manager.
+     *
+     * @return the enquiry handler for the manager
+     */
     public EnquiryHandler getEnquiryHandler() {
         return this.enqHandler;
     }
 
+    /**
+     * Creates a new project listing in the database. The manager must not already
+     * be handling a project to create a new one.
+     *
+     * @param db the database where the project listing will be added
+     */
     public void createProjectListing(Database db) {
         try {
 
@@ -136,6 +185,11 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Edits an existing project listing in the database.
+     *
+     * @param db the database containing the project listing to be edited
+     */
     public void editProjectListing(Database db) {
         String projectName = InputValidation.getString("Enter the name of the project to edit: ", s -> !s.isEmpty(),
                 "Project name cannot be empty.");
@@ -286,6 +340,11 @@ public class Manager extends UserAccount {
         System.out.println("Project listing updated successfully.");
     }
 
+    /**
+     * Deletes a project listing from the database.
+     * 
+     * @param db The Database object containing the list of projects.
+     */
     public void deleteProjectListing(Database db) {
         String projectName = InputValidation.getString("Enter the name of the project to delete: ",
                 input -> !input.trim().isEmpty(),
@@ -309,6 +368,11 @@ public class Manager extends UserAccount {
         System.out.println("Project listing deleted successfully.");
     }
 
+    /**
+     * Toggles the visibility of a project in the database.
+     * 
+     * @param db The Database object containing the list of projects.
+     */
     public void setVisibility(Database db) {
         Project target = null;
         String targetName = InputValidation.getString("Enter the project name you want to toggle its visibility: ",
@@ -362,6 +426,11 @@ public class Manager extends UserAccount {
 
     }
 
+    /**
+     * Displays all projects in the database.
+     * 
+     * @param db The Database object containing the list of projects.
+     */
     public void viewAllProject(Database db) {
         System.out.println("View all projects: ");
         for (int i = 0; i < db.projectList.size(); i++) {
@@ -369,11 +438,19 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Displays the details of the project currently being handled by the manager.
+     */
     public void viewMyProject() {
         System.out.println("View the details of your handled project:");
         handledProject.viewProjectDetails();
     }
 
+    /**
+     * Displays projects in the database that match certain filters.
+     * 
+     * @param db The Database object containing the list of projects.
+     */
     public void viewFilteredProjects(Database db) {
         if (!db.projectList.isEmpty()) {
             db.projectList.get(0).displayProjectsWithFilters(db);
@@ -382,6 +459,12 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Displays the registration list of the officer registration.
+     * 
+     * @return true if the registration list was successfully displayed; false if no
+     *         project is being handled by the manager.
+     */
     public boolean viewRegistration() {
         if (this.handledProject == null) {
             // Initialize handledProject or handle the error appropriately
@@ -391,6 +474,13 @@ public class Manager extends UserAccount {
         return handledProject.viewListOfRegistration(); // new function for class Project
     }
 
+    /**
+     * Displays the application list of the project currently being handled by the
+     * manager.
+     * 
+     * @return true if the application list was successfully displayed; false if no
+     *         project is being handled by the manager.
+     */
     public boolean viewApplication() {
         if (this.handledProject == null) {
             // Initialize handledProject or handle the error appropriately
@@ -400,6 +490,11 @@ public class Manager extends UserAccount {
         return handledProject.viewListOfApplication(); // new function for class Project
     }
 
+    /**
+     * Displays the projects created by the manager.
+     * 
+     * @param database The Database object containing the list of projects.
+     */
     public void viewProjectsCreatedByManager(Database database) {
         List<Project> lis = new ArrayList<>();
         boolean check = false;
@@ -414,6 +509,11 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Assigns an officer to a project by approving a registration form.
+     * 
+     * @param db The Database object containing the officer list and project list.
+     */
     public void assignOfficerToProject(Database db) {
         RegistrationForm registerForm = null;
         List<RegistrationForm> registerList = handledProject.getListOfRegisterForm();
@@ -501,6 +601,10 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Manages the application form process for a project, allowing the manager to
+     * approve or reject application forms.
+     */
     public void manageApplicationForm() {
 
         ApplicationForm applyForm = null;
@@ -545,6 +649,12 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * Views the withdrawal request list for the project the manager is handling.
+     * 
+     * @return true if the withdrawal requests were successfully viewed, false if
+     *         the manager is not handling any project.
+     */
     public boolean viewWithdrawalRequest() {
         if (this.handledProject == null) {
             // Initialize handledProject or handle the error appropriately
@@ -555,6 +665,14 @@ public class Manager extends UserAccount {
         return true;
     }
 
+    /**
+     * Manages withdrawal requests for the project the manager is handling.
+     * The method allows the manager to approve or reject withdrawal requests based
+     * on the application ID and reason.
+     * 
+     * @param db The Database object containing the list of projects and
+     *           applications.
+     */
     public void manageWithdrawalRequest(Database db) {
 
         List<ApplicationForm> applyList = handledProject.getListOfApplyForm();
@@ -623,10 +741,16 @@ public class Manager extends UserAccount {
         }
     }
 
+    /**
+     * View enquiries of all projects.
+     */
     public void viewAllEnquiries() {
         enqHandler.viewProjectEnquiries();
     }
 
+    /**
+     * Replies to the enquiries related to the project the manager is handling.
+     */
     public void ReplyEnquiries() {
         if (handledProject != null) {
             enqHandler.reloadFilteredEnquiries(Database.enquiryList, handledProject.getName());
@@ -634,6 +758,13 @@ public class Manager extends UserAccount {
         enqHandler.ReplyEnquiry();
     }
 
+    /**
+     * Generates a report of applicants' flat bookings under the project the manager
+     * is handling.
+     * 
+     * @param db The Database object containing the list of flat bookings and
+     *           related data.
+     */
     public void generateApplicantBookingReport(Database db) {
         if (this.getHandledProject() == null) {
             System.out.println("You are not handling any project, so no report can be generated.");

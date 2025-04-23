@@ -9,21 +9,41 @@ import controller.EnquiryHandler;
 import boundary.menu.ManagerMenu;
 import entity.Project;
 
+/**
+ * The {@code ManagerUI} class implements the {@link ManagerMenu} interface
+ * and handles the user interface for a manager. It provides the manager with
+ * various options such as creating, modifying, and removing BTO projects and
+ * more.
+ */
 public class ManagerUI implements ManagerMenu {
     Manager manager = null;
     Database database = null;
 
+    /**
+     * Constructs a {@code ManagerUI} instance with the given manager and database.
+     *
+     * @param manager The manager interacting with the system.
+     * @param db      The database instance providing access to system data.
+     */
     public ManagerUI(Manager manager, Database db) {
         this.manager = manager;
         this.database = db;
     }
 
+    /**
+     * Logs out the current manager, syncing any pending enquiries and
+     * displaying a logout message.
+     */
     public void logout() {
         EnquiryHandler.syncEnquiriesOnLogout(Database.enquiryList, manager.getEnquiryHandler().getEnquiryList());
-        // CSVWriter.saveEnquirieToCSV(Database.enquiryList, "EnquiryList.csv");
         System.out.println("You have successfully logged out.");
     }
 
+    /**
+     * Displays the menu options for the manager, allowing them to choose actions
+     * related to managing BTO projects, officer registrations, applications,
+     * withdrawals, and enquiries.
+     */
     public void displayMenu() {
         int choice = 0;
 
@@ -104,26 +124,42 @@ public class ManagerUI implements ManagerMenu {
         System.out.println("\n");
     }
 
+    /**
+     * Adds a new BTO project to the system.
+     */
     public void addNewProjects() {
         System.out.println("Add new project to BTO listing...");
         this.manager.createProjectListing(this.database);
     }
 
+    /**
+     * Modifies the details of an existing BTO project.
+     */
     public void modifyExistingProjectDetails() {
         System.out.println("Modify existing project detail...");
         this.manager.editProjectListing(this.database);
     }
 
+    /**
+     * Removes a project from the system.
+     */
     public void removeProjectFromSystem() {
         System.out.println("Remove project from the system...");
         this.manager.deleteProjectListing(this.database);
     }
 
+    /**
+     * Toggles the visibility of a project.
+     */
     public void toggleVisibility() {
         System.out.println("Toggle visibility...");
         this.manager.setVisibility(this.database);
     }
 
+    /**
+     * Sets the project currently handled by the manager based on the application
+     * period and visibility status.
+     */
     public void setTheHandledProject() {
 
         // Get the current system date
@@ -162,6 +198,9 @@ public class ManagerUI implements ManagerMenu {
         System.out.println("Successfully set the project '" + targetProject.getName() + "' as the handled project.");
     }
 
+    /**
+     * Display all or filtered project listings.
+     */
     public void viewAllOrFilteredProjectListings() {
         System.out.println("View projects...");
         String answer = InputValidation.getYesOrNo("Do you want to view all project listings (yes/no)?\n",
@@ -178,10 +217,16 @@ public class ManagerUI implements ManagerMenu {
         }
     }
 
+    /**
+     * Displays the list of projects that the manager has created.
+     */
     public void viewProjectsManagerCreated() {
         this.manager.viewProjectsCreatedByManager(this.database);
     }
 
+    /**
+     * Manages officer registrations and assign officers to projects.
+     */
     public void manageOfficerRegistration() {
         System.out.println("Manage officer registration...");
         boolean check = false;
@@ -197,6 +242,9 @@ public class ManagerUI implements ManagerMenu {
         this.manager.assignOfficerToProject(this.database);
     }
 
+    /**
+     * Manages BTO application forms made by applicant
+     */
     public void manageBTOApplication() {
         boolean check = false;
         System.out.println("Manage BTO application form...");
@@ -212,6 +260,9 @@ public class ManagerUI implements ManagerMenu {
         this.manager.manageApplicationForm();
     }
 
+    /**
+     * Manages BTO withdrawal requests made by applicant
+     */
     public void manageBTOWithdrawal() {
         boolean check = false;
         System.out.println("Manage withdrawal request...");
@@ -227,16 +278,25 @@ public class ManagerUI implements ManagerMenu {
         this.manager.manageWithdrawalRequest(this.database);
     }
 
+    /**
+     * Displays all enquiries.
+     */
     public void viewAllEnquiry() {
         System.out.println("View all enquiries...");
         this.manager.viewAllEnquiries();
     }
 
+    /**
+     * Allows the manager to reply to enquiries
+     */
     public void ReplyEnquiry() {
         System.out.println("View and reply enquiries...");
         this.manager.ReplyEnquiries();
     }
 
+    /**
+     * Generates a report on flat bookings made by applicants.
+     */
     public void generateReportFlatBooking() {
         this.manager.generateApplicantBookingReport(this.database);
     }
