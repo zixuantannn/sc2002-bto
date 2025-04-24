@@ -1,7 +1,7 @@
 ## Getting Started
 
-Welcome to our BTO Management System repository.
-This is a system designed to manage the allocation and tracking of Build-To-Order (BTO) flats. 
+Welcome to our BTO Management System repository. \n
+This is a system designed to manage the allocation nand tracking of Build-To-Order (BTO) flats. 
 This tool helps users track their application status, manage their data, and generate reports.
 
 
