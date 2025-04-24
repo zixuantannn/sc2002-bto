@@ -1,18 +1,22 @@
 ## Getting Started
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Welcome to our BTO Management System repository.
+This is a system designed to manage the allocation and tracking of Build-To-Order (BTO) flats. 
+This tool helps users track their application status, manage their data, and generate reports.
+
 
 ## Folder Structure
 
-The workspace contains two folders by default, where:
+The workspace contains a few folders, where:
 
 - `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- `bin`: the folder to maintain binaries
+- `docs`: the folder for javadocs
+- `data`: the folder for data CSVs
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+Clone the repository: https://github.com/zixuantannn/sc2002-bto.git 
+Open in your Java IDE
+Navigate to src > main > BTO_app.java 
+Run BTO_app.java to start the application
+You may read more about each function with our Javadoc 
