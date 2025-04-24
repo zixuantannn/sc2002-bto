@@ -15,7 +15,7 @@ The workspace contains a few folders, where:
 - `data`: the folder for data CSVs
 
 
-Clone the repository: https://github.com/zixuantannn/sc2002-bto.git 
+Clone the repository: https://github.com/zixuantannn/sc2002-bto.git
 Open in your Java IDE
 Navigate to src > main > BTO_app.java 
 Run BTO_app.java to start the application
