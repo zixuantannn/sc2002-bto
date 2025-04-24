@@ -97,13 +97,13 @@ public class BTO_app {
                 case 3:
                     System.out.println("Saving all data before exit...");
 
-                    CSVWriter.overwriteProjects(db.projectList, "ProjectList.csv");
-                    CSVWriter.saveApplicants(db.applicantList, "ApplicantList.csv");
-                    CSVWriter.saveOfficers(db.officerList, "OfficerList.csv");
-                    CSVWriter.saveManagers(db.managerList, "ManagerList.csv");
-                    CSVWriter.saveFlatBookings(db.flatBookingList, "FlatBookingList.csv");
-                    CSVWriter.saveApplicationHistory("applicationHistory.csv");
-                    CSVWriter.saveEnquirieToCSV(db.enquiryList, "EnquiryList.csv");
+                    CSVWriter.overwriteProjects(db.projectList, "data/ProjectList.csv");
+                    CSVWriter.saveApplicants(db.applicantList, "data/ApplicantList.csv");
+                    CSVWriter.saveOfficers(db.officerList, "data/OfficerList.csv");
+                    CSVWriter.saveManagers(db.managerList, "data/ManagerList.csv");
+                    CSVWriter.saveFlatBookings(db.flatBookingList, "data/FlatBookingList.csv");
+                    CSVWriter.saveApplicationHistory("data/ApplicationHistory.csv");
+                    CSVWriter.saveEnquirieToCSV(db.enquiryList, "data/EnquiryList.csv");
 
                     System.out.println("All data saved. Goodbye!");
                     System.exit(0);

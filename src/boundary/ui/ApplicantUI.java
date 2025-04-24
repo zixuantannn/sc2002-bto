@@ -104,7 +104,7 @@ public class ApplicantUI implements ApplicantMenu {
                     break;
                 case 12:
                     logout();
-                    CSVWriter.saveApplicationHistory("applicationHistory.csv");
+                    CSVWriter.saveApplicationHistory("data/ApplicationHistory.csv");
                     return;
                 default:
                     System.out.println("Invalid choice! Please choose a valid option.");
